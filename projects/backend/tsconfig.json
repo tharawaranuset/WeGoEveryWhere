@@ -25,7 +25,7 @@
       "@backend/*": ["./*"],
       "@modules/*": ["src/modules/*"],
       "@core/*": ["src/core/*"],
-      "@config/*": ["src/config/*"],
+      "@config/*": ["src/configs/*"],
       "@consts/*": ["src/consts/*"],
     }
   }

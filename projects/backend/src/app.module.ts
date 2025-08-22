@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AppConfigModule } from '@backend/src/configs/config';
+import { AppConfigModule } from './configurations/config';
 import { AuthModule } from '@core/auth/auth.module';
 
 @Module({

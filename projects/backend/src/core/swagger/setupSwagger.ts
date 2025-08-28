@@ -15,6 +15,7 @@ export function setupSwagger(app: INestApplication, configService: ConfigService
       },
       'swagger-login', // @ApiBearerAuth()
     )
+    .addSecurityRequirements('swagger-login')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

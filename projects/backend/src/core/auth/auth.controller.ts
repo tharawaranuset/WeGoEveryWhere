@@ -14,7 +14,6 @@ export class AuthController {
 
   // this Route sus
   @Public()
-  @ApiBearerAuth('swagger-login')
   @Post('bearer')
   @ApiBody({
     schema: {

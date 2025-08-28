@@ -51,6 +51,7 @@ export class AuthController {
   @UseGuards(RefreshJwtGuard)
   @Get('refresh-token')
   refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
+    // TODO: revoke refresh token
     const accessToken = this.authService.signJwt(req.user.sub);
     res.cookie('jwt', accessToken, { httpOnly: true });
     return 'Access token refreshed';

@@ -1,16 +1,21 @@
-import { Body, Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { GitHubAuthGuard } from './github/github-auth.guard';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
-import { JwtGuard } from './jwt/jwt.guard';
+import { JwtGuard } from './jwt/access-jwt/jwt.guard';
 import { Public } from '@backend/src/shared/decorators/public.decorator';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { RefreshJwtGuard } from './jwt/refresh-jwt/refresh-jwt.guard';
+import { ConsoleLogWriter } from 'drizzle-orm';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  // this Route sus
+  @Public()
   @ApiBearerAuth('swagger-login')
-  @Get('bearer')
+  @Post('bearer')
   @ApiBody({
     schema: {
       type: 'object',
@@ -24,20 +29,30 @@ export class AuthController {
     return { accessToken: accessToken };
   }
 
-
-  @Get('github')
   @Public()
   @UseGuards(GitHubAuthGuard)
+  @Get('github')
   async githubAuth() {
     // Redirect to Github
   }
 
-  @Get('callback')
+  @Public()
   @UseGuards(GitHubAuthGuard)
+  @Get('callback')
   githubCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
-    // Idea is using Id and AuthProvider with user Table
-    const accessToken = this.authService.signJwt(req.user);
-    res.cookie('jwt', accessToken);
-    return 'hello';
+    const accessToken = this.authService.signJwt(req.user.id);
+    const refreshToken = this.authService.signRefreshJwt(req.user.id);
+    res.cookie('jwt', accessToken, { httpOnly: true });
+    res.cookie('refresh_jwt', refreshToken, { httpOnly: true });
+    return 'Github Callback Successful';
+  }
+
+  @Public()
+  @UseGuards(RefreshJwtGuard)
+  @Get('refresh-token')
+  refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
+    const accessToken = this.authService.signJwt(req.user.sub);
+    res.cookie('jwt', accessToken, { httpOnly: true });
+    return 'Access token refreshed';
   }
 }

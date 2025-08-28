@@ -1,10 +1,13 @@
-import { AuthConfig } from '../interfaces/auth-config';
 
-export default (): AuthConfig => ({
+export default () => ({
     auth: {
         jwt: {
-			secret: process.env.JWT_SECRET ?? '',
-			expiresInSeconds: parseInt(process.env.JWT_EXPIRATION_TIME_SECONDS ?? '0') || 900,
+			secret: process.env.JWT_SECRET,
+			expiresIn: process.env.JWT_EXPIRATION_TIME ?? '15m',
+		},
+		refresh_jwt: {
+			secret: process.env.REFRESH_JWT_SECRET,
+			expiresIn: process.env.REFRESH_JWT_EXPIRATION_TIME ?? '7d',
 		},
 		github: {
 			clientId: process.env.GITHUB_OAUTH_CLIENT_ID ?? '',

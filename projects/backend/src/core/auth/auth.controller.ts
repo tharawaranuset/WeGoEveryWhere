@@ -7,10 +7,14 @@ import { Public } from '@backend/src/shared/decorators/public.decorator';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { RefreshJwtGuard } from './jwt/refresh-jwt/refresh-jwt.guard';
 import { ConsoleLogWriter } from 'drizzle-orm';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   // this Route sus
   @Public()
@@ -41,8 +45,18 @@ export class AuthController {
   githubCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
     const accessToken = this.authService.signJwt(req.user.id);
     const refreshToken = this.authService.signRefreshJwt(req.user.id);
-    res.cookie('jwt', accessToken, { httpOnly: true });
-    res.cookie('refresh_jwt', refreshToken, { httpOnly: true });
+    res.cookie('jwt', accessToken, { 
+      httpOnly: true,
+      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 15,
+    });
+    res.cookie('refresh_jwt', accessToken, { 
+      httpOnly: true,
+      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
     return 'Github Callback Successful';
   }
 
@@ -52,7 +66,12 @@ export class AuthController {
   refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
     // TODO: revoke refresh token
     const accessToken = this.authService.signJwt(req.user.sub);
-    res.cookie('jwt', accessToken, { httpOnly: true });
+    res.cookie('jwt', accessToken, { 
+      httpOnly: true,
+      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 15,
+    });
     return 'Access token refreshed';
   }
 }

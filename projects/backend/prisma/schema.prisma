@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  uid        Int     @id
+  admin_type String? @db.VarChar(50)
+  users      users   @relation(fields: [uid], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model be_friend {
+  uid                        Int
+  fid                        Int
+  users_be_friend_fidTousers users @relation("be_friend_fidTousers", fields: [fid], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+  users_be_friend_uidTousers users @relation("be_friend_uidTousers", fields: [uid], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([uid, fid])
+}
+
+model chat {
+  sender                     Int
+  receiver                   Int
+  cid                        Int
+  chat_doc                   chat_doc @relation(fields: [cid], references: [cid], onDelete: NoAction, onUpdate: NoAction)
+  users_chat_receiverTousers users    @relation("chat_receiverTousers", fields: [receiver], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+  users_chat_senderTousers   users    @relation("chat_senderTousers", fields: [sender], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([sender, receiver, cid])
+}
+
+model chat_doc {
+  cid   Int       @id @default(autoincrement())
+  sdate DateTime? @db.Date
+  stime DateTime? @db.Time(6)
+  data  Json?
+  chat  chat[]
+}
+
+model event {
+  eid      Int       @id @default(autoincrement())
+  cost     Decimal?  @default(0.00) @db.Decimal(10, 2)
+  name     String    @db.VarChar(100)
+  date     DateTime? @db.Date
+  time     DateTime? @db.Time(6)
+  place    String?   @db.VarChar(100)
+  capacity Int
+  detail   String?
+  rating   Float?    @default(0)
+  uid      Int?
+  users    users?    @relation(fields: [uid], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+  joined   joined[]
+
+  @@index([date], map: "idx_events_start_time")
+}
+
+model joined {
+  uid   Int
+  eid   Int
+  event event @relation(fields: [eid], references: [eid], onDelete: NoAction, onUpdate: NoAction)
+  users users @relation(fields: [uid], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([uid, eid])
+}
+
+model participant {
+  uid    Int     @id
+  credit Int?    @default(0)
+  status String? @db.VarChar(20)
+  users  users   @relation(fields: [uid], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model report {
+  rid           Int     @id @default(autoincrement())
+  report_type   String? @db.VarChar(50)
+  report_detail String?
+  report_topic  String? @db.VarChar(100)
+  uid           Int?
+  users         users?  @relation(fields: [uid], references: [uid], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model users {
+  uid                            Int          @id @default(autoincrement())
+  telephone_number               String?      @db.VarChar(20)
+  fname                          String       @db.VarChar(50)
+  lname                          String       @db.VarChar(50)
+  bio                            String?
+  age                            Int?
+  sex                            String?      @db.VarChar(10)
+  signup_time                    DateTime?    @db.Time(6)
+  signup_date                    DateTime?    @db.Date
+  admin                          admin?
+  be_friend_be_friend_fidTousers be_friend[]  @relation("be_friend_fidTousers")
+  be_friend_be_friend_uidTousers be_friend[]  @relation("be_friend_uidTousers")
+  chat_chat_receiverTousers      chat[]       @relation("chat_receiverTousers")
+  chat_chat_senderTousers        chat[]       @relation("chat_senderTousers")
+  event                          event[]
+  joined                         joined[]
+  participant                    participant?
+  report                         report[]
+}

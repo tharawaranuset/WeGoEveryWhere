@@ -1,0 +1,33 @@
+// backend/src/events/events.service.ts
+import { Inject, Injectable, NotFoundException } from '@nestjs/common'; // <-- Add NotFoundException
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { eq } from 'drizzle-orm';
+import { DRIZZLE_PROVIDER } from '../../db/drizzle.provider';
+import * as schema from '../../db/schema';
+import { UpdateEventDto } from './dto/update-event.dto'; // <-- Import the DTO
+
+@Injectable()
+export class EventsService {
+  constructor(
+    @Inject(DRIZZLE_PROVIDER) private db: NodePgDatabase<typeof schema>,
+  ) {}
+
+  async findAll() {
+    return this.db.query.event.findMany();
+  }
+
+  // --- ADD THIS METHOD ---
+  async update(id: number, updateEventDto: UpdateEventDto) {
+    // NOTE: Replace 'schema.events.eventId' with the actual ID column from your schema.ts
+    const [updatedEvent] = await this.db
+      .update(schema.event)
+      .set(updateEventDto) // Drizzle can often use the DTO directly!
+      .where(eq(schema.event.eid, id)) 
+      .returning();
+
+    if (!updatedEvent) {
+      throw new NotFoundException(`Event with ID ${id} not found.`);
+    }
+    return updatedEvent;
+  }
+}

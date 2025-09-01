@@ -7,8 +7,12 @@ CREATE TABLE IF NOT EXISTS public.users (
     bio TEXT,
     age INT NOT NULL CHECK (age > 20),
     sex VARCHAR(10),
+    email VARCHAR(320) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     signup_time TIME,
-    signup_date DATE
+    signup_date DATE,
+    cookie_policy_version_accepted INT DEFAULT 0, -- stored version of cookie policy accepted
+    cookie_policy_accepted_at TIMESTAMPTZ -- timestamp when cookie policy was accepted
 );
 
 -- Participant

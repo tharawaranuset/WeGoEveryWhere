@@ -1,9 +1,3 @@
-# Ignore all YAML files
-*.yml
-*.yaml
-
 # Ignore all environment files
 *.env
 
-# Ignore all Python files
-*.py

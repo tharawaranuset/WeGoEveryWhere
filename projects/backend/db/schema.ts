@@ -51,7 +51,7 @@ export const chatDoc = pgTable("chat_doc", {
 
 export const event = pgTable("event", {
 	eid: serial().primaryKey().notNull(),
-	cost: numeric({ precision: 10, scale:  2 }).default('0.00'),
+	cost: numeric({ precision: 10, scale:  2 }).$type<number>().default(0.00),
 	name: varchar({ length: 100 }).notNull(),
 	date: date(),
 	time: time(),

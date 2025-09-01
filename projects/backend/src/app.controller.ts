@@ -8,9 +8,11 @@ export class UpdateEventDto {
 
 @Controller()
 export class AppController {
+  constructor(private readonly appService: AppService) {}
+
   @Get()
   getHello(): string {
-    return 'Welcome to the WeGoEverywhere API!'; // Handles GET request to '/'
+    return this.appService.TestApi() ; // Handles GET request to '/'
   }
 
 }

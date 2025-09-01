@@ -4,7 +4,7 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE_PROVIDER } from '../../db/drizzle.provider';
 import * as schema from '../../db/schema';
-import { UpdateEventDto } from './dto/update-event.dto'; // <-- Import the DTO
+import { UpdateEventDto , CreateEventDto } from './event.dto'; // <-- Import the DTO
 
 @Injectable()
 export class EventsService {
@@ -29,5 +29,16 @@ export class EventsService {
       throw new NotFoundException(`Event with ID ${id} not found.`);
     }
     return updatedEvent;
+  }
+
+  async create(createEventDto: CreateEventDto){
+    const[newEvent] = await this.db
+      .insert(schema.event)
+      .values(createEventDto)
+      .returning();
+    if(!newEvent){
+      throw new NotFoundException(`The event is not created successfully.`);
+    }
+    return newEvent;
   }
 }

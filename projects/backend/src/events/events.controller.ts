@@ -1,7 +1,7 @@
 // backend/src/events/events.controller.ts
-import { Controller, Get, Patch, Param, Body, ParseIntPipe } from '@nestjs/common'; // <-- Add Patch, Param, Body, ParseIntPipe
+import { Controller, Get, Patch, Param, Body, ParseIntPipe , Post } from '@nestjs/common'; // <-- Add Patch, Param, Body, ParseIntPipe
 import { EventsService } from './events.service';
-import { UpdateEventDto } from './dto/update-event.dto'; // <-- Import the DTO
+import { UpdateEventDto , CreateEventDto } from './event.dto'; // <-- Import the DTO
 
 @Controller('events')
 export class EventsController {
@@ -19,5 +19,12 @@ export class EventsController {
     @Body() updateEventDto: UpdateEventDto,
   ) {
     return this.eventsService.update(id, updateEventDto);
+  }
+
+  @Post()
+  create(
+    @Body() CreateEventDto: CreateEventDto,
+  ){
+    return this.eventsService.create(CreateEventDto);
   }
 }

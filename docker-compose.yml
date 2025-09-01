@@ -13,7 +13,7 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - pg-data:/var/lib/postgresql/data
-      - ./projects/db/init:/docker-entrypoint-initdb.d:ro
+      - ./db/init:/docker-entrypoint-initdb.d:ro
 
   pgadmin:
     container_name: pgadmin4_container

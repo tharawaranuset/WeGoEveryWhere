@@ -1,0 +1,105 @@
+{
+  "id": "875a7faf-344b-4433-a4ca-2fd44beae0a8",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "uid": {
+          "name": "uid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "telephone_number": {
+          "name": "telephone_number",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fname": {
+          "name": "fname",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lname": {
+          "name": "lname",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bio": {
+          "name": "bio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "age": {
+          "name": "age",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sex": {
+          "name": "sex",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "signup_time": {
+          "name": "signup_time",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIME"
+        },
+        "signup_date": {
+          "name": "signup_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_DATE"
+        },
+        "cookie_policy_version_accepted": {
+          "name": "cookie_policy_version_accepted",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cookie_policy_accepted_at": {
+          "name": "cookie_policy_accepted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "users_age_check": {
+          "name": "users_age_check",
+          "value": "\"users\".\"age\" > 20"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

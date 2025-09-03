@@ -1,6 +1,6 @@
 {
-  "id": "4e6d247e-a9a7-4642-ac73-af1d63501373",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "8d6e929c-fa86-4121-bb67-028c63e7ece7",
+  "prevId": "1ea95524-6a39-4ca8-b372-68fc2a9bfd77",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -546,6 +546,18 @@
           "type": "date",
           "primaryKey": false,
           "notNull": false
+        },
+        "cookie_policy_version_accepted": {
+          "name": "cookie_policy_version_accepted",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cookie_policy_accepted_at": {
+          "name": "cookie_policy_accepted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -556,7 +568,7 @@
       "checkConstraints": {
         "users_age_check": {
           "name": "users_age_check",
-          "value": "age > 20"
+          "value": "\"users\".\"age\" > 20"
         }
       },
       "isRLSEnabled": false

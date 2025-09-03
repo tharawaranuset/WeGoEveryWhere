@@ -8,8 +8,8 @@ export const users = pgTable("users", {
   bio: text("bio"),
   age: integer("age"),
   sex: varchar("sex", { length: 10 }),
-  signupTime: time("signup_time").default(sql`CURRENT_TIME`),
-  signupDate: date("signup_date").default(sql`CURRENT_DATE`),
+  signupTime: time("signup_time"),
+  signupDate: date("signup_date"),
 
   // ✅ cookie policy fields
   cookiePolicyVersionAccepted: varchar("cookie_policy_version_accepted", { length: 20 }),

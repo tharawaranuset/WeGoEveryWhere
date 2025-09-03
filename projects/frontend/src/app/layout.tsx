@@ -27,6 +27,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <a>This is Layout </a>
+        <a href="/" style={{ color: "yellow" }}>
+          go to Home
+        </a>
+
         {children}
       </body>
     </html>

@@ -1,5 +1,6 @@
 import { pgTable, foreignKey, integer, varchar, serial, text, check, time, date, jsonb, index, numeric, doublePrecision, primaryKey } from "drizzle-orm/pg-core"
 import { users } from "./users.schema";
+import { event } from "./event.schema";
 
 
 
@@ -37,37 +38,9 @@ export const chatDoc = pgTable("chat_doc", {
 	data: jsonb(),
 });
 
-export const event = pgTable("event", {
-	eid: serial().primaryKey().notNull(),
-	cost: numeric({ precision: 10, scale:  2 }).$type<number>().default(0.00),
-	name: varchar({ length: 100 }).notNull(),
-	date: date(),
-	time: time(),
-	place: varchar({ length: 100 }),
-	capacity: integer().notNull(),
-	detail: text(),
-	rating: doublePrecision().default(0),
-	uid: integer(),
-}, (table) => [
-	index("idx_events_start_time").using("btree", table.date.asc().nullsLast().op("date_ops")),
-	foreignKey({
-			columns: [table.uid],
-			foreignColumns: [users.uid],
-			name: "event_uid_fkey"
-		}).onDelete("cascade"),
-]);
 
-export const participant = pgTable("participant", {
-	uid: integer().primaryKey().notNull(),
-	credit: integer().default(0),
-	status: varchar({ length: 20 }),
-}, (table) => [
-	foreignKey({
-			columns: [table.uid],
-			foreignColumns: [users.uid],
-			name: "participant_uid_fkey"
-		}).onDelete("cascade"),
-]);
+
+
 
 export const beFriend = pgTable("be_friend", {
 	uid: integer().notNull(),

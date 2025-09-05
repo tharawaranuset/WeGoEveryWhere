@@ -1,10 +1,11 @@
-import Image from "next/image";
-
-export default function Home() {
+const EventPage = () => {
+  //throw new Error("Failed to load event data.");
   return (
-    <div>
-      <br />
-      <a>welcome to Event page</a>
-    </div>
+    <>
+      <div style={{ justifyContent: "center", display: "flex" }}>
+        Event Page
+      </div>
+    </>
   );
-}
+};
+export default EventPage;

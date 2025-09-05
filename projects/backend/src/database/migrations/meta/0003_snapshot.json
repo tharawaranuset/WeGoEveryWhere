@@ -1,6 +1,6 @@
 {
-  "id": "4e6d247e-a9a7-4642-ac73-af1d63501373",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "d0b206e6-fe06-4328-b2a2-a8a820fe3a4e",
+  "prevId": "8d6e929c-fa86-4121-bb67-028c63e7ece7",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -220,6 +220,123 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.joined": {
+      "name": "joined",
+      "schema": "",
+      "columns": {
+        "uid": {
+          "name": "uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "eid": {
+          "name": "eid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "joined_eid_fkey": {
+          "name": "joined_eid_fkey",
+          "tableFrom": "joined",
+          "tableTo": "event",
+          "columnsFrom": [
+            "eid"
+          ],
+          "columnsTo": [
+            "eid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "joined_uid_fkey": {
+          "name": "joined_uid_fkey",
+          "tableFrom": "joined",
+          "tableTo": "users",
+          "columnsFrom": [
+            "uid"
+          ],
+          "columnsTo": [
+            "uid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "joined_pkey": {
+          "name": "joined_pkey",
+          "columns": [
+            "uid",
+            "eid"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.report": {
+      "name": "report",
+      "schema": "",
+      "columns": {
+        "rid": {
+          "name": "rid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "report_type": {
+          "name": "report_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "report_detail": {
+          "name": "report_detail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "report_topic": {
+          "name": "report_topic",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uid": {
+          "name": "uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "report_uid_fkey": {
+          "name": "report_uid_fkey",
+          "tableFrom": "report",
+          "tableTo": "users",
+          "columnsFrom": [
+            "uid"
+          ],
+          "columnsTo": [
+            "uid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.event": {
       "name": "event",
       "schema": "",
@@ -326,61 +443,70 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.joined": {
-      "name": "joined",
+    "public.oauth_identities": {
+      "name": "oauth_identities",
       "schema": "",
       "columns": {
-        "uid": {
-          "name": "uid",
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "eid": {
-          "name": "eid",
-          "type": "integer",
+        "provider": {
+          "name": "provider",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subject": {
+          "name": "subject",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "joined_eid_fkey": {
-          "name": "joined_eid_fkey",
-          "tableFrom": "joined",
-          "tableTo": "event",
+        "oauth_identities_user_id_users_uid_fk": {
+          "name": "oauth_identities_user_id_users_uid_fk",
+          "tableFrom": "oauth_identities",
+          "tableTo": "users",
           "columnsFrom": [
-            "eid"
+            "user_id"
           ],
           "columnsTo": [
-            "eid"
+            "uid"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
-        },
-        "joined_uid_fkey": {
-          "name": "joined_uid_fkey",
-          "tableFrom": "joined",
-          "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "joined_pkey": {
-          "name": "joined_pkey",
-          "columns": [
-            "uid",
-            "eid"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
@@ -432,54 +558,73 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.report": {
-      "name": "report",
+    "public.refresh_tokens": {
+      "name": "refresh_tokens",
       "schema": "",
       "columns": {
-        "rid": {
-          "name": "rid",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
-        "report_type": {
-          "name": "report_type",
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token_hash": {
+          "name": "token_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "revoked": {
+          "name": "revoked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_by_ip": {
+          "name": "created_by_ip",
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": false
         },
-        "report_detail": {
-          "name": "report_detail",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "report_topic": {
-          "name": "report_topic",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "uid": {
-          "name": "uid",
-          "type": "integer",
+        "user_agent": {
+          "name": "user_agent",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "report_uid_fkey": {
-          "name": "report_uid_fkey",
-          "tableFrom": "report",
+        "refresh_tokens_user_id_users_uid_fk": {
+          "name": "refresh_tokens_user_id_users_uid_fk",
+          "tableFrom": "refresh_tokens",
           "tableTo": "users",
           "columnsFrom": [
-            "uid"
+            "user_id"
           ],
           "columnsTo": [
             "uid"
           ],
-          "onDelete": "cascade",
+          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
@@ -546,6 +691,18 @@
           "type": "date",
           "primaryKey": false,
           "notNull": false
+        },
+        "cookie_policy_version_accepted": {
+          "name": "cookie_policy_version_accepted",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cookie_policy_accepted_at": {
+          "name": "cookie_policy_accepted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -556,7 +713,7 @@
       "checkConstraints": {
         "users_age_check": {
           "name": "users_age_check",
-          "value": "age > 20"
+          "value": "\"users\".\"age\" > 20"
         }
       },
       "isRLSEnabled": false

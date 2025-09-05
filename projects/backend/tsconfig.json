@@ -21,6 +21,14 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "@backend/*": ["./*"],
+      "@modules/*": ["src/modules/*"],
+      "@core/*": ["src/core/*"],
+      "@configs/*": ["src/configurations/configs/*"],
+      "@configs-interfaces/*": ["src/configurations/interfaces/*"],
+      "@consts/*": ["src/consts/*"],
+    }
   }
 }

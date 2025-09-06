@@ -2,44 +2,39 @@
 "use client";
 
 import Image from 'next/image';
-import { useState } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import PasswordInput from './components/password';
 
 export default function LoginPage() {
   return (
-    // Container หลักของหน้าจอ
+
     <main className="min-h-screen bg-brand-background font-sans">
 
-      {/* นี่คือกล่องพื้นหลังสีครีม/ชมพูอ่อน */}
-      <div className="bg-brand-primary rounded-b-[50px] px-8 pt-2 pb-20">
-        {/* ส่วนประกอบภายในกล่องนี้ */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">
-            <span className="text-brand-orange">WeGo</span>
-            <span className="text-gray-700"> EveryWhere</span>
-          </h1>
-          <Image 
-            src="/images/logo.png" 
-            alt="Logo"
-            width={60}
-            height={60}
-          />
+      <div className="bg-brand-primary">
+        <header className="bg-[#FFFBF0] rounded-b-[50px] px-6 py-8 overflow-hidden">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl sm:text-2xl font-extrabold leading-none">
+              <span className="block text-brand-orange">WeGo</span>
+              <span className="block text-brand-orange">EveryWhere</span>
+            </h1>
+            <Image src="/images/logo.png" alt="Logo" width={100} height={100} />
           </div>
-        <p className="mt-8 text-3xl text-gray-800 font-cursive">
-          Welcome to our community!
-        </p>
+        </header>
       </div>
 
-      {/* ส่วนฟอร์ม Sign In สีขาว */}
-      <div className="bg-white rounded-t-[50px] -mt-10 p-8 shadow-lg w-full max-w-md mx-auto">
+      <section className="bg-brand-primary px-6 py-8 pb-16 sm:pb-20">
+        <p className="text-center text-3xl text-gray-800 font-cursive">
+          Welcome to our community!
+        </p>
+      </section>
+
+      <div className="bg-[#FFFBF0] rounded-t-[50px] -mt-10 p-6 shadow-lg w-full max-w-sm mx-auto">
         <h2 className="text-4xl font-bold text-center text-gray-800">Sign In</h2>
         
         <form className="mt-8 space-y-6">
           {/* --- ช่องกรอก E-mail --- */}
           <div>
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="text-sm font-bold text-gray-700">
               E-mail
             </label>
             <input 
@@ -55,7 +50,7 @@ export default function LoginPage() {
           
           <button 
             type="submit"
-            className="w-full py-3 bg-brand-button text-white font-bold rounded-xl hover:bg-opacity-90 transition"
+            className="w-full py-3 bg-brand-button text-black font-bold border border-black rounded-3xl hover:bg-opacity-90 transition"
           >
             Log in
           </button>
@@ -68,10 +63,10 @@ export default function LoginPage() {
         </div>
 
         <div className="space-y-4">
-          <button className="w-full py-3 bg-white border border-brand-button text-brand-button font-bold rounded-xl hover:bg-gray-50 transition">
+          <button className="w-full py-3 bg-[#FFDCD5] text-black font-bold border border-black rounded-3xl hover:bg-[#F29EA2] transition">
             Create an account
           </button>
-          <button className="w-full py-3 flex justify-center items-center gap-2 bg-white border border-gray-400 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition">
+          <button className="w-full py-3 flex justify-center items-center gap-2 bg-white border border-black text-gray-700 font-bold rounded-3xl hover:bg-gray-50 transition">
             <FcGoogle size={22} />
             Continue with Google
           </button>

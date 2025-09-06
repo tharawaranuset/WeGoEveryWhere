@@ -15,7 +15,7 @@ export default function PasswordInput() {
     <div>
       <label 
         htmlFor="password" 
-        className="text-sm font-medium text-gray-700"
+        className="text-sm font-bold text-gray-700"
       >
         Password
       </label>
@@ -26,16 +26,16 @@ export default function PasswordInput() {
           type={showPassword ? 'text' : 'password'}
           required
           className="w-full p-3 border border-gray-300 rounded-xl focus:ring-brand-orange focus:border-brand-orange"
-          placeholder="กรอกรหัสผ่าน"
+          // placeholder="กรอกรหัสผ่าน"
         />
         <div 
           onClick={togglePasswordVisibility} 
           className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
         >
           {showPassword ? (
-            <FaEyeSlash className="text-gray-500" />
-          ) : (
             <FaEye className="text-gray-500" />
+          ) : (
+            <FaEyeSlash className="text-gray-500" />
           )}
         </div>
       </div>

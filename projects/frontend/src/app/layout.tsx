@@ -1,36 +1,18 @@
-import type { Metadata } from "next";
-// 1. เปลี่ยน import จาก Geist เป็น Urbanist
-import { Urbanist } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import { Urbanist } from "next/font/google";
 
-// 2. ตั้งค่า Urbanist (ลบของเก่าที่เป็น Geist ออก)
-const urbanist = Urbanist({
-  variable: "--font-urbanist",
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
-});
+const urbanist = Urbanist({ subsets: ["latin"], variable: "--font-urbanist" });
 
-// อัปเดต metadata ให้ตรงกับโปรเจกต์ของคุณ
-export const metadata: Metadata = {
-  title: "WeGo EveryWhere",
-  description: "Welcome to our community",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body
-        // 3. อัปเดต className ให้ใช้ variable ของ urbanist
-        className={`${urbanist.variable} font-sans antialiased`}
-      >
-        {/* <Navbar /> */}
-        {children}
+    <html lang="th" className={urbanist.variable}>
+      <body className="bg-brand-background">
+        {/* PHONE WRAPPER: กว้างคงที่ + จัดกลาง + สูงเต็ม viewport + เลื่อนแนวตั้งได้ */}
+        <div className="mx-auto w-[390px] max-w-[390px] min-h-dvh overflow-x-hidden bg-white">
+          {children}
+        </div>
       </body>
     </html>
   );
 }
+

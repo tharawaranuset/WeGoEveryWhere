@@ -1,0 +1,1 @@
+ALTER TABLE "event" ADD COLUMN "status" varchar(100) DEFAULT 'active' NOT NULL;

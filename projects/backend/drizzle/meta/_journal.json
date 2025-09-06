@@ -22,6 +22,27 @@
       "when": 1757150117536,
       "tag": "0002_unusual_selene",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1757151645526,
+      "tag": "0003_thick_amphibian",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1757151709861,
+      "tag": "0004_smart_whirlwind",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1757151749158,
+      "tag": "0005_lying_wallow",
+      "breakpoints": true
     }
   ]
 }

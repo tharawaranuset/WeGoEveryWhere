@@ -7,6 +7,7 @@ import {
   IsInt,
   Min,
   IsDateString,
+  IsIn
 } from 'class-validator';
 
 export class UpdateEventDto {
@@ -46,6 +47,11 @@ export class UpdateEventDto {
   @IsOptional()
   @IsInt()
   uid?: number;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['active', 'deleted'])
+  status?: string;
 }
 
 export class CreateEventDto {
@@ -83,4 +89,8 @@ export class CreateEventDto {
   @IsOptional()
   @IsInt()
   uid?: number;
+
+  @IsString()
+  @IsIn(['active', 'deleted'])
+  status: string = 'active';
 }

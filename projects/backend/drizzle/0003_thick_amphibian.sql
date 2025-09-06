@@ -1,0 +1,1 @@
+ALTER TABLE "event" ALTER COLUMN "status" SET DEFAULT 'active';

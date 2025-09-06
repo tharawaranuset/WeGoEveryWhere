@@ -4,12 +4,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { DrizzleProvider } from '../db/drizzle.provider';
-import { EventsModule } from './events/events.module'; // <-- 1. Import EventsModule
+import { EventsModule } from './event/event.module'; // <-- 1. Import EventsModule
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: './.env' }),
     EventsModule, // <-- 2. Add it to the imports array
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, DrizzleProvider],

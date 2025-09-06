@@ -1,15 +1,15 @@
 // backend/src/events/events.controller.ts
 import { Controller, Get, Patch, Param, Body, ParseIntPipe , Post } from '@nestjs/common'; // <-- Add Patch, Param, Body, ParseIntPipe
-import { EventsService } from './events.service';
+import { EventService } from './event.service';
 import { UpdateEventDto , CreateEventDto } from './event.dto'; // <-- Import the DTO
 
 @Controller('events')
-export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+export class EventController {
+  constructor(private readonly eventService: EventService) {}
 
   @Get()
   GetAll() {
-    return this.eventsService.findAll();
+    return this.eventService.findAll();
   }
 
   // --- ADD THIS ENDPOINT ---
@@ -18,13 +18,13 @@ export class EventsController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateEventDto: UpdateEventDto,
   ) {
-    return this.eventsService.update(id, updateEventDto);
+    return this.eventService.update(id, updateEventDto);
   }
 
   @Post()
   create(
     @Body() CreateEventDto: CreateEventDto,
   ){
-    return this.eventsService.create(CreateEventDto);
+    return this.eventService.create(CreateEventDto);
   }
 }

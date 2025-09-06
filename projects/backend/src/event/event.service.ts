@@ -7,7 +7,7 @@ import * as schema from '../../db/schema';
 import { UpdateEventDto , CreateEventDto } from './event.dto'; // <-- Import the DTO
 
 @Injectable()
-export class EventsService {
+export class EventService {
   constructor(
     @Inject(DRIZZLE_PROVIDER) private db: NodePgDatabase<typeof schema>,
   ) {}

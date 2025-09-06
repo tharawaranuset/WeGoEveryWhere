@@ -1,12 +1,12 @@
 // backend/src/events/events.module.ts
 import { Module } from '@nestjs/common';
-import { EventsController } from './events.controller';
-import { EventsService } from './events.service';
+import { EventController } from './event.controller';
+import { EventService } from './event.service';
 import { DrizzleModule } from '../../db/drizzle.module'; // <-- 1. Import DrizzleModule
 
 @Module({
   imports: [DrizzleModule], // <-- 2. Add it to the imports array
-  controllers: [EventsController],
-  providers: [EventsService],
+  controllers: [EventController],
+  providers: [EventService],
 })
 export class EventsModule {}

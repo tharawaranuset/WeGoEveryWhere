@@ -1,6 +1,6 @@
 -- Current sql file was generated after introspecting the database
 -- If you want to run this migration please uncomment this code before executing migrations
-/*
+
 CREATE TABLE "admin" (
 	"uid" integer PRIMARY KEY NOT NULL,
 	"admin_type" varchar(50)
@@ -84,4 +84,3 @@ ALTER TABLE "chat" ADD CONSTRAINT "chat_cid_fkey" FOREIGN KEY ("cid") REFERENCES
 ALTER TABLE "chat" ADD CONSTRAINT "chat_receiver_fkey" FOREIGN KEY ("receiver") REFERENCES "public"."users"("uid") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chat" ADD CONSTRAINT "chat_sender_fkey" FOREIGN KEY ("sender") REFERENCES "public"."users"("uid") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "idx_events_start_time" ON "event" USING btree ("date" date_ops);
-*/

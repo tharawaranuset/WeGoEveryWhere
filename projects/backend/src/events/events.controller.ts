@@ -8,7 +8,7 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
-  findAll() {
+  GetAll() {
     return this.eventsService.findAll();
   }
 

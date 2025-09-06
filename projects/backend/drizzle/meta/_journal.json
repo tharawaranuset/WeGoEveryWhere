@@ -8,6 +8,20 @@
       "when": 1756710784631,
       "tag": "0000_lame_juggernaut",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1757149384541,
+      "tag": "0001_common_wallow",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757150117536,
+      "tag": "0002_unusual_selene",
+      "breakpoints": true
     }
   ]
 }

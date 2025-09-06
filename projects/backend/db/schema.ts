@@ -59,6 +59,7 @@ export const event = pgTable("event", {
 	capacity: integer().notNull(),
 	detail: text(),
 	rating: doublePrecision().default(0),
+	status: varchar({ length: 100 }).notNull(),
 	uid: integer(),
 }, (table) => [
 	index("idx_events_start_time").using("btree", table.date.asc().nullsLast().op("date_ops")),

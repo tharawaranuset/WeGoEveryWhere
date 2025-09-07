@@ -25,7 +25,7 @@ export default function PasswordInput() {
           name="password"
           type={showPassword ? 'text' : 'password'}
           required
-          className="w-full p-3 border border-gray-300 rounded-xl focus:ring-brand-orange focus:border-brand-orange"
+          className="w-full p-3 bg-white border border-black rounded-3xl focus:ring-brand-orange focus:border-brand-orange"
           // placeholder="กรอกรหัสผ่าน"
         />
         <div 

@@ -42,7 +42,7 @@ export default function LoginPage() {
               name="email"
               type="email"
               required
-              className="mt-1 w-full p-3 border border-gray-300 rounded-xl focus:ring-brand-orange focus:border-brand-orange"
+              className="mt-1 w-full p-3 bg-white border border-black rounded-3xl focus:ring-brand-orange focus:border-brand-orange"
             />
           </div>
 

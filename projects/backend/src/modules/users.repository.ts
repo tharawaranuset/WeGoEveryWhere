@@ -10,7 +10,7 @@ type CreateUserDto = {
   lastName: string;
   telephoneNumber?: string | null;
   bio?: string | null;
-  age: number;
+  birthdate: string; // ISO date string
   sex?: string | null;
 };
 
@@ -24,26 +24,26 @@ export class UsersRepository {
 
   async createUser(input: CreateUserDto) {
     const {
-      firstName, lastName, telephoneNumber, bio, age, sex,
+      firstName, lastName, telephoneNumber, bio, birthdate, sex,
     } = input;
 
     const [row] = await this.db
       .insert(users)
       .values({
-        fname: firstName,
-        lname: lastName,
+        firstName,
+        lastName,
         telephoneNumber: telephoneNumber ?? null,
         bio: bio ?? null,
-        age,
+        birthdate,
         sex: sex ?? null,
       })
       .returning({
-        uid: users.uid,
-        firstName: users.fname,
-        lastName: users.lname,
+        userId: users.userId,
+        firstName: users.firstName,
+        lastName: users.lastName,
         telephoneNumber: users.telephoneNumber,
         bio: users.bio,
-        age: users.age,
+        birthdate: users.birthdate,
         sex: users.sex,
         signupTime: users.signupTime,
         signupDate: users.signupDate,

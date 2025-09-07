@@ -7,6 +7,15 @@ export function setupSwagger(app: INestApplication, configService: ConfigService
     .setTitle(configService.get<string>('swagger.title', ''))
     .setDescription(configService.get<string>('swagger.description', ''))
     .setVersion(configService.get<string>('swagger.version', ''))
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT', // optional
+      },
+      'swagger-login', // @ApiBearerAuth()
+    )
+    .addSecurityRequirements('swagger-login')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

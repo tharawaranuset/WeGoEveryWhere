@@ -3,6 +3,17 @@ CREATE TABLE "admin" (
 	"admin_type" varchar(50)
 );
 --> statement-breakpoint
+CREATE TABLE "auth_users" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"user_id" integer NOT NULL,
+	"email" varchar(100) NOT NULL,
+	"password_hash" varchar(255) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "auth_users_user_id_unique" UNIQUE("user_id"),
+	CONSTRAINT "auth_users_email_unique" UNIQUE("email")
+);
+--> statement-breakpoint
 CREATE TABLE "be_friend" (
 	"user_id" integer NOT NULL,
 	"friend_id" integer NOT NULL,
@@ -80,10 +91,11 @@ CREATE TABLE "report" (
 ALTER TABLE "users" RENAME COLUMN "uid" TO "user_id";--> statement-breakpoint
 ALTER TABLE "users" RENAME COLUMN "fname" TO "firstName";--> statement-breakpoint
 ALTER TABLE "users" RENAME COLUMN "lname" TO "lastName";--> statement-breakpoint
-ALTER TABLE "users" RENAME COLUMN "age" TO "birthdate";--> statement-breakpoint
+ALTER TABLE "users" ADD COLUMN "birthdate" date NOT NULL;--> statement-breakpoint
 ALTER TABLE "users" ADD COLUMN "cookie_policy_version_accepted" varchar(20);--> statement-breakpoint
 ALTER TABLE "users" ADD COLUMN "cookie_policy_accepted_at" timestamp;--> statement-breakpoint
 ALTER TABLE "admin" ADD CONSTRAINT "admin_userId_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "auth_users" ADD CONSTRAINT "auth_users_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "be_friend" ADD CONSTRAINT "be_friend_friendId_fkey" FOREIGN KEY ("friend_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "be_friend" ADD CONSTRAINT "be_friend_userId_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "chat" ADD CONSTRAINT "chat_chatId_fkey" FOREIGN KEY ("chat_id") REFERENCES "public"."chat_doc"("chat_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -97,4 +109,5 @@ ALTER TABLE "participant" ADD CONSTRAINT "participant_userId_fkey" FOREIGN KEY (
 ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "report" ADD CONSTRAINT "report_userId_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "idx_events_start_time" ON "event" USING btree ("date" date_ops);--> statement-breakpoint
+ALTER TABLE "users" DROP COLUMN "age";--> statement-breakpoint
 ALTER TABLE "users" ADD CONSTRAINT "users_age_check" CHECK (CURRENT_DATE - "users"."birthdate" > INTERVAL '20 years');

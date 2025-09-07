@@ -110,4 +110,4 @@ ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_users_user_i
 ALTER TABLE "report" ADD CONSTRAINT "report_userId_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "idx_events_start_time" ON "event" USING btree ("date" date_ops);--> statement-breakpoint
 ALTER TABLE "users" DROP COLUMN "age";--> statement-breakpoint
-ALTER TABLE "users" ADD CONSTRAINT "users_age_check" CHECK (CURRENT_DATE - "users"."birthdate" > INTERVAL '20 years');
+ALTER TABLE "users" ADD CONSTRAINT "users_age_check" CHECK ("users"."birthdate" <= CURRENT_DATE - INTERVAL '20 years');

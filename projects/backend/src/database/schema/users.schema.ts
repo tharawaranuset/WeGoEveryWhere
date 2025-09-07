@@ -17,7 +17,7 @@ export const users = pgTable('users', {
   cookiePolicyVersionAccepted: varchar("cookie_policy_version_accepted", { length: 20 }),
   cookiePolicyAcceptedAt: timestamp("cookie_policy_accepted_at"),
 }, (table) => [
-  check("users_age_check", sql`CURRENT_DATE - ${table.birthdate} > INTERVAL '20 years'`)
+  check("users_age_check", sql`${table.birthdate} <= CURRENT_DATE - INTERVAL '20 years'`)
 ]);
 
 

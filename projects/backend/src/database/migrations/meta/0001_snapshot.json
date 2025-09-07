@@ -1,5 +1,5 @@
 {
-  "id": "4e65d765-d00e-4819-9e91-c41e1b924fd7",
+  "id": "4091cae5-c1cb-42e7-98f8-ecc2227bd606",
   "prevId": "d35843f4-9e8f-41be-9d76-11b5d0e91e90",
   "version": "7",
   "dialect": "postgresql",
@@ -795,7 +795,7 @@
       "checkConstraints": {
         "users_age_check": {
           "name": "users_age_check",
-          "value": "CURRENT_DATE - \"users\".\"birthdate\" > INTERVAL '20 years'"
+          "value": "\"users\".\"birthdate\" <= CURRENT_DATE - INTERVAL '20 years'"
         }
       },
       "isRLSEnabled": false

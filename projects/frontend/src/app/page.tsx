@@ -1,11 +1,9 @@
-import Image from "next/image";
-import Link from "next/link";
-
-export default async function Home() {
-  await new Promise((resolve) => setInterval(resolve, 1000));
+export default function Home() {
   return (
     <>
-      <div style={{ justifyContent: "center", display: "flex" }}>Home Page</div>
+      <h1 className="flex justify-center">Home Page</h1>
+      <p className="font-sans font-black">นี่คือ Karla (ฟอนต์หลัก)</p>
+      <p className="font-alt font-thin">นี่คือ Urbanist (ฟอนต์รอง)</p>
     </>
   );
 }

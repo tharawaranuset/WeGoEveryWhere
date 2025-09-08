@@ -5,8 +5,8 @@ import FormInput from "@/components/form/FormInput";
 import Image from "next/image";
 import { createEventLogOnly, createEventWithZod } from "@/actions/actions";
 
-// const eventAction = createEventLogOnly;
-const eventAction = createEventWithZod;
+const eventAction = createEventLogOnly;
+// const eventAction = createEventWithZod;
 
 const CreateEventPage = () => {
   return (
@@ -25,47 +25,49 @@ const CreateEventPage = () => {
         Create Your Event
       </h1>
 
-      <form className="space-y-4" action={eventAction}>
-        <FormInput
-          name="eventName"
-          type="text"
-          label="Event Name"
-          placeholder="Enter event name"
-        />
-        <FormInput name="eventDate" type="date" label="Event Date" />
-        <FormInput
-          name="location"
-          type="text"
-          label="Location"
-          placeholder="Enter location"
-        />
-        <FormInput
-          name="details"
-          type="text"
-          label="Details"
-          placeholder="Enter details"
-        />
-
-        <div>
-          <h2 className="text-sm font-semibold mb-2">Optional</h2>
+      <div className="fonts-sans font-semibold">
+        <form className="space-y-4" action={eventAction}>
           <FormInput
-            name="capacity"
-            type="number"
-            label="Capacity"
-            placeholder="Max people"
-          />
-          <FormInput
-            name="status"
+            name="eventName"
             type="text"
-            label="Status"
-            placeholder="Active / Inactive"
+            label="Event Name"
+            placeholder="Enter event name"
           />
-        </div>
+          <FormInput name="eventDate" type="date" label="Event Date" />
+          <FormInput
+            name="location"
+            type="text"
+            label="Location"
+            placeholder="Enter location"
+          />
+          <FormInput
+            name="details"
+            type="text"
+            label="Details"
+            placeholder="Enter details"
+          />
 
-        <div className="flex justify-center pt-2">
-          <SubmitButton text="Create Event" size="lg" />
-        </div>
-      </form>
+          <div>
+            <h2 className="text-sm font-semibold mb-2">Optional</h2>
+            <FormInput
+              name="capacity"
+              type="number"
+              label="Capacity"
+              placeholder="Max people"
+            />
+            <FormInput
+              name="status"
+              type="text"
+              label="Status"
+              placeholder="Active / Inactive"
+            />
+          </div>
+
+          <div className="flex justify-center pt-2">
+            <SubmitButton text="Create Event" size="lg" />
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

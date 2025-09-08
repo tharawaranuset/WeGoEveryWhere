@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Karla, Urbanist } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import Navbar from "../components/navbar/Navbar";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -24,7 +24,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
@@ -35,32 +37,26 @@ export default function RootLayout({
       </head>
       <body
         className={`${karla.variable} ${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
-        style={{
-          fontFamily: "var(--font-sans), Arial, Helvetica, sans-serif",
-          paddingTop: "env(safe-area-inset-top)",
-          paddingBottom: "env(safe-area-inset-bottom)",
-          paddingLeft: "env(safe-area-inset-left)",
-          paddingRight: "env(safe-area-inset-right)",
-        }}
       >
-        {/* นอกกรอบ: ดำสนิท */}
+        {/* Make Phone at the middle */}
         <div className="min-h-dvh flex items-center justify-center p-2 bg-black">
-          {/* กรอบมือถือ */}
+          {/* Phone Frame */}
           <div
             className="
-              relative w-[390px]
-              h-[844px] max-h-[calc(100dvh-1rem)]
-              overflow-hidden rounded-2xl border shadow-2xl
+              relative w-[390px] h-[844px] max-h-[calc(100dvh-1rem)]
+              overflow-hidden rounded-2xl border shadow-2xl pt-2 pl-2 pr-2 pb-0
             "
             style={{
-              background: "var(--color-brand-background)", // พื้นหลังมือถือ = brand
-              borderColor: "var(--foreground)", // ขอบ
-              color: "var(--foreground)", // ข้อความในกรอบ
+              background: "var(--color-brand-background)",
+              borderColor: "var(--foreground)",
+              color: "var(--foreground)",
             }}
           >
-            <div className="size-full flex flex-col overflow-auto p-[5px]">
+            <div className="size-full flex flex-col overflow-hidden pt-[2px] pb-0 pl-[5px] pr-[3px]">
               <div className="flex-1 overflow-auto">{children}</div>
-              <Navbar />
+              <div className="mt-auto">
+                <Navbar />
+              </div>
             </div>
           </div>
         </div>

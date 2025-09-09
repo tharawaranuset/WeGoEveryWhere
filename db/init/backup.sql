@@ -5,14 +5,13 @@ CREATE TABLE IF NOT EXISTS public.users (
     fname VARCHAR(50) NOT NULL,
     lname VARCHAR(50) NOT NULL,
     bio TEXT,
-    age INT NOT NULL CHECK (age > 20),
+    age INT,
     sex VARCHAR(10),
-    email VARCHAR(320) NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    signup_time TIME,
-    signup_date DATE,
-    cookie_policy_version_accepted INT DEFAULT 0, -- stored version of cookie policy accepted
-    cookie_policy_accepted_at TIMESTAMPTZ -- timestamp when cookie policy was accepted
+    signup_time TIME DEFAULT CURRENT_TIME,
+    signup_date DATE DEFAULT CURRENT_DATE,
+    cookie_policy_version_accepted VARCHAR(20),
+    cookie_policy_accepted_at TIMESTAMP,
+    CONSTRAINT users_age_check CHECK (age > 20)
 );
 
 -- Participant
@@ -84,5 +83,5 @@ CREATE TABLE IF NOT EXISTS public.joined (
     PRIMARY KEY (uid, eid)
 );
 
--- Index to speed up queries by date (from report doc)
+-- Index to speed up queries by date
 CREATE INDEX IF NOT EXISTS idx_events_start_time ON public.event (date);

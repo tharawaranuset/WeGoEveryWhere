@@ -1,5 +1,20 @@
 import { ChevronLeft } from "lucide-react";
+import { Karla, Urbanist } from "next/font/google";
 import Link from "next/link";
+
+const urbanist = Urbanist({
+  variable: "--font-urbanist",
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
+
+const karla = Karla({
+  variable: "--font-karla",
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
@@ -8,7 +23,6 @@ export default function RootLayout({
 }) {
   return (
     <>
-      {/* Top bar */}
       <header className="sticky top-0 z-50 bg-[#FFF1EA] px-4 pt-6 pb-4 shadow">
         <div className="flex items-center gap-3">
           <Link
@@ -29,7 +43,9 @@ export default function RootLayout({
           </div>
         </div>
       </header>
-      {children}
+      <body className={`${karla.variable} ${urbanist.variable}`}>
+        {children}
+      </body>
     </>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { SubmitButton } from "@/components/form/Buttons";
-import FormInput from "@/components/form/FormInput";
 import Image from "next/image";
 import { createEventLogOnly, createEventWithZod } from "@/actions/actions";
+import { InputField } from "@/components/form/InputField";
 
 const eventAction = createEventLogOnly;
 // const eventAction = createEventWithZod;
@@ -25,22 +25,22 @@ const CreateEventPage = () => {
         Create Your Event
       </h1>
 
-      <div className="fonts-sans font-semibold">
-        <form className="space-y-4" action={eventAction}>
-          <FormInput
+      <div className="fonts-sans font-bold">
+        <form className="fonts-sans  space-y-4" action={eventAction}>
+          <InputField
             name="eventName"
             type="text"
             label="Event Name"
             placeholder="Enter event name"
           />
-          <FormInput name="eventDate" type="date" label="Event Date" />
-          <FormInput
+          <InputField name="eventDate" type="date" label="Event Date" />
+          <InputField
             name="location"
             type="text"
             label="Location"
             placeholder="Enter location"
           />
-          <FormInput
+          <InputField
             name="details"
             type="text"
             label="Details"
@@ -49,13 +49,13 @@ const CreateEventPage = () => {
 
           <div>
             <h2 className="text-sm font-semibold mb-2">Optional</h2>
-            <FormInput
+            <InputField
               name="capacity"
               type="number"
               label="Capacity"
               placeholder="Max people"
             />
-            <FormInput
+            <InputField
               name="status"
               type="text"
               label="Status"
@@ -64,7 +64,7 @@ const CreateEventPage = () => {
           </div>
 
           <div className="flex justify-center pt-2">
-            <SubmitButton text="Create Event" size="lg" />
+            <SubmitButton type="submit" text="Create Event" size="lg" />
           </div>
         </form>
       </div>

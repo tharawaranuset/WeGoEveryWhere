@@ -148,3 +148,8 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+::selection {
+  background: var(--color-brand-secondary); /* #ffc8b3 ส้มอ่อน */
+  color: var(--color-foreground); /* #171717 */
+}

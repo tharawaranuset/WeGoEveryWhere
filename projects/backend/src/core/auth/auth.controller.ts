@@ -8,12 +8,15 @@ import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { RefreshJwtGuard } from './jwt/refresh-jwt/refresh-jwt.guard';
 import { ConsoleLogWriter } from 'drizzle-orm';
 import { ConfigService } from '@nestjs/config';
+import { UsersRepository } from '@backend/src/modules/users.repository';
+import { RegisterDto } from '@backend/src/modules/dto/register.dto'
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
   // this Route sus
@@ -73,5 +76,27 @@ export class AuthController {
       maxAge: 1000 * 60 * 15,
     });
     return 'Access token refreshed';
+  }
+
+  @Public()
+  @Post('register')
+  @ApiBody({ type: RegisterDto })
+  async register(@Body() body: RegisterDto, @Res({ passthrough: true }) res: Response) {
+    // 1) create user row
+    const user = await this.usersRepository.createUser(body);
+
+    // 2) OPTIONAL: issue access token immediately (you already have signJwt)
+    const accessToken = this.authService.signJwt(user.uid);
+
+    // simple cookie (keep in sync with your config)
+    res.cookie('jwt', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 15,
+    });
+
+    // 3) return the newly created user (no secrets)
+    return { user, accessToken };
   }
 }

@@ -47,7 +47,11 @@ export default function LoginPage() {
             />
           </div>
 
-          <PasswordInput />
+          <PasswordInput
+            name="password"
+            label="Password"
+            autoComplete="current-password"
+          />
           
           <button 
             type="submit"

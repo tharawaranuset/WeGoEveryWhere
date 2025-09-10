@@ -9,7 +9,8 @@ import { RefreshJwtGuard } from './jwt/refresh-jwt/refresh-jwt.guard';
 import { ConsoleLogWriter } from 'drizzle-orm';
 import { ConfigService } from '@nestjs/config';
 import { UsersRepository } from '@backend/src/modules/users.repository';
-import { RegisterDto } from '@backend/src/modules/dto/register.dto'
+import { RegisterDto } from '@backend/src/modules/dto/register.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -26,12 +27,12 @@ export class AuthController {
     schema: {
       type: 'object',
       properties: {
-        username: { type: 'string' },
+        userId: { type: 'integer' },
       },
     },
   })
-  apiBearerAuth(@Body('username') username: string) {
-    const accessToken = this.authService.signJwt(username);
+  apiBearerAuth(@Body('userId') userId: number) {
+    const accessToken = this.authService.signJwt(userId);
     return { accessToken: accessToken };
   }
 
@@ -45,22 +46,33 @@ export class AuthController {
   @Public()
   @UseGuards(GitHubAuthGuard)
   @Get('callback')
-  githubCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
-    const accessToken = this.authService.signJwt(req.user.id);
-    const refreshToken = this.authService.signRefreshJwt(req.user.id);
+  async githubCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
+    
+    const appUser = await this.authService.upsertOAuthUser({
+      provider: 'github',
+      subject: req.user.subject ?? req.user.id,
+      email: req.user.email ?? null,
+      firstName: req.user.firstName ?? null,
+      lastName: req.user.lastName ?? null,
+    });
+    
+    const userId = appUser.userId;
+    
+    const accessToken = this.authService.signJwt(userId);
+    const refreshToken = this.authService.signRefreshJwt(userId);
     res.cookie('jwt', accessToken, { 
       httpOnly: true,
       secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
       sameSite: 'strict',
       maxAge: 1000 * 60 * 15,
     });
-    res.cookie('refresh_jwt', accessToken, { 
+    res.cookie('refresh_jwt', refreshToken, { 
       httpOnly: true,
       secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
       sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-    return 'Github Callback Successful';
+    return {user: appUser, accessToken};
   }
 
   @Public()
@@ -85,8 +97,7 @@ export class AuthController {
     // 1) create user row
     const user = await this.usersRepository.createUser(body);
 
-    // 2) OPTIONAL: issue access token immediately (you already have signJwt)
-    const accessToken = this.authService.signJwt(user.uid);
+    const accessToken = this.authService.signJwt(user.userId);
 
     // simple cookie (keep in sync with your config)
     res.cookie('jwt', accessToken, {
@@ -96,7 +107,9 @@ export class AuthController {
       maxAge: 1000 * 60 * 15,
     });
 
-    // 3) return the newly created user (no secrets)
+    // return the newly created user (no secrets)
     return { user, accessToken };
   }
+
+
 }

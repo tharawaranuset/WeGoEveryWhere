@@ -17,10 +17,10 @@ export interface GitHubProfile {
 export class GitHubAuthStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(private configService: ConfigService) {
     super({
-      clientID: configService.get<string>('auth.github.clientId', ''),
-      clientSecret: configService.get<string>('auth.github.clientSecret', ''),
-      callbackURL: configService.get<string>('auth.github.callbackURL', ''),
-      scope: ['public_profile'], // Not confirm yet
+      clientID: process.env.GITHUB_OAUTH_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_OAUTH_CLIENT_SECRET!,
+      callbackURL: process.env.GITHUB_OAUTH_CALLBACK_URL! || "http://localhost:3001/auth/callback",
+      scope: ["user:email"],
     });
   }
 

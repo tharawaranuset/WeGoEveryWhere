@@ -11,7 +11,7 @@ export const users = pgTable("users", {
   signupTime: time("signup_time"),
   signupDate: date("signup_date"),
 
-  // ✅ cookie policy fields
+  // cookie policy fields
   cookiePolicyVersionAccepted: varchar("cookie_policy_version_accepted", { length: 20 }),
   cookiePolicyAcceptedAt: timestamp("cookie_policy_accepted_at"),
 }, (table) => [

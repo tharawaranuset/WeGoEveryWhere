@@ -2,14 +2,14 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common'; // <-- Add NotFoundException
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
-import { DRIZZLE_PROVIDER } from '../../db/drizzle.provider';
-import * as schema from '../../db/schema';
+import { DRIZZLE_PROVIDER } from '@backend/src/database/database.module';
+import * as schema from '@backend/src/database/schema';
 import { UpdateEventDto , CreateEventDto } from './event.dto'; // <-- Import the DTO
 
 @Injectable()
 export class EventService {
   constructor(
-    @Inject(DRIZZLE_PROVIDER) private db: NodePgDatabase<typeof schema>,
+    @Inject(DRIZZLE_PROVIDER) private readonly db: NodePgDatabase<typeof schema>,
   ) {}
 
   async findAll() {

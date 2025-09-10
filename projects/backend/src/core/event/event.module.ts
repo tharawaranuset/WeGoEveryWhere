@@ -2,10 +2,10 @@
 import { Module } from '@nestjs/common';
 import { EventController } from './event.controller';
 import { EventService } from './event.service';
-import { DrizzleModule } from '../../db/drizzle.module'; // <-- 1. Import DrizzleModule
+import { DatabaseModule } from '../../database/database.module'; // <-- 1. Import DrizzleModule
 
 @Module({
-  imports: [DrizzleModule], // <-- 2. Add it to the imports array
+  imports: [DatabaseModule], // <-- 2. Add it to the imports array
   controllers: [EventController],
   providers: [EventService],
 })

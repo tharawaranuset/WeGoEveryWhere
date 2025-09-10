@@ -1,8 +1,9 @@
 // users.repository.ts
-import { Injectable } from '@nestjs/common';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import { Injectable, Inject } from '@nestjs/common';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres'; 
 import { users } from '@backend/src/database/schema/users.schema';
+import * as schema from '@backend/src/database/schema';
+import { DRIZZLE_PROVIDER } from '@backend/src/database/database.module';
 
 // Align these names with your users.schema.ts columns
 type CreateUserDto = {
@@ -16,11 +17,10 @@ type CreateUserDto = {
 
 @Injectable()
 export class UsersRepository {
-  private db;
 
-  constructor(private readonly pool: Pool) {
-    this.db = drizzle(this.pool);
-  }
+  constructor(
+    @Inject(DRIZZLE_PROVIDER) private readonly db: NodePgDatabase<typeof schema>,
+  ) {}
 
   async createUser(input: CreateUserDto) {
     const {

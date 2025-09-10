@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --color-brand-background: #fff7f4;
+  --color-brand-background: #ffffff;
   --color-brand-primary: #fde8e0;
   --color-brand-secondary: #ffc8b3;
   --color-brand-orange: #eb6223;
@@ -148,3 +148,10 @@ body {
     @apply bg-background text-foreground;
   }
 }
+/* globals.css */
+@layer utilities {
+  .font-alt { font-family: var(--font-urbanist), ui-sans-serif, system-ui, sans-serif; }
+  /* ถ้าต้องการ reset ด้วย: */
+  .font-sans { font-family: var(--font-karla), ui-sans-serif, system-ui, sans-serif; }
+}
+

@@ -32,8 +32,8 @@ export default function EditProfilePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F5F5F5] py-6 px-4 font-sans">
-      <div className="mx-auto w-full max-w-[420px] bg-white rounded-3xl shadow p-5">
+    <main className="min-h-screen py-6 font-alt bg-white">
+      <div className="mx-auto w-full  px-2">
         {/* Brand */}
         <h1 className="text-[28px] font-extrabold leading-[1.05] tracking-tight">
           <span className="block text-[#EB6223]">WeGo</span>
@@ -50,8 +50,8 @@ export default function EditProfilePage() {
             <FiArrowLeft className="text-[#EB6223]" size={22} />
           </button>
           <div className="flex justify-center">
-            <div className="px-10 py-3 rounded-2xl bg-[#FFD3CF] shadow-[0_6px_0_rgba(0,0,0,0.07)]">
-              <span className="text-2xl font-extrabold text-[#1f1f1f]">
+            <div className="px-10 py-3 rounded-[60px] bg-[#FFD3CF] shadow-[0_6px_0_rgba(0,0,0,0.07)]">
+              <span className= "text-2xl font-semibold text-[#1f1f1f]">
                 Edit Profile
               </span>
             </div>
@@ -59,18 +59,20 @@ export default function EditProfilePage() {
         </div>
 
         {/* Card */}
-        <section className="bg-[#FFF5E9] rounded-[24px] p-6">
+        <section className="bg-[#FFF5E9] rounded-[60px] p-4">
           {/* Avatar */}
           <div className="flex flex-col items-center">
-            <div className="w-28 h-28 rounded-full overflow-hidden ring-4 ring-white shadow bg-white">
+           <div className="shadow-xl rounded-full">
+            <div className="w-28 h-28 rounded-full  overflow-hidden">
               <Image
-                src="/images/avatar.png"
+                src="/images/profile_image.png"
                 alt="profile"
                 width={112}
                 height={112}
               />
             </div>
-            <button className="mt-3 text-[15px] text-[#606770] underline underline-offset-2">
+            </div>
+            <button className="mt-3 text-[12px] text-[#606770] underline underline-offset-2">
               Change your profile photo
             </button>
           </div>
@@ -86,7 +88,7 @@ export default function EditProfilePage() {
                 name="firstName"
                 value={form.firstName}
                 onChange={onChange}
-                className="mt-2 w-full rounded-full border border-[#2E2E2E] px-5 py-3 text-[18px]"
+                className="mt-2 w-full rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 py-3 text-[18px] "
               />
             </div>
 
@@ -99,7 +101,7 @@ export default function EditProfilePage() {
                 name="lastName"
                 value={form.lastName}
                 onChange={onChange}
-                className="mt-2 w-full rounded-full border border-[#2E2E2E] px-5 py-3 text-[18px]"
+                className="mt-2 w-full rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 py-3 text-[18px]"
               />
             </div>
 
@@ -109,23 +111,16 @@ export default function EditProfilePage() {
                 Birth date
               </label>
               <div className="relative mt-2">
+               <div className="mt-2">
                 <input
-                  ref={birthRef}
-                  type="date"
-                  name="birthDate"
-                  value={form.birthDate}
-                  onChange={onChange}
-                  className="date-input appearance-none w-full rounded-full border border-[#2E2E2E] bg-white px-5 pr-12 py-3 text-[18px]"
-                  suppressHydrationWarning
+                    type="date"
+                    name="birthDate"
+                    value={form.birthDate}
+                    onChange={onChange}
+                    className="w-full rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 py-3 text-[18px]"
+                    suppressHydrationWarning
                 />
-                <button
-                  type="button"
-                  onClick={openDatePicker}
-                  aria-label="Open date picker"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-[#F3F4F6] transition"
-                >
-                  <FiCalendar className="text-[#2E2E2E]" size={20} />
-                </button>
+                </div>
               </div>
             </div>
 
@@ -139,7 +134,7 @@ export default function EditProfilePage() {
                   name="sex"
                   value={form.sex}
                   onChange={onChange}
-                  className="w-full appearance-none rounded-full border border-[#2E2E2E] bg-white px-5 pr-12 py-3 text-[18px]"
+                  className="w-full appearance-none rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 pr-12 py-3 text-[18px]"
                 >
                   <option>Male</option>
                   <option>Female</option>
@@ -155,15 +150,15 @@ export default function EditProfilePage() {
                 Telephone
               </label>
               <div className="mt-2 flex items-center gap-3">
-                <span className="inline-flex items-center gap-2 rounded-full bg-[#EFF1FE] text-[#2E2E2E] px-4 py-2.5 border border-[#EFF1FE] text-[16px]">
+                {/* <span className="inline-flex items-center gap-2 rounded-full bg-[#EFF1FE] text-[#2E2E2E] px-4 py-2.5 border border-[#EFF1FE] text-[16px]">
                   🇹🇭 +66
-                </span>
+                </span> */}
                 <input
                   name="telephone"
                   value={form.telephone}
                   onChange={onChange}
                   placeholder="081-999-1234"
-                  className="flex-1 rounded-full border border-[#2E2E2E] bg-white px-5 py-3 text-[18px]"
+                  className="flex-1 rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 py-3 text-[18px]"
                 />
               </div>
             </div>

@@ -54,9 +54,9 @@ export default function RootLayout({
           >
             <div className="size-full flex flex-col overflow-hidden pt-[2px] pb-0 pl-[5px] pr-[3px]">
               <div className="flex-1 overflow-auto">{children}</div>
-              <footer className="mt-auto">
+              {/* <footer className="mt-auto">
                 <Navbar />
-              </footer>
+              </footer> */}
             </div>
           </div>
         </div>

@@ -18,6 +18,7 @@ export const SubmitButton = ({ className, size, text }: SubmitButtonProps) => {
       disabled={pending}
       type="submit"
       size={size}
+      variant="ghost"
       className={`${className} capitalize`}
     >
       {pending ? (

@@ -1,0 +1,1 @@
+ALTER TABLE "users" ALTER COLUMN "cookie_policy_version_accepted" SET DATA TYPE integer;

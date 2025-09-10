@@ -3,7 +3,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common'; // <-- A
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE_PROVIDER } from '@backend/src/database/database.module';
-import * as schema from '@backend/src/database/schema';
+import { schema } from '@backend/src/database/schema';
 import { UpdateEventDto , CreateEventDto } from './event.dto'; // <-- Import the DTO
 
 @Injectable()
@@ -22,7 +22,7 @@ export class EventService {
     const [updatedEvent] = await this.db
       .update(schema.event)
       .set(updateEventDto) // Drizzle can often use the DTO directly!
-      .where(eq(schema.event.eid, id)) 
+      .where(eq(schema.event.eventId, id)) 
       .returning();
 
     if (!updatedEvent) {

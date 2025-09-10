@@ -46,12 +46,8 @@ export class UpdateEventDto {
 
   @IsOptional()
   @IsInt()
-  uid?: number;
+  userId?: number;
 
-  @IsOptional()
-  @IsString()
-  @IsIn(['active', 'deleted'])
-  status?: string;
 }
 
 export class CreateEventDto {
@@ -62,13 +58,11 @@ export class CreateEventDto {
   @IsNumber()
   cost?: number;
 
-  @IsOptional()
   @IsDateString()
-  date?: string;
+  date!: string;
 
-  @IsOptional()
   @IsString()
-  time?: string;
+  time!: string;
 
   @IsOptional()
   @IsString()
@@ -78,19 +72,13 @@ export class CreateEventDto {
   @Min(1)
   capacity!: number;
 
-  @IsOptional()
   @IsString()
-  detail?: string;
+  detail!: string;
 
   @IsOptional()
   @IsNumber()
   rating?: number;
 
-  @IsOptional()
   @IsInt()
-  uid?: number;
-
-  @IsString()
-  @IsIn(['active', 'deleted'])
-  status: string = 'active';
+  userId!: number;
 }

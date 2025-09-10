@@ -35,7 +35,7 @@ export class AuthController {
     return { accessToken: accessToken };
   }
 
-  @Public()
+  //@Public()
   @UseGuards(GitHubAuthGuard)
   @Get('github')
   async githubAuth() {
@@ -86,7 +86,7 @@ export class AuthController {
     const user = await this.usersRepository.createUser(body);
 
     // 2) OPTIONAL: issue access token immediately (you already have signJwt)
-    const accessToken = this.authService.signJwt(user.uid);
+    const accessToken = this.authService.signJwt(user.userId);
 
     // simple cookie (keep in sync with your config)
     res.cookie('jwt', accessToken, {

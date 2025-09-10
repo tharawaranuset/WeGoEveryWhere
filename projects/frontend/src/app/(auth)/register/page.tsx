@@ -67,7 +67,17 @@ export default function RegisterPage() {
           {/* กล่อง policy เลื่อนในตัว */}
           <div className="mt-2">
             <div className="rounded-3xl bg-[#D7D0D0]/80 p-4 h-36 overflow-auto text-center text-sm font-semibold text-gray-800">
-              text area scroll for<br />policy
+              But if you like causing trouble up in hotel rooms
+              And if you like having secret little rendezvous
+              If you like to do the things you know that we shouldn't do
+              Then, baby, I'm perfect
+              Baby, I'm perfect for you
+              And if you like midnight driving with the windows down
+              And if you like going places we can't even pronounce
+              If you like to do whatever you've been dreaming about
+              Then, baby, you're perfect
+              Baby, you're perfect
+              So let's start right now
             </div>
           </div>
 

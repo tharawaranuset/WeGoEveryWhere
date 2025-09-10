@@ -52,6 +52,7 @@ export class AuthController {
       provider: 'github',
       subject: req.user.subject ?? req.user.id,
       email: req.user.email ?? null,
+      emailVerified: req.user.emailVerified ?? false,
       firstName: req.user.firstName ?? null,
       lastName: req.user.lastName ?? null,
     });

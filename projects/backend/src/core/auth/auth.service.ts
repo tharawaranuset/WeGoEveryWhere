@@ -16,6 +16,7 @@ type UpsertOAuthArgs = {
   provider: 'github';
   subject: string;
   email?: string | null;
+  emailVerified?: boolean;
   firstName?: string | null;
   lastName?: string | null;
 };
@@ -76,7 +77,7 @@ export class AuthService {
             provider: args.provider,
             subject: args.subject,
             email: args.email ?? null,
-            emailVerified: null,     // keep null until  implement verification
+            emailVerified: args.emailVerified ? new Date() : null,
             createdAt: new Date(),   // required (schema has NOT NULL, no default)
         });
 

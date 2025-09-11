@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Karla, Urbanist } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/navbar/Navbar";
+import Image from "next/image";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -53,7 +54,20 @@ export default function RootLayout({
             }}
           >
             <div className="size-full flex flex-col overflow-hidden pt-[2px] pb-0 pl-[5px] pr-[3px]">
-              <div className="flex-1 overflow-auto">{children}</div>
+              <div className="bg-brand-primary">
+        <header className="bg-[#FFFBF0] rounded-b-[50px] px-4 py-6 overflow-hidden">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl sm:text-2xl font-extrabold leading-none">
+              <span className="block text-[#EB6223]">WeGo</span>
+              <span className="block text-[#EB6223]">EveryWhere</span>
+            </h1>
+            <Image src="/images/logo.png" alt="Logo" width={100} height={100} />
+          </div>
+        </header>
+      </div>
+              <div className="flex-1 overflow-auto scrollbar-hide">
+                {children}
+              </div>
               <footer className="mt-auto">
                 <Navbar />
               </footer>

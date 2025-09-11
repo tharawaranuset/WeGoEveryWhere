@@ -11,9 +11,7 @@ export const Navigationlist = () => {
     <div className="font-sans flex justify-center items-stretch w-full">
       {navLinks.map(({ href, label, icon: Icon }) => {
         const isActive =
-          href === "/event"
-            ? pathname.startsWith("/event")
-            : pathname === href;
+          href === "/event" ? pathname.startsWith("/event") : pathname === href;
 
         return (
           <Link
@@ -22,8 +20,8 @@ export const Navigationlist = () => {
             className={`flex-1 flex flex-col items-center py-2 rounded-md transition-colors
               ${
                 isActive
-                  ? "bg-black text-white rounded-t-2xl rounded-b-none py-3 scale-110"
-                  : "text-black hover:bg-gray-400 rounded-t-2xl rounded-b-none"
+                  ? "bg-[var(--color-brand-navbar-active)] text-[var(--color-brand-navbar-text-active)] rounded-t-2xl rounded-b-none py-3 scale-110"
+                  : "text-[var(--color-brand-navbar-text-inactive)] hover:bg-[var(--color-brand-navbar-active)] hover:text-[var(--color-brand-navbar-text-active)] rounded-t-2xl rounded-b-none"
               }`}
           >
             <Icon className="w-7 h-7" />

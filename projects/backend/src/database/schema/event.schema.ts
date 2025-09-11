@@ -13,6 +13,7 @@ export const event = pgTable("event", {
     capacity: integer("capacity").notNull(),
     detail: text("detail").notNull(),
     rating: doublePrecision("rating").default(0),
+    status: varchar('status').default('active'),
     userId: integer("user_id").notNull(),
 }, (table) => [
     index("idx_events_start_time").using("btree", table.date.asc().nullsLast().op("date_ops")),

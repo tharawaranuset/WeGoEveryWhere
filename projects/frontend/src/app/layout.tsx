@@ -3,6 +3,8 @@ import { Karla, Urbanist } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/navbar/Navbar";
 import Image from "next/image";
+import { ConfirmProvider } from "@/components/popup/ConfirmProvider";
+import { Toaster } from "react-hot-toast";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -36,6 +38,7 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
       </head>
+      <ConfirmProvider> 
       <body
         className={`${karla.variable} ${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
       >
@@ -71,10 +74,16 @@ export default function RootLayout({
               <footer className="mt-auto">
                 <Navbar />
               </footer>
+            <Toaster 
+              position="top-center"
+              reverseOrder={false}
+            />
+
             </div>
           </div>
         </div>
       </body>
+      </ConfirmProvider>
     </html>
   );
 }

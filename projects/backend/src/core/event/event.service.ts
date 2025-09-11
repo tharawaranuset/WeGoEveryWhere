@@ -13,7 +13,7 @@ export class EventService {
   ) {}
 
   async findAll() {
-    return this.db.query.event.findMany();
+    return this.db.select().from(schema.event);
   }
 
   // --- ADD THIS METHOD ---

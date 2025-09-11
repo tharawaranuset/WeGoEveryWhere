@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Karla, Urbanist } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/navbar/Navbar";
+import { Toaster } from "react-hot-toast";
+import { ConfirmProvider } from "@/components/confirm/ConfirmProvider";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -27,6 +29,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <html lang="en">
       <head>
@@ -38,6 +41,7 @@ export default function RootLayout({
       <body
         className={`${karla.variable} ${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
       >
+        <ConfirmProvider> 
         {/* Make Phone at the middle */}
         <div className="min-h-dvh flex items-center justify-center p-2 bg-black">
           {/* Phone Frame */}
@@ -54,12 +58,20 @@ export default function RootLayout({
           >
             <div className="size-full flex flex-col overflow-hidden pt-[2px] pb-0 pl-[5px] pr-[3px]">
               <div className="flex-1 overflow-auto">{children}</div>
-              <div className="mt-auto">
-                <Navbar />
-              </div>
+                <div className="mt-auto">
+                  <Navbar />
+                </div>
+            <Toaster 
+              position="top-center"
+              reverseOrder={false}
+            />
+            
+            
+
             </div>
           </div>
         </div>
+        </ConfirmProvider>
       </body>
     </html>
   );

@@ -155,3 +155,11 @@ body {
   .font-sans { font-family: var(--font-karla), ui-sans-serif, system-ui, sans-serif; }
 }
 
+@keyframes enter{from{opacity:0;transform:translateY(-4px) scale(.98)}
+to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes leave{from{opacity:1;transform:translateY(0) scale(1)}
+to{opacity:0;transform:translateY(-4px) scale(.98)}}
+.animate-enter{animation:enter .15s ease-out}
+.animate-leave{animation:leave .12s ease-in forwards}
+
+

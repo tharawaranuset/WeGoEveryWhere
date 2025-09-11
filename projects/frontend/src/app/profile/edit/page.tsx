@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { FiArrowLeft, FiCalendar, FiChevronDown } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 export default function EditProfilePage() {
   const [form, setForm] = useState({
@@ -11,11 +12,12 @@ export default function EditProfilePage() {
     birthDate: "2000-11-06",
     sex: "Male",
     telephone: "081-999-1234",
+    bio: "love cat"
   });
 
   const birthRef = useRef<HTMLInputElement>(null);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const openDatePicker = () => {
@@ -31,8 +33,27 @@ export default function EditProfilePage() {
     }
   };
 
+    const [submitting, setSubmitting] = useState(false);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (submitting) return;
+        setSubmitting(true);
+        try {
+        // ถ้ายังไม่ต่อ API: จำลองรอ 600ms
+        await new Promise((r) => setTimeout(r, 100));
+        // ถ้าต่อ API จริงก็:
+        // const res = await fetch("/api/profile", { method: "POST", body: JSON.stringify(form) });
+        // if (!res.ok) throw new Error("Bad response");
+        toast.success('Successfully Edited')
+    } catch (err) {
+        toast.error('Unsuccessfully Edited, try again')
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
-    <main className="min-h-screen py-6 font-alt bg-white">
+    <main className="min-h-screen py-6 font-alt bg-white ">
       <div className="mx-auto w-full  px-2">
         {/* Brand */}
         <h1 className="text-[28px] font-extrabold leading-[1.05] tracking-tight">
@@ -41,16 +62,16 @@ export default function EditProfilePage() {
         </h1>
 
         {/* Back + Title pill */}
-        <div className="mt-3 mb-4 relative">
+        <div className="mt-10 mb-4 relative z-10">
           <button
             aria-label="Back"
             onClick={() => history.back()}
-            className="absolute -left-1 -top-1 w-12 h-12 rounded-full bg-[#FFD5C7] flex items-center justify-center shadow hover:scale-105 transition"
+            className="absolute left-0 top-1/2 -translate-y-[60%] z-20 w-12 h-12 rounded-full bg-[#FFD5C7] flex items-center justify-center shadow hover:scale-105 transition"
           >
             <FiArrowLeft className="text-[#EB6223]" size={22} />
           </button>
-          <div className="flex justify-center">
-            <div className="px-10 py-3 rounded-[60px] bg-[#FFD3CF] shadow-[0_6px_0_rgba(0,0,0,0.07)]">
+          <div className="flex justify-center ">
+            <div className="absolute -bottom-6 z-10 px-10 py-3 rounded-[60px] bg-[#FFDCD5] shadow-[0_6px_0_rgba(0,0,0,0.07)] ">
               <span className= "text-2xl font-semibold text-[#1f1f1f]">
                 Edit Profile
               </span>
@@ -59,11 +80,11 @@ export default function EditProfilePage() {
         </div>
 
         {/* Card */}
-        <section className="bg-[#FFF5E9] rounded-[60px] p-4">
+        <section className="relative z-20 bg-[#FFF5E9] rounded-t-[60px] p-4">
           {/* Avatar */}
           <div className="flex flex-col items-center">
            <div className="shadow-xl rounded-full">
-            <div className="w-28 h-28 rounded-full  overflow-hidden">
+            <div className="w-28 h-28 rounded-full overflow-hidden">
               <Image
                 src="/images/profile_image.png"
                 alt="profile"
@@ -78,7 +99,7 @@ export default function EditProfilePage() {
           </div>
 
           {/* Form */}
-          <form className="mt-6 space-y-5">
+          <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
             {/* First name */}
             <div>
               <label className="block text-[15px] font-bold text-[#2E2E2E]">
@@ -88,7 +109,7 @@ export default function EditProfilePage() {
                 name="firstName"
                 value={form.firstName}
                 onChange={onChange}
-                className="mt-2 w-full rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 py-3 text-[18px] "
+                className="mt-2 w-full rounded-[30px] border border-[#2E2E2E] bg-[#EEEEEE] px-4 py-3 text-[18px] "
               />
             </div>
 
@@ -101,7 +122,7 @@ export default function EditProfilePage() {
                 name="lastName"
                 value={form.lastName}
                 onChange={onChange}
-                className="mt-2 w-full rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 py-3 text-[18px]"
+                className="mt-2 w-full rounded-[30px] border border-[#2E2E2E] bg-[#EEEEEE] px-4 py-3 text-[18px]"
               />
             </div>
 
@@ -117,7 +138,7 @@ export default function EditProfilePage() {
                     name="birthDate"
                     value={form.birthDate}
                     onChange={onChange}
-                    className="w-full rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 py-3 text-[18px]"
+                    className="w-full rounded-[30px] border border-[#2E2E2E] bg-[#EEEEEE] px-4 py-3 text-[18px]"
                     suppressHydrationWarning
                 />
                 </div>
@@ -134,7 +155,7 @@ export default function EditProfilePage() {
                   name="sex"
                   value={form.sex}
                   onChange={onChange}
-                  className="w-full appearance-none rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 pr-12 py-3 text-[18px]"
+                  className="w-full appearance-none rounded-[30px] border border-[#2E2E2E] bg-[#EEEEEE] px-4 pr-12 py-3 text-[18px]"
                 >
                   <option>Male</option>
                   <option>Female</option>
@@ -158,7 +179,23 @@ export default function EditProfilePage() {
                   value={form.telephone}
                   onChange={onChange}
                   placeholder="081-999-1234"
-                  className="flex-1 rounded-full border border-[#2E2E2E] bg-[#EEEEEE] px-5 py-3 text-[18px]"
+                  className="flex-1 rounded-[30px] border border-[#2E2E2E] bg-[#EEEEEE] px-4 py-3 text-[18px]"
+                />
+              </div>
+            </div>
+            {/* Bio */}
+            <div>
+              <label className="block text-[15px] font-bold text-[#2E2E2E]">
+                Bio
+              </label>
+              <div className="mt-2 flex items-center gap-3">
+                <textarea
+                  name="bio"
+                  value={form.bio}
+                  onChange={onChange}
+                  placeholder="love cat"
+                  rows={3}
+                  className="flex-1 rounded-[30px] border border-[#2E2E2E] bg-[#EEEEEE] px-4 py-3 text-[18px]"
                 />
               </div>
             </div>
@@ -166,9 +203,12 @@ export default function EditProfilePage() {
             {/* Save button */}
             <button
               type="submit"
-              className="w-full mt-1 rounded-full bg-[#F6C6BF] text-[#2E2E2E] font-extrabold py-3 hover:brightness-95 transition"
+              disabled={submitting}
+              className={`w-full mt-1 rounded-[24px] bg-[#FFDCD5] text-[#2E2E2E] font-extrabold py-3 transition border border-black ${
+                submitting ? "opacity-60 cursor-not-allowed" : "hover:brightness-95"
+              }`}
             >
-              Save
+              {submitting ? "Saving..." : "Save"}
             </button>
 
             {/* Change password */}

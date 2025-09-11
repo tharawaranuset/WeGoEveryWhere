@@ -48,6 +48,9 @@ export class UpdateEventDto {
   @IsInt()
   userId?: number;
 
+  @IsOptional()
+  @IsString()
+  status?: string;
 }
 
 export class CreateEventDto {

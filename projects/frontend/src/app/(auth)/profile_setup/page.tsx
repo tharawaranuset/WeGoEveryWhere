@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, Calendar, ChevronDown, Upload } from "lucide-react";
 import FormInput from "@/components/form/FormInput";
+import Link from "next/link";
 
 type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
 
@@ -45,14 +46,14 @@ export default function ProfileSetupPage() {
           </h1>
           <Image src="/images/logo.png" alt="Logo" width={100} height={100} />
         </div>
-        <button
-          type="button"
-          onClick={() => history.back()}
-          aria-label="Back"
-          className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-black bg-[#EB6223] text-brand-orange active:scale-95 transition"
+        <Link
+          href="/register"
+          aria-label="Back to register"
+          className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-black
+                    bg-[#EB6223] text-black active:scale-95 transition"
         >
           <ArrowLeft size={16} />
-        </button>
+        </Link>
       </div>
 
       {/* หัวข้อ (ชมพู โค้งด้านบน กว้างเท่าการ์ด) */}

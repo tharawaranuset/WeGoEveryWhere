@@ -149,3 +149,10 @@ body {
   }
 }
 
+/* ซ่อนปุ่มปฏิทิน native ของ input[type="date"] */
+.no-native-picker::-webkit-calendar-picker-indicator { display: none; }
+.no-native-picker::-webkit-inner-spin-button { display: none; }
+.no-native-picker::-webkit-clear-button { display: none; }
+.no-native-picker::-ms-clear { display: none; } /* old Edge */
+
+

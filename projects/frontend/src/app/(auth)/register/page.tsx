@@ -5,6 +5,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import PasswordInput from "../login/components/password";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function RegisterPage() {
   return (
@@ -20,14 +22,14 @@ export default function RegisterPage() {
         </div>
 
         {/* ปุ่ม Back เล็กๆ ใต้แบรนด์ */}
-        <button
-          type="button"
-          className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-black bg-[#EB6223] text-brand-orange active:scale-95 transition"
-          aria-label="Back"
-          onClick={() => history.back()}
+        <Link
+          href="/login"
+          aria-label="Back to login"
+          className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-black
+                    bg-[#EB6223] text-black active:scale-95 transition"
         >
-          <FaArrowLeft />
-        </button>
+          <ArrowLeft size={16} />
+        </Link>
       </div>
 
       <section className="mx-5 mt-3 rounded-t-[44px] bg-[#FFDCD5] px-8 pt-5 pb-8 text-center">
@@ -36,7 +38,30 @@ export default function RegisterPage() {
 
       {/* การ์ดฟอร์มครีม */}
       <div className="relative z-10 -mt-6 mx-4 rounded-t-[44px] bg-[#FFF8F0] p-5 shadow">
-        <form className="space-y-4">
+        <form className="space-y-4"
+        onSubmit={(e) => {
+        const form = e.currentTarget as HTMLFormElement & {
+          password: HTMLInputElement;
+          confirmPassword: HTMLInputElement;
+        };
+
+        const pwd = form.password.value;
+        const cpw = form.confirmPassword.value;
+
+        if (pwd !== cpw) {
+          e.preventDefault(); // กันส่งฟอร์ม
+          form.confirmPassword.setCustomValidity("Passwords do NOT match");
+          form.confirmPassword.reportValidity(); // เด้ง tooltip ที่ช่อง confirm
+        } else {
+          form.confirmPassword.setCustomValidity(""); // เคลียร์ error
+        }
+      }}
+      onInput={(e) => {
+        const t = e.target as HTMLInputElement;
+        if (t.name === "confirmPassword") t.setCustomValidity("");
+      }}
+        
+        >
           {/* E-mail */}
           <div>
             <label htmlFor="email" className="text-sm font-semibold">

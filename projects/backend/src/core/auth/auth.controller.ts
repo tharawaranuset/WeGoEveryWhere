@@ -99,4 +99,26 @@ export class AuthController {
     // 3) return the newly created user (no secrets)
     return { user, accessToken };
   }
+
+  //clear user cookie
+  @Public()
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('jwt', {
+      httpOnly: true,
+      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
+      sameSite: 'strict',
+    });
+    res.clearCookie('refresh_jwt', {
+      httpOnly: true,
+      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
+      sameSite: 'strict',
+    });
+    return { message: 'Logged out successfully' };
+  }
+
 }
+
+
+
+

@@ -4,10 +4,10 @@ import { ApiProperty } from '@nestjs/swagger';
 export class AcceptConsentDto {
   @ApiProperty({ 
     description: 'User ID who is accepting the consent',
-    example: '550e8400-e29b-41d4-a716-446655440000'
+    example: 123
   })
-  @IsUUID()
-  userId: string;
+  @IsNumber()
+  userId: number;
 
   @ApiProperty({
     description: 'Version of privacy policy being accepted',

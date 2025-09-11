@@ -23,11 +23,11 @@ export class ConsentController {
 
   @Get('check/:userId')
   @ApiOperation({ summary: 'Check if user needs to accept new consent' })
-  @ApiParam({ name: 'userId', description: 'User UUID' })
+  @ApiParam({ name: 'userId', description: 'User ID (number)' })
   @ApiResponse({ status: 200, description: 'Consent status check', type: ConsentCheckResponseDto })
   @ApiResponse({ status: 404, description: 'User not found' })
   async checkConsentStatus(@Param('userId') userId: string): Promise<ConsentCheckResponseDto> {
-    return this.consentService.checkUserConsentStatus(userId);
+    return this.consentService.checkUserConsentStatus(parseInt(userId));
   }
 
   @Post('accept')

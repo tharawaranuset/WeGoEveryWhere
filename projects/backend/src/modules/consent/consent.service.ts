@@ -1,9 +1,8 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { eq, and } from 'drizzle-orm';
 import { db } from '../../database/connection';
-// Update the import to match the actual exports from '../../database/schema'
 import { users } from '../../database/schema/users.schema';
-import { privacyPolicies } from '../../database/schema/privacy-policy.schema'; // or the correct path/module where privacyPolicies is exported
+import { privacyPolicies } from '../../database/schema/privacy-policy.schema';
 import { AcceptConsentDto, PolicyResponseDto, ConsentCheckResponseDto } from './dto/consent.dto';
 
 @Injectable()
@@ -28,13 +27,13 @@ export class ConsentService {
     };
   }
 
-  async checkUserConsentStatus(userId: string): Promise<ConsentCheckResponseDto> {
+  async checkUserConsentStatus(userId: number): Promise<ConsentCheckResponseDto> {
     const [user] = await db
       .select({
         cookiePolicyVersionAccepted: users.cookiePolicyVersionAccepted,
       })
       .from(users)
-      .where(eq(users.id, userId))
+      .where(eq(users.userId, userId))
       .limit(1);
 
     if (!user) {
@@ -71,7 +70,7 @@ export class ConsentService {
         cookiePolicyVersionAccepted: dto.policyVersion,
         cookiePolicyAcceptedAt: now,
       })
-      .where(eq(users.id, dto.userId));
+      .where(eq(users.userId, dto.userId));
 
     return {
       success: true,

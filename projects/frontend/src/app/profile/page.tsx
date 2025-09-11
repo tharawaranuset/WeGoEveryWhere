@@ -50,6 +50,13 @@ export default function ProfilePage() {
 
   return (
     <main className="min-h-screen bg-white px-4 py-6 font-alt">
+
+      {/* Brand */}
+        <h1 className="text-[28px] font-extrabold leading-[1.05] tracking-tight">
+          <span className="block text-[#EB6223]">WeGo</span>
+          <span className="block text-[#EB6223]">EveryWhere</span>
+        </h1>
+
       {/* Header gradient card */}
       <section className="relative rounded-[32px] bg-gradient-to-br from-[#FFD5C7] to-[#F7A79A] p-5 shadow-sm">
         {/* Title + bell */}

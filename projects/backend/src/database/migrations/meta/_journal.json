@@ -8,6 +8,13 @@
       "when": 1757590613513,
       "tag": "0001_sweet_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757597214726,
+      "tag": "0002_stiff_nebula",
+      "breakpoints": true
     }
   ]
 }

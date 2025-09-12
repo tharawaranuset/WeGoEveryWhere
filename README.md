@@ -8,6 +8,9 @@ docker-compose up --build
 docker-compose up [SERVICE]
 docker-compose down
 
-# seed data
-docker exec -it wegoeverywhere-db-1 psql -U myuser -d mydatabase
-docker compose exec -T db psql -U myuser -d mydatabase < db/init/backup.sql
+# seed data (linux)
+docker compose exec -T db psql -U admin -d WEGO_EVERYWHERE_DB < db/init/backup.sql
+
+# check
+docker exec -it wegoeverywhere-db-1 psql -U admin -d WEGO_EVERYWHERE_DB
+\d

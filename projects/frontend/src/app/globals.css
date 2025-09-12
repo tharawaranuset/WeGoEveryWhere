@@ -1,61 +1,28 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 /*---break---*/
-@custom-variant dark (&:is(.dark *));
 
 :root {
   --color-brand-background: #ffffff;
-  --color-brand-primary: #fde8e0;
-  --color-brand-secondary: #ffc8b3;
-  --color-brand-orange: #eb6223;
-  --color-brand-button: #f5b7b1;
+  --color-brand-primary: #ffdcd5;
+  --color-brand-secondary: #fffbf0;
+  --color-brand-tertiary: #eb6223;
+  --color-brand-greenbutton: #d1f3a7;
+  --color-brand-redbutton: #b71402;
 
   /*Text*/
-  --color-foreground: #171717;
+  --color-foreground: #000000;
 
   /*Navbar*/
   --color-brand-navbar-text-active: #ffffff;
   --color-brand-navbar-text-inactive: #e88f8f;
   --color-brand-navbar-idle: #ffdcd5;
   --color-brand-navbar-active: #e88f8f;
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
 }
 
 @theme inline {
   --color-background: var(--color-brand-background);
   --color-foreground: var(--color-foreground);
-  --font-sans: var(--font-karla);
   --font-alt: var(--font-urbanist);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -95,50 +62,12 @@
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans), var(--font-alt), Arial, Helvetica, sans-serif;
+  font-family: var(--font-alt);
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
-
-/*---break---*/
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
-/*---break---*/
 
 @layer base {
   * {
@@ -148,18 +77,16 @@ body {
     @apply bg-background text-foreground;
   }
 }
-/* globals.css */
-@layer utilities {
-  .font-alt { font-family: var(--font-urbanist), ui-sans-serif, system-ui, sans-serif; }
-  /* ถ้าต้องการ reset ด้วย: */
-  .font-sans { font-family: var(--font-karla), ui-sans-serif, system-ui, sans-serif; }
+
+::selection {
+  background: var(--color-brand-secondary);
+  color: var(--color-foreground);
 }
 
-@keyframes enter{from{opacity:0;transform:translateY(-4px) scale(.98)}
-to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes leave{from{opacity:1;transform:translateY(0) scale(1)}
-to{opacity:0;transform:translateY(-4px) scale(.98)}}
-.animate-enter{animation:enter .15s ease-out}
-.animate-leave{animation:leave .12s ease-in forwards}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
 
-
+.scrollbar-hide {
+  scrollbar-width: none;
+}

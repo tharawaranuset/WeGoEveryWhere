@@ -1,29 +1,17 @@
 // src/app/(auth)/profile-setup/page.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { ArrowLeft, Calendar, ChevronDown, Upload } from "lucide-react";
-import FormInput from "@/components/form/FormInput";
+import { useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Calendar, ChevronDown } from "lucide-react";
+import FormInput from "@/components/form/FormInput";
+import PhotoPicker from "@/components/form/PhotoPicker";
 
 type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
 
 export default function ProfileSetupPage() {
-  /* ---------- Upload photo (preview) ---------- */
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const openFile = () => fileRef.current?.click();
-  const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    const url = URL.createObjectURL(f);
-    setPhotoUrl((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return url;
-    });
-  };
-  useEffect(() => () => { if (photoUrl) URL.revokeObjectURL(photoUrl); }, [photoUrl]);
+  const router = useRouter();
 
   /* ---------- Date picker ---------- */
   const dateRef = useRef<HtmlDateInput | null>(null);
@@ -36,98 +24,80 @@ export default function ProfileSetupPage() {
   const today = new Date().toISOString().slice(0, 10);
 
   return (
-    <main className="font-sans">
-      {/* แบรนด์ + โลโก้ + ปุ่มย้อนกลับ */}
-      <div className="px-5 pt-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-lg font-extrabold leading-tight">
-            <span className="block text-[#EB6223]">WeGo</span>
-            <span className="block text-[#EB6223]">EveryWhere</span>
-          </h1>
-          <Image src="/images/logo.png" alt="Logo" width={100} height={100} />
-        </div>
-        <Link
-          href="/register"
-          aria-label="Back to register"
-          className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-black
-                    bg-[#EB6223] text-black active:scale-95 transition"
-        >
-          <ArrowLeft size={16} />
-        </Link>
-      </div>
+    <main className="font-alt">
+      <Link
+        href="/register"
+        aria-label="Back to register"
+        className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-black
+                   bg-[#EB6223] text-black active:scale-95 transition"
+      >
+        <ArrowLeft size={16} />
+      </Link>
 
-      {/* หัวข้อ (ชมพู โค้งด้านบน กว้างเท่าการ์ด) */}
-      <section className="mx-4 mt-3 rounded-t-[44px] bg-[#FFDCD5] px-5 pt-5 pb-6 text-center">
+      {/* หัวข้อ */}
+      <section className="mx-5 mt-3 rounded-t-[44px] bg-[#FFDCD5] px-5 pt-6 pb-6 text-center">
         <h2 className="text-3xl font-bold text-gray-900">Profile Setup</h2>
       </section>
 
       {/* การ์ดฟอร์ม */}
-      <div className="relative z-10 -mt-6 mx-4 rounded-t-[44px] bg-[#FFF8F0] p-5 shadow">
+      <div className="relative z-10 -mt-6 mx-4 rounded-t-[44px] bg-[#FFF8F0] p-5 shadow overflow-hidden">
         {/* วงกลมอัปโหลดรูป */}
         <div className="flex flex-col items-center">
-          <button
-            type="button"
-            onClick={openFile}
-            aria-label="Upload your profile photo"
-            className="relative h-28 w-28 overflow-hidden rounded-full bg-gray-200 shadow active:scale-95 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange"
-          >
-            {photoUrl ? (
-              <img src={photoUrl} alt="Profile preview" className="h-full w-full object-cover" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-gray-700">
-                <Upload />
-              </div>
-            )}
-          </button>
-          <input
-            ref={fileRef}
-            type="file"
+          <PhotoPicker
+            name="photo"                     // สำคัญ: ชื่อฟิลด์สำหรับ FormData.get("photo")
+            size={112}                       // ปรับได้
+            rounded="full"
             accept="image/*"
-            className="sr-only"
-            onChange={onFileChange}
+            caption="Upload your profile photo"
+            // onChange={(file, preview) => { ...ถ้าต้องทำอย่างอื่นเพิ่ม }}
           />
-          <p className="mt-3 text-center text-sm font-semibold text-gray-500">
-            Upload your profile photo
-          </p>
         </div>
 
         {/* ฟอร์ม */}
-        <form className="mt-5 space-y-4">
+        <form
+          className="mt-5 space-y-4"
+          encType="multipart/form-data"
+          onSubmit={(e) => {
+            e.preventDefault();                 // กันรีเฟรช
+            const fd = new FormData(e.currentTarget);
+            // TODO: ถ้าจะส่งไป API: await fetch('/api/profile-setup', { method:'POST', body: fd })
+            router.push("/profile-setup/next");  // ไปหน้าถัดไป
+          }}
+        >
           <FormInput name="firstName" type="text" label="First name" required />
           <FormInput name="lastName"  type="text" label="Last name"  required />
 
           {/* Birth date + ปุ่มไอคอนเปิดปฏิทิน */}
           <div>
-            <label htmlFor="birthDate" className="text-sm font-semibold">
-              Birth date
-            </label>
+            <label htmlFor="birthDate" className="text-sm font-semibold">Birth date</label>
             <div className="relative mt-1">
-            <FormInput
+              <FormInput
                 ref={dateRef as any}
                 id="birthDate"
                 name="birthDate"
                 type="date"
                 max={today}
                 required
-                className="pr-11 appearance-none no-native-picker"
-            />
-            <button
+                className="pr-11 appearance-none
+                          [&::-webkit-calendar-picker-indicator]:hidden
+                          [&::-webkit-clear-button]:hidden
+                          [&::-webkit-inner-spin-button]:hidden
+                          [-moz-appearance:textfield]"
+              />
+              <button
                 type="button"
                 onClick={openDate}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-700 hover:text-gray-900"
                 aria-label="Open date picker"
-            >
+              >
                 <Calendar size={18} />
-            </button>
+              </button>
             </div>
-
           </div>
 
-          {/* Sex (dropdown) */}
+          {/* Sex */}
           <div>
-            <label htmlFor="sex" className="text-sm font-semibold">
-              Sex
-            </label>
+            <label htmlFor="sex" className="text-sm font-semibold">Sex</label>
             <div className="relative mt-1">
               <select
                 id="sex"
@@ -150,13 +120,8 @@ export default function ProfileSetupPage() {
             </div>
           </div>
 
-          <FormInput
-            name="tel"
-            type="tel"
-            inputMode="tel"
-            label="Telephone"
-            required
-          />
+          <FormInput name="tel" type="tel" inputMode="tel" label="Telephone" required />
+          <FormInput name="bio"  type="text" label="Bio"  required />
 
           <button
             type="submit"

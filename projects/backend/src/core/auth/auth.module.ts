@@ -10,6 +10,9 @@ import { ConfigModule } from '@nestjs/config';
 import refreshJwtConfig from '@backend/src/configurations/configs/refresh-jwt.config';
 import { RefreshJwtStrategy } from './jwt/refresh-jwt/refresh-jwt.strategy';
 import { UsersModule } from '@backend/src/modules/users.module';
+import { RefreshTokensRepository } from '@backend/src/modules/refreshTokens.repository';
+import { refreshTokens } from '@backend/src/database/schema/refreshTokens.schema';
+
 
 @Module({
   imports: [
@@ -25,7 +28,9 @@ import { UsersModule } from '@backend/src/modules/users.module';
     GitHubAuthStrategy, 
     AuthService, 
     JwtStrategy, 
-    RefreshJwtStrategy
+    RefreshJwtStrategy,
+    RefreshTokensRepository
   ],
+  exports: [AuthService , RefreshTokensRepository],
 })
 export class AuthModule {}

@@ -3,6 +3,8 @@
 services:
   backend:
     build: ./projects/backend                 # สร้าง image จาก Dockerfile ใน folder backend
+    env_file:
+      - ./.env.backend
     ports:
       - "3001:3001"                 # map port 3001 ของ container → 3001 ของเครื่องเรา
     environment:

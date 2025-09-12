@@ -1,4 +1,5 @@
-// src/components/form/FormInput.tsx
+"use client";
+
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +9,7 @@ type Props = React.ComponentPropsWithoutRef<"input"> & {
   containerClassName?: string;
 };
 
-export const FormInput = React.forwardRef<HTMLInputElement, Props>(
+export const EditInput = React.forwardRef<HTMLInputElement, Props>(
   (
     { id, name, label, className = "", containerClassName = "", ...props },
     ref
@@ -28,7 +29,7 @@ export const FormInput = React.forwardRef<HTMLInputElement, Props>(
           id={inputId}
           name={name}
           className={`
-            mt-1 w-full rounded-3xl border border-black bg-gray-700
+            mt-1 w-full rounded-3xl border border-black bg-gray-200
             px-4 py-2.5 text-base
             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange
             ${className}
@@ -39,4 +40,4 @@ export const FormInput = React.forwardRef<HTMLInputElement, Props>(
     );
   }
 );
-FormInput.displayName = "EditInput";
+EditInput.displayName = "EditInput";

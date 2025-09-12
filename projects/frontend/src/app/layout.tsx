@@ -64,9 +64,9 @@ export default function RootLayout({
               <div className="flex-1 overflow-auto scrollbar-hide">
                 {children}
               </div>
-              <footer className="mt-auto">
+              {/* <footer className="mt-auto">
                 <Navbar />
-              </footer>
+              </footer> */}
             <Toaster 
               position="top-center"
               reverseOrder={false}

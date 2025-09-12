@@ -1,5 +1,5 @@
-import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
+import { Label } from "../../ui/label";
+import { Textarea } from "../../ui/textarea";
 
 type TextAreaFieldProps = {
   name: string;
@@ -11,7 +11,7 @@ type TextAreaFieldProps = {
   rows?: number;
 };
 
-export const TextAreaField = (props: TextAreaFieldProps) => {
+export const TextAreaInput = (props: TextAreaFieldProps) => {
   const { name, label, defaultValue, placeholder, readonly, classname, rows } =
     props;
   return (

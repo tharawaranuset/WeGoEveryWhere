@@ -8,8 +8,11 @@ type Props = React.ComponentPropsWithoutRef<"input"> & {
   containerClassName?: string;
 };
 
-const FormInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ id, name, label, className = "", containerClassName = "", ...props }, ref) => {
+export const FormInput = React.forwardRef<HTMLInputElement, Props>(
+  (
+    { id, name, label, className = "", containerClassName = "", ...props },
+    ref
+  ) => {
     const reactId = React.useId();
     const inputId = id ?? (name ? String(name) : `input-${reactId}`);
 
@@ -36,6 +39,4 @@ const FormInput = React.forwardRef<HTMLInputElement, Props>(
     );
   }
 );
-FormInput.displayName = "FormInput";
-
-export default FormInput;
+FormInput.displayName = "EditInput";

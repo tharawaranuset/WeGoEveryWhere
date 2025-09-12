@@ -8,7 +8,7 @@ export const Navigationlist = () => {
   const pathname = usePathname();
 
   return (
-    <div className="font-sans flex justify-center items-stretch w-full">
+    <div className="font-alt flex justify-center items-stretch w-full">
       {navLinks.map(({ href, label, icon: Icon }) => {
         const isActive =
           href === "/event" ? pathname.startsWith("/event") : pathname === href;

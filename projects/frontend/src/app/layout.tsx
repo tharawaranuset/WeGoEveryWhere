@@ -13,16 +13,9 @@ const urbanist = Urbanist({
   display: "swap",
 });
 
-const karla = Karla({
-  variable: "--font-karla",
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   title: "WeGoEveryWhere",
-  description: "by WeGoEveryWhere SE Project Group 4",
+  description: "by WeGoEveryWhere SE Project Group 2",
 };
 
 export default function RootLayout({
@@ -40,7 +33,7 @@ export default function RootLayout({
       </head>
       <ConfirmProvider> 
       <body
-        className={`${karla.variable} ${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
+        className={`${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
       >
         {/* Make Phone at the middle */}
         <div className="min-h-dvh flex items-center justify-center p-2 bg-black">
@@ -58,16 +51,16 @@ export default function RootLayout({
           >
             <div className="size-full flex flex-col overflow-hidden pt-[2px] pb-0 pl-[5px] pr-[3px]">
               <div className="bg-brand-primary">
-        <header className="bg-[#FFFBF0] rounded-b-[50px] px-4 py-6 overflow-hidden">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl sm:text-2xl font-extrabold leading-none">
-              <span className="block text-[#EB6223]">WeGo</span>
-              <span className="block text-[#EB6223]">EveryWhere</span>
-            </h1>
-            <Image src="/images/logo.png" alt="Logo" width={100} height={100} />
-          </div>
-        </header>
-      </div>
+                <header className="bg-[var(--color-brand-secondary)] rounded-b-[50px] px-3 py-5 overflow-hidden">
+                  <div className="flex items-center justify-between">
+                    <h1 className="text-xl font-alt sm:text-2xl font-extrabold leading-none -translate-y-0.5 sm:-translate-y-1  ml-2 sm:ml-4">
+                      <span className="block text-[var(--color-brand-tertiary)]">WeGo</span>
+                      <span className="block text-[var(--color-brand-tertiary)]">EveryWhere</span>
+                    </h1>
+                    <Image src="/images/logo.png" alt="Logo" width={100} height={100} />
+                  </div>
+                </header>
+              </div>
               <div className="flex-1 overflow-auto scrollbar-hide">
                 {children}
               </div>

@@ -55,11 +55,6 @@ export default function EditProfilePage() {
   return (
     <main className="min-h-screen py-6 font-alt bg-white ">
       <div className="mx-auto w-full  px-2">
-        {/* Brand */}
-        <h1 className="text-[28px] font-extrabold leading-[1.05] tracking-tight">
-          <span className="block text-[#EB6223]">WeGo</span>
-          <span className="block text-[#EB6223]">EveryWhere</span>
-        </h1>
 
         {/* Back + Title pill */}
         <div className="mt-10 mb-4 relative z-10">

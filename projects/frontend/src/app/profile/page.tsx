@@ -1,6 +1,7 @@
 "use client";
 
-import { useConfirm } from "@/components/confirm/ConfirmProvider";
+import Navbar from "@/components/navbar/Navbar";
+import { ConfirmProvider, useConfirm } from "@/components/popup/ConfirmProvider";
 import { toastError, toastSuccess } from "@/lib/toast";
 import Image from "next/image";
 import Link from "next/link";
@@ -50,13 +51,6 @@ export default function ProfilePage() {
 
   return (
     <main className="min-h-screen bg-white px-4 py-6 font-alt">
-
-      {/* Brand */}
-        <h1 className="text-[28px] font-extrabold leading-[1.05] tracking-tight">
-          <span className="block text-[#EB6223]">WeGo</span>
-          <span className="block text-[#EB6223]">EveryWhere</span>
-        </h1>
-
       {/* Header gradient card */}
       <section className="relative rounded-[32px] bg-gradient-to-br from-[#FFD5C7] to-[#F7A79A] p-5 shadow-sm">
         {/* Title + bell */}
@@ -118,6 +112,10 @@ export default function ProfilePage() {
           Delete Account
         </button>
       </div>
+      <footer className="fixed bottom-0 left-0 w-full">
+          <Navbar />
+      </footer> 
     </main>
+    
   );
 }

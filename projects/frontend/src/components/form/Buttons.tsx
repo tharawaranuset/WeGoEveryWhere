@@ -1,33 +1,43 @@
 "use client";
 import { useFormStatus } from "react-dom";
-import { Button } from "../ui/button";
-import { Heart, RotateCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { RotateCw } from "lucide-react";
 
-type btnSize = "default" | "lg" | "sm";
-// const roitai:string = 'tam'
+type BtnSize = "default" | "lg" | "sm";
+
 type SubmitButtonProps = {
   className?: string;
-  size?: btnSize;
+  size?: BtnSize;
   text?: string;
+  type?: "submit" | "button" | "reset"; // เพิ่ม
+  onclick?: React.MouseEventHandler<HTMLButtonElement>; // เพิ่ม
 };
 
-export const SubmitButton = ({ className, size, text }: SubmitButtonProps) => {
+export const SubmitButton = ({
+  className,
+  size,
+  text,
+  type = "submit",
+  onclick,
+}: SubmitButtonProps) => {
   const { pending } = useFormStatus();
+  const isSubmit = type === "submit";
+
   return (
     <Button
-      disabled={pending}
-      type="submit"
+      type={type}
       size={size}
-      variant="ghost"
+      onClick={onclick} // ส่งต่อ onClick
+      disabled={isSubmit ? pending : false}
       className={`${className} capitalize`}
     >
-      {pending ? (
+      {isSubmit && pending ? (
         <>
           <RotateCw className="animate-spin" />
           <span>Please wait...</span>
         </>
       ) : (
-        <p>{text}</p>
+        <span>{text}</span>
       )}
     </Button>
   );

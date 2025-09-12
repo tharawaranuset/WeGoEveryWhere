@@ -5,8 +5,10 @@ import { useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Calendar, ChevronDown } from "lucide-react";
-import FormInput from "@/components/form/FormInput";
+import { FormInput } from "@/components/form/input/FormInput";
 import PhotoPicker from "@/components/form/PhotoPicker";
+import FormSelect from "@/components/form/input/FormSelect";
+
 
 type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
 
@@ -96,29 +98,19 @@ export default function ProfileSetupPage() {
           </div>
 
           {/* Sex */}
-          <div>
-            <label htmlFor="sex" className="text-sm font-semibold">Sex</label>
-            <div className="relative mt-1">
-              <select
-                id="sex"
-                name="sex"
-                required
-                defaultValue=""
-                className="w-full appearance-none rounded-3xl border border-black bg-white
-                           px-4 pr-10 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-orange"
-              >
-                <option value="" disabled>Select…</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-                <option value="other">Other</option>
-                <option value="prefer_not">Prefer not to say</option>
-              </select>
-              <ChevronDown
-                size={18}
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-700"
-              />
-            </div>
-          </div>
+          <FormSelect
+              name="sex"
+              label="Sex"
+              required
+              defaultValue=""  // ให้ placeholder ถูกเลือกเริ่มต้น
+              options={[
+                { label: "Select…", value: "", disabled: true },
+                { label: "Female", value: "female" },
+                { label: "Male", value: "male" },
+                { label: "Other", value: "other" },
+                { label: "Prefer not to say", value: "prefer_not" },
+              ]}
+          />
 
           <FormInput name="tel" type="tel" inputMode="tel" label="Telephone" required />
           <FormInput name="bio"  type="text" label="Bio"  required />

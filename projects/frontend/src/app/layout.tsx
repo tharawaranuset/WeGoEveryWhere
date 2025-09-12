@@ -33,10 +33,11 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
       </head>
-      <ConfirmProvider>
+      
         <body
           className={`${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
         >
+        <ConfirmProvider>
           {/* Make Phone at the middle */}
           <div className="min-h-dvh flex items-center justify-center p-2 bg-black">
             {/* Phone Frame */}
@@ -81,9 +82,10 @@ export default function RootLayout({
                 <Toaster position="top-center" reverseOrder={false} />
               </div>
             </div>
-          </div>
+          </div> 
+        </ConfirmProvider>
         </body>
-      </ConfirmProvider>
+     
     </html>
   );
 }

@@ -50,6 +50,7 @@ export default function ProfilePage() {
   };
 
   return (
+    <div> 
     <main className="min-h-screen bg-white px-4 py-6 font-alt">
       {/* Header gradient card */}
       <section className="relative rounded-[32px] bg-gradient-to-br from-[#FFD5C7] to-[#F7A79A] p-5 shadow-sm">
@@ -112,10 +113,12 @@ export default function ProfilePage() {
           Delete Account
         </button>
       </div>
-      <footer className="fixed bottom-0 left-0 w-full">
-          <Navbar />
-      </footer> 
+      
     </main>
+    <footer className="sticky bottom-[-6px] px-1 pb-[env(safe-area-inset-bottom)]">
+            <Navbar />
+      </footer> 
+    </div>
     
   );
 }

@@ -10,8 +10,10 @@ import { ArrowLeft } from "lucide-react";
 import { FormInput } from "@/components/form/input/FormInput";
 import { toast } from "react-hot-toast";
 import { SubmitButton } from "@/components/form/Buttons";
+import { useRouter } from "next/navigation";;
 
 export default function RegisterPage() {
+  const router = useRouter();
   return (
     <main className="font-alt">
       {/* แถวบน: แบรนด์ + โลโก้ */}
@@ -34,33 +36,33 @@ export default function RegisterPage() {
       {/* การ์ดฟอร์มครีม */}
       <div className="relative -mt-10 w-full max-w-sm mx-auto flex-1 rounded-t-[50px] bg-[var(--color-brand-secondary)] p-5 shadow-lg border border-black/5
         overflow-hidden pb-24 sm:pb-28 ">
-        <form className="space-y-4"
+        <form className="mt-2 space-y-4"
         onSubmit={(e) => {
-        const form = e.currentTarget as HTMLFormElement & {
-          password: HTMLInputElement;
-          confirmPassword: HTMLInputElement;
-        };
+          e.preventDefault(); // กัน submit เดิมทุกกรณี
+          const form = e.currentTarget as HTMLFormElement & {
+            password: HTMLInputElement;
+            confirmPassword: HTMLInputElement;
+          };
+          const pwd = form.password.value;
+          const cpw = form.confirmPassword.value;
 
-        const pwd = form.password.value;
-        const cpw = form.confirmPassword.value;
-
-        if (pwd !== cpw) {
-          e.preventDefault(); // กันส่งฟอร์ม
-          toast.error("password NOT match")
-          form.confirmPassword.reportValidity(); // เด้ง tooltip ที่ช่อง confirm
-        } else {
-          form.confirmPassword.setCustomValidity(""); // เคลียร์ error
-        }
-      }}
-      onInput={(e) => {
-        const t = e.target as HTMLInputElement;
-        if (t.name === "confirmPassword") t.setCustomValidity("");
-      }}
+          if (pwd !== cpw) {
+            form.confirmPassword.setCustomValidity("Passwords do not match");
+            form.confirmPassword.reportValidity();
+            toast.error("password NOT match");
+            return;
+          }
+          form.confirmPassword.setCustomValidity("");
+          router.push("/profile_setup");
+        }}
+        onInput={(e) => {
+          const t = e.target as HTMLInputElement;
+          if (t.name === "confirmPassword") t.setCustomValidity("");
+        }}
         
         >
           {/* E-mail */}
           <FormInput name="email" label="Email" type="email" placeholder="you@example.com" />
-
 
           {/* Password */}
           <PasswordInput

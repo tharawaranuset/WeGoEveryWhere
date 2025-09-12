@@ -5,6 +5,7 @@ import Navbar from "../components/navbar/Navbar";
 import Image from "next/image";
 import { ConfirmProvider } from "@/components/popup/ConfirmProvider";
 import { Toaster } from "react-hot-toast";
+import Link from "next/link";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -62,12 +63,14 @@ export default function RootLayout({
                           EveryWhere
                         </span>
                       </h1>
-                      <Image
-                        src="/images/logo.png"
-                        alt="Logo"
-                        width={100}
-                        height={100}
-                      />
+                      <Link href={"/"}>
+                        <Image
+                          src="/images/logo.png"
+                          alt="Logo"
+                          width={100}
+                          height={100}
+                        />
+                      </Link>
                     </div>
                   </header>
                 </div>

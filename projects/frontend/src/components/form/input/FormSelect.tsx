@@ -20,25 +20,25 @@ const FormSelect = React.forwardRef<HTMLSelectElement, Props>(
     const selectId = id ?? (name ? String(name) : `select-${reactId}`);
 
     return (
-      <div className={cn("mb-2", containerClassName)}>
+      <div className={cn(containerClassName)}>
         {label && (
-          <Label htmlFor={selectId} className="text-sm font-semibold">
+          <Label htmlFor={selectId} className="text-sm font-semibold block mb-1">
             {label}
           </Label>
         )}
 
-        <div className="relative mt-1">
+        <div className="relative">
           <select
             ref={ref}
             id={selectId}
             name={name}
             defaultValue={defaultValue}
             className={cn(
-              "w-full rounded-3xl border border-black bg-white",
-              "h-11 px-4 text-base leading-normal",                // ⬅️ ความสูง/ตัวพิมพ์ตรงกับ input
+              "w-full rounded-3xl border border-black",
+              "py-0 px-4.5 text-[15px] bg-white",
+              "h-[36px]",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange",
-              "appearance-none [-moz-appearance:none] [-webkit-appearance:none]", // ซ่อนลูกศรเนทีฟ
-              "pr-10",                                             // ⬅️ เว้นที่ให้ <ChevronDown />
+              "appearance-none [-moz-appearance:none] [-webkit-appearance:none]",
               className
             )}
             {...props}

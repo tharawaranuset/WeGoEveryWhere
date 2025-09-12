@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { EditInput } from "@/components/form/input/EditInput"; // ✅ ใช้ EditInput ใหม่
 import FormSelect from "@/components/form/input/FormSelect";
 import { Calendar } from "lucide-react";
+import { SubmitButton } from "@/components/form/Buttons";
 
 
 type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
@@ -15,16 +16,6 @@ type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
 export default function EditProfilePage() {
   // const birthRef = useRef<HTMLInputElement>(null);
   const [submitting, setSubmitting] = useState(false);
-
-  // const openDatePicker = () => {
-  //   const el = birthRef.current;
-  //   if (!el) return;
-  //   if (typeof el.showPicker === "function") el.showPicker();
-  //   else {
-  //     el.focus();
-  //     el.click();
-  //   }
-  // };
 
 
   const dateRef = useRef<HtmlDateInput | null>(null);
@@ -66,9 +57,9 @@ export default function EditProfilePage() {
           <button
             aria-label="Back"
             onClick={() => history.back()}
-            className="absolute left-0 top-1/2 -translate-y-[60%] z-20 w-12 h-12 rounded-full bg-[#FFD5C7] flex items-center justify-center shadow hover:scale-105 transition"
+            className="absolute left-0 top-1/2 -translate-y-[60%] z-20 w-10 h-10 rounded-full bg-[#EB6223] flex items-center justify-center shadow hover:scale-105 transition"
           >
-            <FiArrowLeft className="text-[#EB6223]" size={22} />
+            <FiArrowLeft className="text-[#000000]" size={17} />
           </button>
           <div className="flex justify-center">
             <div className="absolute -bottom-6 z-10 px-10 py-3 rounded-[60px] bg-[#FFDCD5] shadow-[0_6px_0_rgba(0,0,0,0.07)]">
@@ -80,7 +71,7 @@ export default function EditProfilePage() {
         </div>
 
         {/* Card */}
-        <section className="relative z-20 bg-[#FFF5E9] rounded-t-[60px] p-4">
+        <section className="relative z-20  mx-4 bg-[#FFF5E9] rounded-t-[60px] p-5 shadow">
           {/* Avatar */}
           <div className="flex flex-col items-center">
             <div className="shadow-xl rounded-full">
@@ -124,15 +115,17 @@ export default function EditProfilePage() {
             />
 
            {/* Birth date */}
-          <div>
+          <div className="mb-0">
             <label htmlFor="birthDate" className="text-sm font-semibold">Birth date</label>
-            <div className="relative mt-1">
+            <div className="relative">
               <EditInput
                 ref={dateRef as any}
                 id="birthDate"
                 name="birthDate"
                 type="date"
                 max={today}
+                containerClassName="mb-0" 
+
                 required
                 className="pr-11 appearance-none
                           [&::-webkit-calendar-picker-indicator]:hidden
@@ -156,6 +149,8 @@ export default function EditProfilePage() {
               label="Sex"
               required
               defaultValue=""  // ให้ placeholder ถูกเลือกเริ่มต้น
+              className = "bg-gray-200"
+              containerClassName="mb-2.5" 
               options={[
                 { label: "Select…", value: "", disabled: true },
                 { label: "Female", value: "female" },
@@ -185,15 +180,17 @@ export default function EditProfilePage() {
             />
 
             {/* Save */}
-            <button
-              type="submit"
-              disabled={submitting}
-              className={`w-full mt-1 rounded-[24px] bg-[#FFDCD5] text-[#2E2E2E] font-extrabold py-3 transition border border-black ${
-                submitting ? "opacity-60 cursor-not-allowed" : "hover:brightness-95"
-              }`}
-            >
-              {submitting ? "Saving..." : "Save"}
-            </button>
+            <SubmitButton
+              text="Save"
+              className="w-full mt-2 mb-2 rounded-[24px] bg-[#FFDCD5] text-[#2E2E2E]
+             font-extrabold py-3 transition border border-black 
+             hover:bg-[#FFBFB3] hover:shadow-lg active:scale-95w-full mt-2 mb-2 whitespace-nowrap h-12 flex-1
+             rounded-[24px] bg-[#FFDCD5] text-[#2E2E2E]
+             font-extrabold text-[16px] px-6 shadow
+             border border-black 
+             hover:scale-[1.02] hover:bg-[#FFBFB3] hover:shadow-lg
+             active:scale-95 transition"
+            />
 
             {/* Change password */}
             <button

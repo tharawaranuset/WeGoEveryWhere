@@ -1,8 +1,0 @@
-/* มีผลเฉพาะใน scope ที่ตั้ง data-theme="auth" */
-[data-theme="auth"] {
-  --color-brand-background: #FAB5A7;
-  --color-brand-primary:    #FDE8E0;
-  --color-brand-secondary:  #FFC8B3;
-  --color-brand-orange:     #EB6223;
-  --color-brand-button:     #F5B7B1;
-}

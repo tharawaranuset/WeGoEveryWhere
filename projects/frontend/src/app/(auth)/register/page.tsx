@@ -4,23 +4,18 @@
 import { useState } from "react";
 import Image from "next/image";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
-import PasswordInput from "../login/components/password";
+import PasswordInput from "@/components/form/input/PasswordInput";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { FormInput } from "@/components/form/input/FormInput";
+import { toast } from "react-hot-toast";
+import { SubmitButton } from "@/components/form/Buttons";
 
 export default function RegisterPage() {
   return (
-    <main className="font-sans">
+    <main className="font-alt">
       {/* แถวบน: แบรนด์ + โลโก้ */}
       <div className="px-5 pt-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-lg font-extrabold leading-tight">
-            <span className="block text-[#EB6223]">WeGo</span>
-            <span className="block text-[#EB6223]">EveryWhere</span>
-          </h1>
-          <Image src="/images/logo.png" alt="Logo" width={100} height={100} />
-        </div>
-
         {/* ปุ่ม Back เล็กๆ ใต้แบรนด์ */}
         <Link
           href="/login"
@@ -32,12 +27,13 @@ export default function RegisterPage() {
         </Link>
       </div>
 
-      <section className="mx-5 mt-3 rounded-t-[44px] bg-[#FFDCD5] px-8 pt-5 pb-8 text-center">
+      <section className="mx-1 mt-2 rounded-t-[44px] bg-[#FFDCD5] px-10 pt-8 pb-12 text-center">
         <h2 className="text-3xl font-bold text-gray-900">Create an account</h2>
       </section>
 
       {/* การ์ดฟอร์มครีม */}
-      <div className="relative z-10 -mt-6 mx-4 rounded-t-[44px] bg-[#FFF8F0] p-5 shadow">
+      <div className="relative -mt-10 w-full max-w-sm mx-auto flex-1 rounded-t-[50px] bg-[var(--color-brand-secondary)] p-5 shadow-lg border border-black/5
+        overflow-hidden pb-24 sm:pb-28 ">
         <form className="space-y-4"
         onSubmit={(e) => {
         const form = e.currentTarget as HTMLFormElement & {
@@ -50,7 +46,7 @@ export default function RegisterPage() {
 
         if (pwd !== cpw) {
           e.preventDefault(); // กันส่งฟอร์ม
-          form.confirmPassword.setCustomValidity("Passwords do NOT match");
+          toast.error("password NOT match")
           form.confirmPassword.reportValidity(); // เด้ง tooltip ที่ช่อง confirm
         } else {
           form.confirmPassword.setCustomValidity(""); // เคลียร์ error
@@ -63,19 +59,8 @@ export default function RegisterPage() {
         
         >
           {/* E-mail */}
-          <div>
-            <label htmlFor="email" className="text-sm font-semibold">
-              E-mail
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              required
-              className="mt-1 w-full rounded-3xl border border-black bg-white px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-brand-orange"
-            />
-          </div>
+          <FormInput name="email" label="Email" type="email" placeholder="you@example.com" />
+
 
           {/* Password */}
           <PasswordInput
@@ -117,13 +102,17 @@ export default function RegisterPage() {
             <span className="font-semibold">i accept the policy</span>
           </label>
 
-          {/* ปุ่ม Next */}
-          <button
-            type="submit"
-            className="mt-1 w-full rounded-3xl border border-black bg-[#FFDCD5] px-4 py-2.5 text-base font-bold text-black transition hover:bg-[#F2C6C6] active:scale-95"
-          >
-            Next
-          </button>
+          <SubmitButton
+            text="Next"
+            className="
+              mt-1 w-full rounded-3xl border border-black
+              bg-[#FFDCD5] px-4 py-2.5 text-base font-bold text-black
+              hover:!bg-[#FFDCD5] active:!bg-[#FFDCD5] active:!scale-100
+              disabled:opacity-100 transition-none
+              focus-visible:outline-none focus-visible:ring-2
+              focus-visible:ring-[var(--color-brand-tertiary)]
+            "
+          />
         </form>
       </div>
     </main>

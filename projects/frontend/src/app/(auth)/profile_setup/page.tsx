@@ -30,15 +30,15 @@ export default function ProfileSetupPage() {
       <Link
         href="/register"
         aria-label="Back to register"
-        className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-black
+        className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full 
                    bg-[#EB6223] text-black active:scale-95 transition"
       >
-        <ArrowLeft size={16} />
+        <ArrowLeft size={17} />
       </Link>
 
       {/* หัวข้อ */}
       <section className="mx-5 mt-3 rounded-t-[44px] bg-[#FFDCD5] px-5 pt-6 pb-6 text-center">
-        <h2 className="text-3xl font-bold text-gray-900">Profile Setup</h2>
+        <h2 className="text-3xl font-semibold text-gray-900 mb-3">Profile Setup</h2>
       </section>
 
       {/* การ์ดฟอร์ม */}
@@ -70,7 +70,7 @@ export default function ProfileSetupPage() {
           <FormInput name="lastName"  type="text" label="Last name"  required />
 
           {/* Birth date + ปุ่มไอคอนเปิดปฏิทิน */}
-          <div>
+          <div className="mb-0">
             <label htmlFor="birthDate" className="text-sm font-semibold">Birth date</label>
             <div className="relative mt-1">
               <FormInput

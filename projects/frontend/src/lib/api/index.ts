@@ -7,5 +7,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { RegisterDto } from './models/RegisterDto';
+
 export { AppService } from './services/AppService';
 export { AuthService } from './services/AuthService';

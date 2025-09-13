@@ -69,4 +69,14 @@ export class AuthService {
             mediaType: 'application/json',
         });
     }
+    /**
+     * @returns any
+     * @throws ApiError
+     */
+    public static authControllerLogout(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/auth/logout',
+        });
+    }
 }

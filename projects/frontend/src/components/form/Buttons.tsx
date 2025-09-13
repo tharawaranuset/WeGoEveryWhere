@@ -10,7 +10,7 @@ type SubmitButtonProps = {
   size?: BtnSize;
   text?: string;
   type?: "submit" | "button" | "reset"; // เพิ่ม
-  onclick?: React.MouseEventHandler<HTMLButtonElement>; // เพิ่ม
+  onClick?: React.MouseEventHandler<HTMLButtonElement>; // เพิ่ม
 };
 
 export const SubmitButton = ({
@@ -18,7 +18,7 @@ export const SubmitButton = ({
   size,
   text,
   type = "submit",
-  onclick,
+  onClick,
 }: SubmitButtonProps) => {
   const { pending } = useFormStatus();
   const isSubmit = type === "submit";
@@ -27,7 +27,7 @@ export const SubmitButton = ({
     <Button
       type={type}
       size={size}
-      onClick={onclick} // ส่งต่อ onClick
+      onClick={onClick} // ส่งต่อ onClick
       disabled={isSubmit ? pending : false}
       className={`${className} capitalize`}
     >

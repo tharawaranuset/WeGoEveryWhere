@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Karla, Urbanist } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/navbar/Navbar";
 import Image from "next/image";
 import { ConfirmProvider } from "@/components/popup/ConfirmProvider";
 import { Toaster } from "react-hot-toast";
@@ -33,10 +32,10 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
       </head>
-      <ConfirmProvider>
-        <body
-          className={`${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
-        >
+      <body
+        className={`${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
+      >
+        <ConfirmProvider>
           {/* Make Phone at the middle */}
           <div className="min-h-dvh flex items-center justify-center p-2 bg-black">
             {/* Phone Frame */}
@@ -74,7 +73,7 @@ export default function RootLayout({
                     </div>
                   </header>
                 </div>
-                <div className="flex-1 overflow-auto scrollbar-hide">
+                <div className="font-alt flex-1 overflow-auto scrollbar-hide">
                   {children}
                 </div>
                 {/* <footer className="mt-auto">
@@ -84,8 +83,8 @@ export default function RootLayout({
               </div>
             </div>
           </div>
-        </body>
-      </ConfirmProvider>
+        </ConfirmProvider>
+      </body>
     </html>
   );
 }

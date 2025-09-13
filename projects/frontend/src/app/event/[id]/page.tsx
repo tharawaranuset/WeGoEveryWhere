@@ -83,22 +83,22 @@ export default function EventDetailPage() {
                     ? event.details.substring(0, 250) + "..."
                     : event.details
                 }
-                readonly={true}
+                readOnly={true}
                 rows={5}
-                classname="bg-gray-100 border border-gray-300 text-sm text-gray-700 resize-none "
+                className="bg-gray-100 border border-gray-300 text-sm text-gray-700 resize-none "
               />
             </div>
 
             <div className="mt-5 space-y-2">
               <SubmitButton
                 type="button"
-                onclick={() => console.log("Register to this activity")}
+                onClick={() => console.log("Register to this activity")}
                 className="mx-auto block w-full rounded-full bg-[#9BE28C] px-6 py-2 text-center text-sm font-bold text-green-900 shadow hover:opacity-95"
                 text="Register !"
               />
               <SubmitButton
                 type="button"
-                onclick={() => console.log("Report this activity")}
+                onClick={() => console.log("Report this activity")}
                 className="mx-auto block w-full rounded-full bg-[#F6F6F6] px-6 py-2 text-center text-xs font-medium text-neutral-600 hover:bg-neutral-100 "
                 text="Report this activity"
               />

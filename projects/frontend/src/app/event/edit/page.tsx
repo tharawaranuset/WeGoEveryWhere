@@ -5,7 +5,7 @@ import { FormInput } from "@/components/form/input/FormInput";
 import { TextAreaInput } from "@/components/form/input/TextAreaInout";
 import { Calendar28 } from "@/components/form/input/DatePicker";
 import { updateEventWithZod, deleteEventById } from "@/actions/actions";
-import DeleteButton from "@/components/deletebutton";
+import DeleteButton from "@/components/form/input/deletebutton";
 
 export default function EditEventPage() {
   const id = "evt_123";

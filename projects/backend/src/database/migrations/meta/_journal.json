@@ -3,31 +3,17 @@
   "dialect": "postgresql",
   "entries": [
     {
-      "idx": 0,
-      "version": "7",
-      "when": 1756910752925,
-      "tag": "0000_natural_cobalt_man",
-      "breakpoints": true
-    },
-    {
       "idx": 1,
       "version": "7",
-      "when": 1756915324312,
-      "tag": "0001_fantastic_frightful_four",
+      "when": 1757590613513,
+      "tag": "0001_sweet_wilson_fisk",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1756915652831,
-      "tag": "0002_illegal_wiccan",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1756990872667,
-      "tag": "0003_empty_calypso",
+      "when": 1757597214726,
+      "tag": "0002_stiff_nebula",
       "breakpoints": true
     }
   ]

@@ -10,7 +10,12 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
   const configService = app.get(ConfigService);
-  
+
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // cookie
+  });
   setupSwagger(app, configService);
 
   const port = configService.get<number>('app.port', 3001);

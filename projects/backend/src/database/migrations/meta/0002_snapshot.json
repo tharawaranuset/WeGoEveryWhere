@@ -1,6 +1,6 @@
 {
-  "id": "8d6e929c-fa86-4121-bb67-028c63e7ece7",
-  "prevId": "1ea95524-6a39-4ca8-b372-68fc2a9bfd77",
+  "id": "c6af3d8b-faf8-4e0e-804d-79084f132e89",
+  "prevId": "11cb7401-2d73-4320-bd78-311dc845fb0a",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -8,8 +8,8 @@
       "name": "admin",
       "schema": "",
       "columns": {
-        "uid": {
-          "name": "uid",
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
           "primaryKey": true,
           "notNull": true
@@ -23,15 +23,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "admin_uid_fkey": {
-          "name": "admin_uid_fkey",
+        "admin_userId_fkey": {
+          "name": "admin_userId_fkey",
           "tableFrom": "admin",
           "tableTo": "users",
           "columnsFrom": [
-            "uid"
+            "user_id"
           ],
           "columnsTo": [
-            "uid"
+            "user_id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -43,18 +43,98 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.be_friend": {
-      "name": "be_friend",
+    "public.auth_users": {
+      "name": "auth_users",
       "schema": "",
       "columns": {
-        "uid": {
-          "name": "uid",
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "fid": {
-          "name": "fid",
+        "email": {
+          "name": "email",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "auth_users_user_id_users_user_id_fk": {
+          "name": "auth_users_user_id_users_user_id_fk",
+          "tableFrom": "auth_users",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "auth_users_user_id_unique": {
+          "name": "auth_users_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id"
+          ]
+        },
+        "auth_users_email_unique": {
+          "name": "auth_users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.be_friend": {
+      "name": "be_friend",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "friend_id": {
+          "name": "friend_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -62,28 +142,28 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "be_friend_fid_fkey": {
-          "name": "be_friend_fid_fkey",
+        "be_friend_friendId_fkey": {
+          "name": "be_friend_friendId_fkey",
           "tableFrom": "be_friend",
           "tableTo": "users",
           "columnsFrom": [
-            "fid"
+            "friend_id"
           ],
           "columnsTo": [
-            "uid"
+            "user_id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "be_friend_uid_fkey": {
-          "name": "be_friend_uid_fkey",
+        "be_friend_userId_fkey": {
+          "name": "be_friend_userId_fkey",
           "tableFrom": "be_friend",
           "tableTo": "users",
           "columnsFrom": [
-            "uid"
+            "user_id"
           ],
           "columnsTo": [
-            "uid"
+            "user_id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -93,8 +173,8 @@
         "be_friend_pkey": {
           "name": "be_friend_pkey",
           "columns": [
-            "uid",
-            "fid"
+            "user_id",
+            "friend_id"
           ]
         }
       },
@@ -119,8 +199,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "cid": {
-          "name": "cid",
+        "chat_id": {
+          "name": "chat_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -128,15 +208,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "chat_cid_fkey": {
-          "name": "chat_cid_fkey",
+        "chat_chatId_fkey": {
+          "name": "chat_chatId_fkey",
           "tableFrom": "chat",
           "tableTo": "chat_doc",
           "columnsFrom": [
-            "cid"
+            "chat_id"
           ],
           "columnsTo": [
-            "cid"
+            "chat_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -149,7 +229,7 @@
             "receiver"
           ],
           "columnsTo": [
-            "uid"
+            "user_id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -162,7 +242,7 @@
             "sender"
           ],
           "columnsTo": [
-            "uid"
+            "user_id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -174,7 +254,7 @@
           "columns": [
             "sender",
             "receiver",
-            "cid"
+            "chat_id"
           ]
         }
       },
@@ -187,8 +267,8 @@
       "name": "chat_doc",
       "schema": "",
       "columns": {
-        "cid": {
-          "name": "cid",
+        "chat_id": {
+          "name": "chat_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -224,8 +304,8 @@
       "name": "event",
       "schema": "",
       "columns": {
-        "eid": {
-          "name": "eid",
+        "event_id": {
+          "name": "event_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -247,13 +327,13 @@
           "name": "date",
           "type": "date",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "time": {
           "name": "time",
           "type": "time",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "place": {
           "name": "place",
@@ -271,7 +351,7 @@
           "name": "detail",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "rating": {
           "name": "rating",
@@ -280,11 +360,11 @@
           "notNull": false,
           "default": 0
         },
-        "uid": {
-          "name": "uid",
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {
@@ -306,15 +386,15 @@
         }
       },
       "foreignKeys": {
-        "event_uid_fkey": {
-          "name": "event_uid_fkey",
+        "event_userId_fkey": {
+          "name": "event_userId_fkey",
           "tableFrom": "event",
           "tableTo": "users",
           "columnsFrom": [
-            "uid"
+            "user_id"
           ],
           "columnsTo": [
-            "uid"
+            "user_id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -330,14 +410,14 @@
       "name": "joined",
       "schema": "",
       "columns": {
-        "uid": {
-          "name": "uid",
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "eid": {
-          "name": "eid",
+        "event_id": {
+          "name": "event_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -345,28 +425,28 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "joined_eid_fkey": {
-          "name": "joined_eid_fkey",
+        "joined_eventId_fkey": {
+          "name": "joined_eventId_fkey",
           "tableFrom": "joined",
           "tableTo": "event",
           "columnsFrom": [
-            "eid"
+            "event_id"
           ],
           "columnsTo": [
-            "eid"
+            "event_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "joined_uid_fkey": {
-          "name": "joined_uid_fkey",
+        "joined_userId_fkey": {
+          "name": "joined_userId_fkey",
           "tableFrom": "joined",
           "tableTo": "users",
           "columnsFrom": [
-            "uid"
+            "user_id"
           ],
           "columnsTo": [
-            "uid"
+            "user_id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -376,11 +456,80 @@
         "joined_pkey": {
           "name": "joined_pkey",
           "columns": [
-            "uid",
-            "eid"
+            "user_id",
+            "event_id"
           ]
         }
       },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.oauth_identities": {
+      "name": "oauth_identities",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subject": {
+          "name": "subject",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "oauth_identities_user_id_users_user_id_fk": {
+          "name": "oauth_identities_user_id_users_user_id_fk",
+          "tableFrom": "oauth_identities",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
@@ -390,8 +539,8 @@
       "name": "participant",
       "schema": "",
       "columns": {
-        "uid": {
-          "name": "uid",
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
           "primaryKey": true,
           "notNull": true
@@ -412,17 +561,93 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "participant_uid_fkey": {
-          "name": "participant_uid_fkey",
+        "participant_userId_fkey": {
+          "name": "participant_userId_fkey",
           "tableFrom": "participant",
           "tableTo": "users",
           "columnsFrom": [
-            "uid"
+            "user_id"
           ],
           "columnsTo": [
-            "uid"
+            "user_id"
           ],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.refresh_tokens": {
+      "name": "refresh_tokens",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token_hash": {
+          "name": "token_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "revoked": {
+          "name": "revoked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_by_ip": {
+          "name": "created_by_ip",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "refresh_tokens_user_id_users_user_id_fk": {
+          "name": "refresh_tokens_user_id_users_user_id_fk",
+          "tableFrom": "refresh_tokens",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
@@ -436,8 +661,8 @@
       "name": "report",
       "schema": "",
       "columns": {
-        "rid": {
-          "name": "rid",
+        "report_id": {
+          "name": "report_id",
           "type": "serial",
           "primaryKey": true,
           "notNull": true
@@ -460,8 +685,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "uid": {
-          "name": "uid",
+        "user_id": {
+          "name": "user_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": false
@@ -469,15 +694,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "report_uid_fkey": {
-          "name": "report_uid_fkey",
+        "report_userId_fkey": {
+          "name": "report_userId_fkey",
           "tableFrom": "report",
           "tableTo": "users",
           "columnsFrom": [
-            "uid"
+            "user_id"
           ],
           "columnsTo": [
-            "uid"
+            "user_id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -493,10 +718,22 @@
       "name": "users",
       "schema": "",
       "columns": {
-        "uid": {
-          "name": "uid",
+        "user_id": {
+          "name": "user_id",
           "type": "serial",
           "primaryKey": true,
+          "notNull": true
+        },
+        "firstName": {
+          "name": "firstName",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lastName": {
+          "name": "lastName",
+          "type": "varchar(50)",
+          "primaryKey": false,
           "notNull": true
         },
         "telephone_number": {
@@ -505,29 +742,17 @@
           "primaryKey": false,
           "notNull": false
         },
-        "fname": {
-          "name": "fname",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "lname": {
-          "name": "lname",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
         "bio": {
           "name": "bio",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "age": {
-          "name": "age",
-          "type": "integer",
+        "birthdate": {
+          "name": "birthdate",
+          "type": "date",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "sex": {
           "name": "sex",
@@ -539,17 +764,19 @@
           "name": "signup_time",
           "type": "time",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "CURRENT_TIME"
         },
         "signup_date": {
           "name": "signup_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "CURRENT_DATE"
         },
         "cookie_policy_version_accepted": {
           "name": "cookie_policy_version_accepted",
-          "type": "varchar(20)",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -568,7 +795,7 @@
       "checkConstraints": {
         "users_age_check": {
           "name": "users_age_check",
-          "value": "\"users\".\"age\" > 20"
+          "value": "\"users\".\"birthdate\" <= CURRENT_DATE - INTERVAL '20 years'"
         }
       },
       "isRLSEnabled": false

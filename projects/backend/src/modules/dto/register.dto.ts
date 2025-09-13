@@ -1,5 +1,5 @@
 // dto/register.dto.ts
-import { IsInt, IsOptional, IsString, MaxLength, Min, MinLength } from 'class-validator';
+import { IsInt, IsOptional, IsString, MaxLength, Min, MinLength, IsDateString } from 'class-validator';
 
 export class RegisterDto {
   @IsString() @MinLength(1) @MaxLength(50)
@@ -14,8 +14,8 @@ export class RegisterDto {
   @IsOptional() @IsString()
   bio?: string;
 
-  @IsInt() @Min(0)
-  age!: number;
+  @IsDateString()
+  birthdate!: string;
 
   @IsOptional() @IsString() @MaxLength(10)
   sex?: string;

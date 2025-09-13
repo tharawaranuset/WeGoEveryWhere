@@ -4,13 +4,13 @@ import { users } from "./users.schema";
 
 
 export const participant = pgTable("participant", {
-    uid: integer().primaryKey().notNull(),
-    credit: integer().default(0),
-    status: varchar({ length: 20 }),
+    userId: integer("user_id").primaryKey().notNull(),
+    credit: integer("credit").default(0),
+    status: varchar("status", { length: 20 }),
 }, (table) => [
     foreignKey({
-            columns: [table.uid],
-            foreignColumns: [users.uid],
-            name: "participant_uid_fkey"
+            columns: [table.userId],
+            foreignColumns: [users.userId],
+            name: "participant_userId_fkey"
         }).onDelete("cascade"),
 ]);

@@ -1,225 +1,9 @@
 {
-  "id": "4e6d247e-a9a7-4642-ac73-af1d63501373",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.admin": {
-      "name": "admin",
-      "schema": "",
-      "columns": {
-        "uid": {
-          "name": "uid",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "admin_type": {
-          "name": "admin_type",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "admin_uid_fkey": {
-          "name": "admin_uid_fkey",
-          "tableFrom": "admin",
-          "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.be_friend": {
-      "name": "be_friend",
-      "schema": "",
-      "columns": {
-        "uid": {
-          "name": "uid",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "fid": {
-          "name": "fid",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "be_friend_fid_fkey": {
-          "name": "be_friend_fid_fkey",
-          "tableFrom": "be_friend",
-          "tableTo": "users",
-          "columnsFrom": [
-            "fid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "be_friend_uid_fkey": {
-          "name": "be_friend_uid_fkey",
-          "tableFrom": "be_friend",
-          "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "be_friend_pkey": {
-          "name": "be_friend_pkey",
-          "columns": [
-            "uid",
-            "fid"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.chat": {
-      "name": "chat",
-      "schema": "",
-      "columns": {
-        "sender": {
-          "name": "sender",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "receiver": {
-          "name": "receiver",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "cid": {
-          "name": "cid",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "chat_cid_fkey": {
-          "name": "chat_cid_fkey",
-          "tableFrom": "chat",
-          "tableTo": "chat_doc",
-          "columnsFrom": [
-            "cid"
-          ],
-          "columnsTo": [
-            "cid"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "chat_receiver_fkey": {
-          "name": "chat_receiver_fkey",
-          "tableFrom": "chat",
-          "tableTo": "users",
-          "columnsFrom": [
-            "receiver"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "chat_sender_fkey": {
-          "name": "chat_sender_fkey",
-          "tableFrom": "chat",
-          "tableTo": "users",
-          "columnsFrom": [
-            "sender"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "chat_pkey": {
-          "name": "chat_pkey",
-          "columns": [
-            "sender",
-            "receiver",
-            "cid"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.chat_doc": {
-      "name": "chat_doc",
-      "schema": "",
-      "columns": {
-        "cid": {
-          "name": "cid",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "sdate": {
-          "name": "sdate",
-          "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "stime": {
-          "name": "stime",
-          "type": "time",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "data": {
-          "name": "data",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.event": {
       "name": "event",
       "schema": "",
@@ -235,7 +19,7 @@
           "type": "numeric(10, 2)",
           "primaryKey": false,
           "notNull": false,
-          "default": 0
+          "default": "'0.00'"
         },
         "name": {
           "name": "name",
@@ -293,10 +77,10 @@
           "columns": [
             {
               "expression": "date",
-              "isExpression": false,
               "asc": true,
               "nulls": "last",
-              "opclass": "date_ops"
+              "opclass": "date_ops",
+              "isExpression": false
             }
           ],
           "isUnique": false,
@@ -310,6 +94,7 @@
           "name": "event_uid_fkey",
           "tableFrom": "event",
           "tableTo": "users",
+          "schemaTo": "public",
           "columnsFrom": [
             "uid"
           ],
@@ -322,68 +107,8 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.joined": {
-      "name": "joined",
-      "schema": "",
-      "columns": {
-        "uid": {
-          "name": "uid",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "eid": {
-          "name": "eid",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "joined_eid_fkey": {
-          "name": "joined_eid_fkey",
-          "tableFrom": "joined",
-          "tableTo": "event",
-          "columnsFrom": [
-            "eid"
-          ],
-          "columnsTo": [
-            "eid"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "joined_uid_fkey": {
-          "name": "joined_uid_fkey",
-          "tableFrom": "joined",
-          "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "joined_pkey": {
-          "name": "joined_pkey",
-          "columns": [
-            "uid",
-            "eid"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
       "policies": {},
-      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.participant": {
@@ -416,6 +141,7 @@
           "name": "participant_uid_fkey",
           "tableFrom": "participant",
           "tableTo": "users",
+          "schemaTo": "public",
           "columnsFrom": [
             "uid"
           ],
@@ -428,65 +154,8 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.report": {
-      "name": "report",
-      "schema": "",
-      "columns": {
-        "rid": {
-          "name": "rid",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "report_type": {
-          "name": "report_type",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "report_detail": {
-          "name": "report_detail",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "report_topic": {
-          "name": "report_topic",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "uid": {
-          "name": "uid",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "report_uid_fkey": {
-          "name": "report_uid_fkey",
-          "tableFrom": "report",
-          "tableTo": "users",
-          "columnsFrom": [
-            "uid"
-          ],
-          "columnsTo": [
-            "uid"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
       "policies": {},
-      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.users": {
@@ -552,13 +221,387 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "policies": {},
       "checkConstraints": {
         "users_age_check": {
           "name": "users_age_check",
           "value": "age > 20"
         }
       },
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.chat_doc": {
+      "name": "chat_doc",
+      "schema": "",
+      "columns": {
+        "cid": {
+          "name": "cid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sdate": {
+          "name": "sdate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stime": {
+          "name": "stime",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "data": {
+          "name": "data",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.report": {
+      "name": "report",
+      "schema": "",
+      "columns": {
+        "rid": {
+          "name": "rid",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "report_type": {
+          "name": "report_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "report_detail": {
+          "name": "report_detail",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "report_topic": {
+          "name": "report_topic",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uid": {
+          "name": "uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "report_uid_fkey": {
+          "name": "report_uid_fkey",
+          "tableFrom": "report",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "uid"
+          ],
+          "columnsTo": [
+            "uid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.admin": {
+      "name": "admin",
+      "schema": "",
+      "columns": {
+        "uid": {
+          "name": "uid",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "admin_type": {
+          "name": "admin_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "admin_uid_fkey": {
+          "name": "admin_uid_fkey",
+          "tableFrom": "admin",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "uid"
+          ],
+          "columnsTo": [
+            "uid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public._drizzle_migrations": {
+      "name": "_drizzle_migrations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "run_on": {
+          "name": "run_on",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.joined": {
+      "name": "joined",
+      "schema": "",
+      "columns": {
+        "uid": {
+          "name": "uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "eid": {
+          "name": "eid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "joined_eid_fkey": {
+          "name": "joined_eid_fkey",
+          "tableFrom": "joined",
+          "tableTo": "event",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "eid"
+          ],
+          "columnsTo": [
+            "eid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "joined_uid_fkey": {
+          "name": "joined_uid_fkey",
+          "tableFrom": "joined",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "uid"
+          ],
+          "columnsTo": [
+            "uid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "joined_pkey": {
+          "name": "joined_pkey",
+          "columns": [
+            "uid",
+            "eid"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.be_friend": {
+      "name": "be_friend",
+      "schema": "",
+      "columns": {
+        "uid": {
+          "name": "uid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fid": {
+          "name": "fid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "be_friend_fid_fkey": {
+          "name": "be_friend_fid_fkey",
+          "tableFrom": "be_friend",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "fid"
+          ],
+          "columnsTo": [
+            "uid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "be_friend_uid_fkey": {
+          "name": "be_friend_uid_fkey",
+          "tableFrom": "be_friend",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "uid"
+          ],
+          "columnsTo": [
+            "uid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "be_friend_pkey": {
+          "name": "be_friend_pkey",
+          "columns": [
+            "uid",
+            "fid"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.chat": {
+      "name": "chat",
+      "schema": "",
+      "columns": {
+        "sender": {
+          "name": "sender",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "receiver": {
+          "name": "receiver",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cid": {
+          "name": "cid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "chat_cid_fkey": {
+          "name": "chat_cid_fkey",
+          "tableFrom": "chat",
+          "tableTo": "chat_doc",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "cid"
+          ],
+          "columnsTo": [
+            "cid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "chat_receiver_fkey": {
+          "name": "chat_receiver_fkey",
+          "tableFrom": "chat",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "receiver"
+          ],
+          "columnsTo": [
+            "uid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "chat_sender_fkey": {
+          "name": "chat_sender_fkey",
+          "tableFrom": "chat",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "sender"
+          ],
+          "columnsTo": [
+            "uid"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "chat_pkey": {
+          "name": "chat_pkey",
+          "columns": [
+            "sender",
+            "receiver",
+            "cid"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
       "isRLSEnabled": false
     }
   },
@@ -569,8 +612,11 @@
   "policies": {},
   "views": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
     "tables": {}
   }
 }

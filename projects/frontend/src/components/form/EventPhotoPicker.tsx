@@ -1,66 +1,73 @@
 "use client";
 import * as React from "react";
-import { Image as ImageIcon, X } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 
 export type EventPhotoPickerProps = {
+  /** base name: จะได้ photoExisting, photoFile */
   name?: string;
-  value?: string | null;
+  value?: string | null; // URL เดิม
   onChange?: (file: File | null, previewUrl: string | null) => void;
-  size?: number; // ความสูงของกรอบ (ความกว้างใช้ auto)
-  width?: number; // ความกว้าง (optional)
+  size?: number; // สูง
+  width?: number; // กว้าง
   rounded?: "full" | "3xl" | "2xl" | "xl" | "lg" | "md" | "sm" | "none";
   accept?: string;
-  caption?: string;
-  required?: boolean;
-  disabled?: boolean;
-  className?: string;
-  withBorder?: boolean;
+  /** ข้อความลิงก์ใต้รูป */
+  linkText?: string;
+  /** คลาสพื้นหลังกรอบรูป (ตอนยังไม่มีรูป) */
   bgClassName?: string;
+  className?: string;
+  disabled?: boolean;
 };
 
-const roundedToClass = (rounded: EventPhotoPickerProps["rounded"]) =>
-  rounded === "full"
+const roundedToClass = (r: EventPhotoPickerProps["rounded"]) =>
+  r === "full"
     ? "rounded-full"
-    : rounded === "3xl"
+    : r === "3xl"
     ? "rounded-3xl"
-    : rounded === "2xl"
+    : r === "2xl"
     ? "rounded-2xl"
-    : rounded === "xl"
+    : r === "xl"
     ? "rounded-xl"
-    : rounded === "lg"
+    : r === "lg"
     ? "rounded-lg"
-    : rounded === "md"
+    : r === "md"
     ? "rounded-md"
-    : rounded === "sm"
+    : r === "sm"
     ? "rounded-sm"
     : "rounded-none";
 
 export default function EventPhotoPicker({
-  name = "eventPhoto",
+  name = "photo",
   value = null,
   onChange,
-  size = 120, // ความสูง
-  width = 280, // ความกว้าง
+  size = 160,
+  width = 280,
   rounded = "2xl",
   accept = "image/*",
-  caption = "Add Image",
-  required = false,
-  disabled = false,
+  linkText = "",
+  bgClassName = "bg-[var(--color-brand-background)]",
   className = "",
-  withBorder = true,
-  bgClassName = "bg-gray-300",
+  disabled = false,
 }: EventPhotoPickerProps) {
   const fileRef = React.useRef<HTMLInputElement | null>(null);
   const [localUrl, setLocalUrl] = React.useState<string | null>(null);
 
-  const roundedClass = roundedToClass(rounded);
   const displayUrl = localUrl || value || null;
+  const roundedClass = roundedToClass(rounded);
 
   const openFile = () => !disabled && fileRef.current?.click();
 
   const onFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const f = e.target.files?.[0] ?? null;
-    if (!f) return;
+    if (!f) {
+      // เคลียร์ไฟล์ → กลับไปใช้ค่าเดิม
+      setLocalUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return null;
+      });
+      onChange?.(null, null);
+      return;
+    }
     const url = URL.createObjectURL(f);
     setLocalUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
@@ -75,72 +82,64 @@ export default function EventPhotoPicker({
     };
   }, [localUrl]);
 
-  const clearPhoto = () => {
-    setLocalUrl((prev) => {
-      if (prev) URL.revokeObjectURL(prev);
-      return null;
-    });
-    if (fileRef.current) fileRef.current.value = "";
-    onChange?.(null, null);
-  };
+  // form field names
+  const nameExisting = `${name}Existing`; // URL เดิม
+  const nameFile = `${name}File`; // ไฟล์ใหม่
 
   return (
-    <div className={`w-fit mx-auto flex flex-col items-center ${className}`}>
+    <div className={`w-fit mx-auto ${className}`}>
+      {/* กรอบรูป */}
       <div
         className={[
-          "relative overflow-hidden shadow-sm flex items-center justify-center",
-          bgClassName,
+          "relative overflow-hidden border border-black/30 shadow-sm",
           roundedClass,
-          withBorder ? "border border-black/30" : "",
+          bgClassName,
         ].join(" ")}
         style={{ width, height: size }}
       >
-        <button
-          type="button"
-          onClick={openFile}
-          aria-label="Upload event photo"
-          disabled={disabled}
-          className="absolute inset-0 flex items-center justify-center gap-2
-                     text-sm font-semibold text-black opacity-80
-                     active:scale-[0.98] transition
-                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20"
-        >
-          {displayUrl ? (
-            <img
-              src={displayUrl}
-              alt="Event photo preview"
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <>
-              <span>{caption}</span>
-              <ImageIcon className="w-4 h-4" />
-            </>
-          )}
-        </button>
-
-        {displayUrl && !disabled && (
+        {displayUrl ? (
+          <img
+            src={displayUrl}
+            alt="Event photo preview"
+            className="h-full w-full object-cover"
+          />
+        ) : (
           <button
             type="button"
-            onClick={clearPhoto}
-            aria-label="Remove photo"
-            className="absolute right-2 top-2 h-7 w-7 rounded-full bg-black/70 text-white
-                       flex items-center justify-center hover:bg-black transition"
+            onClick={openFile}
+            disabled={disabled}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-sm text-black/70"
+            aria-label="Upload event photo"
           >
-            <X size={14} />
+            <ImageIcon className="w-5 h-5" />
+            <span>Upload image</span>
           </button>
         )}
       </div>
 
-      {/* input file */}
+      {/* ลิงก์ใต้รูป */}
+      <div className="mt-2 text-center">
+        <button
+          type="button"
+          onClick={openFile}
+          disabled={disabled}
+          className="text-[13px] text-neutral-400 underline hover:text-neutral-800 disabled:opacity-50"
+        >
+          {linkText}
+        </button>
+      </div>
+
+      {/* ฟิลด์ที่ส่งไปกับฟอร์ม */}
+      {/* ส่ง URL เดิมไว้เสมอ: ถ้าไม่มีไฟล์ใหม่ server จะ keep อันนี้ */}
+      <input type="hidden" name={nameExisting} value={value ?? ""} />
+      {/* เลือกไฟล์ใหม่ (จะถูกส่งเฉพาะเมื่อผู้ใช้เลือกจริง ๆ) */}
       <input
         ref={fileRef}
-        name={name}
+        name={nameFile}
         type="file"
         accept={accept}
         className="sr-only"
         onChange={onFileChange}
-        required={required}
         disabled={disabled}
       />
     </div>

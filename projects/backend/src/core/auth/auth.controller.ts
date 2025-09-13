@@ -51,6 +51,7 @@ export class AuthController {
     const accessToken = this.authService.signJwt(userId);
     const { refreshToken } = this.authService.signRefreshJwt(userId);
 
+    console.log('Inserting refresh token for user:', userId);
     // store hashed refresh token in DB
     await this.refreshTokensRepo.create(
       userId,
@@ -59,6 +60,7 @@ export class AuthController {
       req.ip,
       (req.headers['user-agent'] as string) ?? undefined,
     );
+    console.log('Inserted refresh token for user:', userId);
 
     // set cookies
     res.cookie('jwt', accessToken, {
@@ -140,7 +142,7 @@ export class AuthController {
 
     for (const row of rows) {
       if (row.revoked || row.expiresAt < new Date()) continue;
-      const same = await argon2Verify(row.tokenHash, rawRefresh);
+      const same = row.tokenHash ? await argon2Verify(row.tokenHash, rawRefresh) : false;
       if (same) {
         matchedId = row.id;
         break;
@@ -223,7 +225,7 @@ export class AuthController {
         const rows = await this.refreshTokensRepo.findValidByUser(Number(userId));
         for (const row of rows) {
           if (row.revoked || row.expiresAt < new Date()) continue;
-          const same = await argon2Verify(row.tokenHash, rawRefresh);
+          const same = row.tokenHash ? await argon2Verify(row.tokenHash, rawRefresh) : false;
           if (same) {
             await this.refreshTokensRepo.revokeById(row.id);
             break;

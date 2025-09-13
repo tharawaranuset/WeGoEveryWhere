@@ -5,7 +5,8 @@ import { AppConfigModule } from './configurations/config';
 import { AuthModule } from '@core/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './core/auth/jwt/access-jwt/jwt.guard';
-import { DatabaseModule} from './database/database.module';
+import { DatabaseModule } from './database/database.module';
+import { RefreshTokensRepository } from './modules/refreshTokens.repository';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DatabaseModule} from './database/database.module';
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
+    RefreshTokensRepository,
   ],
 })
 export class AppModule {}

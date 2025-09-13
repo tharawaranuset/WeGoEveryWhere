@@ -32,6 +32,7 @@ export class ConsentController {
   }
 
   @Get('check/:userId')
+  @Public()
   @ApiOperation({ summary: 'Check if user needs to accept new consent' })
   @ApiParam({ name: 'userId', description: 'User ID (number)' })
   @ApiResponse({ status: 200, description: 'Consent status check', type: ConsentCheckResponseDto })
@@ -41,6 +42,7 @@ export class ConsentController {
   }
 
   @Post('accept')
+  @Public()
   @ApiOperation({ summary: 'Accept privacy policy consent' })
   @ApiResponse({ status: 200, description: 'Consent accepted successfully', type: AcceptConsentResponseDto })
   @ApiResponse({ status: 400, description: 'Invalid policy version or user not found' })
@@ -58,6 +60,7 @@ export class ConsentController {
   }
 
   @Get('policies/history')
+  //@Public()
   @ApiOperation({ summary: 'Get all privacy policy versions' })
   @ApiResponse({ status: 200, description: 'Policy history', type: PolicyHistoryResponseDto })
   async getPolicyHistory(): Promise<PolicyHistoryResponseDto> {
@@ -65,6 +68,7 @@ export class ConsentController {
   }
 
   @Get('policy/:version')
+  //@Public()
   @ApiOperation({ summary: 'Get specific policy by version' })
   @ApiParam({ name: 'version', description: 'Policy version number' })
   @ApiResponse({ status: 200, description: 'Policy found', type: PolicyResponseDto })
@@ -74,6 +78,7 @@ export class ConsentController {
   }
 
   @Put('admin/policy/:version')
+  //@Public()
   @ApiOperation({ summary: 'Update existing privacy policy (Admin only)' })
   @ApiParam({ name: 'version', description: 'Policy version to update' })
   @ApiResponse({ status: 200, description: 'Policy updated successfully', type: UpdatePolicyResponseDto })
@@ -87,6 +92,7 @@ export class ConsentController {
   }
 
   @Delete('admin/policy/:version')
+  //@Public()
   @ApiOperation({ summary: 'Delete privacy policy (Admin only)' })
   @ApiParam({ name: 'version', description: 'Policy version to delete' })
   @ApiResponse({ status: 200, description: 'Policy deleted successfully', type: DeletePolicyResponseDto })
@@ -97,6 +103,7 @@ export class ConsentController {
   }
 
   @Post('admin/policy/:version/activate')
+  //@Public()
   @ApiOperation({ summary: 'Activate specific policy version (Admin only)' })
   @ApiParam({ name: 'version', description: 'Policy version to activate' })
   @ApiResponse({ status: 200, description: 'Policy activated successfully', type: ActivatePolicyResponseDto })

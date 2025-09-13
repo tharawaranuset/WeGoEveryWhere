@@ -1,3 +1,4 @@
+import { createEventWithZod } from "@/actions/actions";
 import { SubmitButton } from "@/components/form/Buttons";
 import EventPhotoPicker from "@/components/form/EventPhotoPicker";
 import { Calendar28 } from "@/components/form/input/DatePicker";
@@ -21,28 +22,27 @@ export default function CreateEventPage() {
 
           <div className="relative rounded-[28px] border border-black/50 bg-[var(--color-brand-secondary)] shadow-[0_6px_0_#00000020] z-10">
             <form
-              // action={createEventWithZod}
+              action={createEventWithZod}
               className="px-4 pb-6 pt-10 text-sm"
-              encType="multipart/form-data"
             >
               <div className="mb-4">
                 <EventPhotoPicker
                   name="photo"
-                  caption="Add Image"
                   size={208}
                   rounded="2xl"
+                  bgClassName="bg-gray-300"
                 />
               </div>
               <FormInput
                 name="eventName"
                 type="text"
                 label="Event name"
-                className="bg-[var(--color-brand-background)] rounded-full border-black/30 "
+                className="!bg-[var(--color-brand-background)] rounded-full border-black/30 "
               />
               <Calendar28
                 name="eventDate"
                 label="Event date"
-                placeholder="June 01, 2025"
+                placeholder="MM/DD/YYYY"
                 required
                 className="!bg-[var(--color-brand-background)] rounded-full border-black/30"
                 disableTyping
@@ -52,15 +52,14 @@ export default function CreateEventPage() {
                   name="location"
                   type="text"
                   label="Location"
-                  className="bg-[var(--color-brand-background)] rounded-full border-black/30 pr-10"
+                  className="!bg-[var(--color-brand-background)] rounded-full border-black/30 pr-10"
                 />
                 <MapPin className="pointer-events-none absolute right-3 bottom-[10px] h-4 w-4 translate-y-[-2px] text-neutral-600" />
               </div>
               <TextAreaInput
                 name="details"
                 label="Details"
-                rows={4}
-                className="rounded-full border border-black/30 !bg-[var(--color-brand-background)] resize-none focus:border-black"
+                className="block w-full h-22 overflow-y-auto rounded-[20px] border border-black/30 !bg-[var(--color-brand-background)] resize-none focus:border-black"
               />
 
               <div className="mb-3 flex items-center gap-2">
@@ -75,7 +74,7 @@ export default function CreateEventPage() {
                   name="capacity"
                   type="number"
                   label="Capacity"
-                  className="bg-[var(--color-brand-background)] rounded-full border-black/30"
+                  className="!bg-[var(--color-brand-background)] rounded-full border-black/30"
                 />
 
                 <div>

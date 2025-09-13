@@ -1,7 +1,7 @@
 import { pgTable, serial, varchar, integer, boolean, timestamp } from "drizzle-orm/pg-core";
 import { users } from "./users.schema"; 
 
-export const refreshTokens = pgTable("refresh_tokens", {
+export const refresh_tokens = pgTable("refresh_tokens", {
   id: serial("id").primaryKey().notNull(),
   userId: integer("user_id").notNull().references(() => users.userId), // FK
   tokenHash: varchar("token_hash", { length: 255 }).notNull(),

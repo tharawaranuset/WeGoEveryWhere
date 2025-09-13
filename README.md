@@ -15,9 +15,4 @@ docker compose exec -T db psql -U admin -d WEGO_EVERYWHERE_DB < db/init/backup.s
 docker exec -it wegoeverywhere-db-1 psql -U admin -d WEGO_EVERYWHERE_DB
 \d
 
-#To know for merge
-- Event api for create, update , delete in backend/src/modules/event
-- Update User api in backend/src/modules/users
-- arrange user file into user folder
-- add Index.ts (backend\src\database\schema\index.ts)
-- add Status into event schema
+

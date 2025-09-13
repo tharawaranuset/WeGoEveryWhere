@@ -3,10 +3,24 @@
   "dialect": "postgresql",
   "entries": [
     {
-      "idx": 0,
+      "idx": 1,
       "version": "7",
-      "when": 1755859757574,
-      "tag": "0000_light_naoko",
+      "when": 1757590613513,
+      "tag": "0001_sweet_wilson_fisk",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757597214726,
+      "tag": "0002_stiff_nebula",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1757772844827,
+      "tag": "0003_cooing_carmella_unuscione",
       "breakpoints": true
     }
   ]

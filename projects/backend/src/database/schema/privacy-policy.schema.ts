@@ -10,11 +10,11 @@ export const privacyPolicies = pgTable('privacy_policies', {
   effectiveDate: timestamp('effective_date').notNull(),
   isActive: boolean('is_active').default(false).notNull(),
   createdBy: uuid('created_by').notNull(),
-});
-
-// Define indexes separately
-export const privacyPoliciesVersionIdx = index('privacy_policies_version_idx').on(privacyPolicies.version);
-export const privacyPoliciesActiveIdx = index('privacy_policies_active_idx').on(privacyPolicies.isActive);
+}, (table) => ({
+  // Define indexes inline instead of separately
+  versionIdx: index('privacy_policies_version_idx').on(table.version),
+  activeIdx: index('privacy_policies_active_idx').on(table.isActive),
+}));
 
 export type PrivacyPolicy = InferSelectModel<typeof privacyPolicies>;
 export type InsertPrivacyPolicy = InferInsertModel<typeof privacyPolicies>;

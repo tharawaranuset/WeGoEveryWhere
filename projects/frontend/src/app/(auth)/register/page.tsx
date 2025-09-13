@@ -47,7 +47,6 @@ export default function RegisterPage() {
           const cpw = form.confirmPassword.value;
 
           if (pwd !== cpw) {
-            form.confirmPassword.setCustomValidity("Passwords do not match");
             form.confirmPassword.reportValidity();
             toast.error("password NOT match");
             return;

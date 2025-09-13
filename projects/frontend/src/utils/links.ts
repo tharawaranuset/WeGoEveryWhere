@@ -18,5 +18,5 @@ export const navLinks: NavLink[] = [
   { href: "/event/create", label: "Create", icon: PlusCircle },
   { href: "/", label: "Home", icon: Home },
   { href: "/chat", label: "Chat", icon: MessageSquareMore },
-  { href: "/login", label: "Profile", icon: UserRound },
+  { href: "/profile", label: "Profile", icon: UserRound },
 ];

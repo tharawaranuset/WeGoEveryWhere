@@ -8,7 +8,7 @@ import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { RefreshJwtGuard } from './jwt/refresh-jwt/refresh-jwt.guard';
 import { ConsoleLogWriter } from 'drizzle-orm';
 import { ConfigService } from '@nestjs/config';
-import { UsersRepository } from '@backend/src/modules/users.repository';
+import { UsersRepository } from '@backend/src/modules/users/users.repository';
 import { RegisterDto } from '@backend/src/modules/dto/register.dto'
 
 @Controller('auth')

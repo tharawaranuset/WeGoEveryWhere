@@ -1,7 +1,7 @@
 // src/app/(auth)/register/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import PasswordInput from "@/components/form/input/PasswordInput";
@@ -10,10 +10,26 @@ import { ArrowLeft } from "lucide-react";
 import { FormInput } from "@/components/form/input/FormInput";
 import { toast } from "react-hot-toast";
 import { SubmitButton } from "@/components/form/Buttons";
-import { useRouter } from "next/navigation";;
+import { useRouter } from "next/navigation";
+import { apiCall } from "@/utils/api";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [policyContent, setPolicyContent] = useState("Loading policy...");
+
+  useEffect(() => {
+    const fetchPolicy = async () => {
+      try {
+        const response = await apiCall('/api/consent/current-policy');
+        setPolicyContent(response.content || response.text || "Policy content not available");
+      } catch (error) {
+        console.error('Failed to load policy:', error);
+        setPolicyContent("Failed to load policy. Please try again later.");
+      }
+    };
+    fetchPolicy();
+  }, []);
+
   return (
     <main className="font-alt">
       {/* แถวบน: แบรนด์ + โลโก้ */}
@@ -38,27 +54,50 @@ export default function RegisterPage() {
         overflow-hidden pb-24 sm:pb-28 ">
         <form className="mt-2 space-y-4"
         onSubmit={(e) => {
-          e.preventDefault(); // กัน submit เดิมทุกกรณี
+          e.preventDefault();
           const form = e.currentTarget as HTMLFormElement & {
+            email: HTMLInputElement;
             password: HTMLInputElement;
             confirmPassword: HTMLInputElement;
+            accept: HTMLInputElement;
           };
-          const pwd = form.password.value;
-          const cpw = form.confirmPassword.value;
+          
+          const email = form.email.value;
+          const password = form.password.value;
+          const confirmPassword = form.confirmPassword.value;
+          const accepted = form.accept.checked;
 
-          if (pwd !== cpw) {
-            form.confirmPassword.reportValidity();
-            toast.error("password NOT match");
+          // Validation
+          if (!email) {
+            toast.error("Email is required");
             return;
           }
+          if (!password) {
+            toast.error("Password is required");
+            return;
+          }
+          if (password !== confirmPassword) {
+            form.confirmPassword.reportValidity();
+            toast.error("Passwords do not match");
+            return;
+          }
+          if (!accepted) {
+            toast.error("Please accept the policy");
+            return;
+          }
+
+          // Store registration data for next step
+          const registrationData = { email, password };
+          sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
+          
           form.confirmPassword.setCustomValidity("");
-          router.push("/profile_setup");
+          toast.success("Email and password saved. Complete your profile!");
+          router.push("/profile-setup");
         }}
         onInput={(e) => {
           const t = e.target as HTMLInputElement;
           if (t.name === "confirmPassword") t.setCustomValidity("");
         }}
-        
         >
           {/* E-mail */}
           <FormInput name="email" label="Email" type="email" placeholder="you@example.com" />
@@ -78,17 +117,7 @@ export default function RegisterPage() {
           {/* กล่อง policy เลื่อนในตัว */}
           <div className="mt-2">
             <div className="rounded-3xl bg-[#D7D0D0]/80 p-4 h-36 overflow-auto text-center text-sm font-semibold text-gray-800">
-              But if you like causing trouble up in hotel rooms
-              And if you like having secret little rendezvous
-              If you like to do the things you know that we shouldn't do
-              Then, baby, I'm perfect
-              Baby, I'm perfect for you
-              And if you like midnight driving with the windows down
-              And if you like going places we can't even pronounce
-              If you like to do whatever you've been dreaming about
-              Then, baby, you're perfect
-              Baby, you're perfect
-              So let's start right now
+              {policyContent}
             </div>
           </div>
 

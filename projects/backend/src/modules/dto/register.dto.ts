@@ -1,22 +1,41 @@
-// dto/register.dto.ts
-import { IsInt, IsOptional, IsString, MaxLength, Min, MinLength, IsDateString } from 'class-validator';
+// src/modules/dto/register.dto.ts
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsString, IsOptional, IsDateString, MinLength } from 'class-validator';
 
 export class RegisterDto {
-  @IsString() @MinLength(1) @MaxLength(50)
-  firstName!: string;
+  @ApiProperty({ example: 'user@example.com' })
+  @IsEmail()
+  email: string;
 
-  @IsString() @MinLength(1) @MaxLength(50)
-  lastName!: string;
+  @ApiProperty({ example: 'password123' })
+  @IsString()
+  @MinLength(6)
+  password: string;
 
-  @IsOptional() @IsString() @MaxLength(20)
+  @ApiProperty({ example: 'John' })
+  @IsString()
+  firstName: string;
+
+  @ApiProperty({ example: 'Doe' })
+  @IsString()
+  lastName: string;
+
+  @ApiProperty({ example: '0123456789', required: false })
+  @IsOptional()
+  @IsString()
   telephoneNumber?: string;
 
-  @IsOptional() @IsString()
+  @ApiProperty({ example: 'I love outdoor activities', required: false })
+  @IsOptional()
+  @IsString()
   bio?: string;
 
+  @ApiProperty({ example: '2000-01-01' })
   @IsDateString()
-  birthdate!: string;
+  birthdate: string;
 
-  @IsOptional() @IsString() @MaxLength(10)
+  @ApiProperty({ example: 'male', required: false })
+  @IsOptional()
+  @IsString()
   sex?: string;
 }

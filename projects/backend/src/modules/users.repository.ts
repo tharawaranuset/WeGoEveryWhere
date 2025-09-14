@@ -3,16 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { users } from '@backend/src/database/schema/users.schema';
-
-// Align these names with your users.schema.ts columns
-type CreateUserDto = {
-  firstName: string;
-  lastName: string;
-  telephoneNumber?: string | null;
-  bio?: string | null;
-  birthdate: string; // ISO date string
-  sex?: string | null;
-};
+import { RegisterDto } from '@backend/src/modules/dto/register.dto';
 
 @Injectable()
 export class UsersRepository {
@@ -22,20 +13,16 @@ export class UsersRepository {
     this.db = drizzle(this.pool);
   }
 
-  async createUser(input: CreateUserDto) {
-    const {
-      firstName, lastName, telephoneNumber, bio, birthdate, sex,
-    } = input;
-
+  async createUser(input: RegisterDto) {
     const [row] = await this.db
       .insert(users)
       .values({
-        firstName,
-        lastName,
-        telephoneNumber: telephoneNumber ?? null,
-        bio: bio ?? null,
-        birthdate,
-        sex: sex ?? null,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        telephoneNumber: input.telephoneNumber ?? null,
+        bio: input.bio ?? null,
+        birthdate: input.birthdate,
+        sex: input.sex ?? null,
       })
       .returning({
         userId: users.userId,
@@ -50,8 +37,6 @@ export class UsersRepository {
         cookiePolicyVersionAccepted: users.cookiePolicyVersionAccepted,
         cookiePolicyAcceptedAt: users.cookiePolicyAcceptedAt,
       });
-
     return row;
   }
-
 }

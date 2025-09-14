@@ -82,22 +82,39 @@ export class AuthController {
   @Post('register')
   @ApiBody({ type: RegisterDto })
   async register(@Body() body: RegisterDto, @Res({ passthrough: true }) res: Response) {
-    // 1) create user row
-    const user = await this.usersRepository.createUser(body);
+    try {
+      // 1) create user row
+      const user = await this.usersRepository.createUser(body);
 
-    // 2) OPTIONAL: issue access token immediately (you already have signJwt)
-    const accessToken = this.authService.signJwt(user.uid);
+      // 2) FIXED: use user.userId instead of user.uid
+      const accessToken = this.authService.signJwt(user.userId.toString());
 
-    // simple cookie (keep in sync with your config)
-    res.cookie('jwt', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 15,
-    });
+      // simple cookie (keep in sync with your config)
+      res.cookie('jwt', accessToken, {
+        httpOnly: true,
+        secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
+        sameSite: 'strict',
+        maxAge: 1000 * 60 * 15,
+      });
 
-    // 3) return the newly created user (no secrets)
-    return { user, accessToken };
+      // 3) return the newly created user (no secrets)
+      return { 
+        success: true,
+        user: {
+          userId: user.userId,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        },
+        accessToken 
+      };
+    } catch (error) {
+      console.error('Registration error:', error);
+      return {
+        success: false,
+        error: 'Registration failed',
+        details: error.message
+      };
+    }
   }
 
   //clear user cookie
@@ -116,9 +133,4 @@ export class AuthController {
     });
     return { message: 'Logged out successfully' };
   }
-
 }
-
-
-
-

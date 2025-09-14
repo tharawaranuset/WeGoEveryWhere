@@ -13,9 +13,9 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     depends_on:
       - db                           # รอ db เริ่มก่อน
-    # volumes:
-    #  - ./projects/backend:/app               # mount โค้ดจากเครื่องเพื่อ live reload
-    #  - /app/node_modules            # แยก node_modules
+    volumes:
+      - ./projects/backend:/app               # mount โค้ดจากเครื่องเพื่อ live reload
+      - /app/node_modules            # แยก node_modules
 
   frontend:
     build: ./projects/frontend

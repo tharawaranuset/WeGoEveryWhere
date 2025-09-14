@@ -28,12 +28,6 @@ export class AuthService {
     // @Inject(DATABASE_CONNECTION)
     // private readonly db: DrizzleDb,
   ) {
-    console.log('=== DATABASE CONNECTION DEBUG ===');
-    console.log('POSTGRES_USER:', process.env.POSTGRES_USER);
-    console.log('POSTGRES_PASSWORD:', process.env.POSTGRES_PASSWORD);
-    console.log('POSTGRES_DB:', process.env.POSTGRES_DB);
-    console.log('POSTGRES_HOST:', process.env.POSTGRES_HOST);
-    console.log('=================================');
   }
 
   // Access token

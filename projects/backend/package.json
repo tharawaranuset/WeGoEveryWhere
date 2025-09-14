@@ -32,6 +32,7 @@
     "dotenv": "^17.2.2",
     "drizzle-kit": "^0.31.4",
     "drizzle-orm": "^0.44.5",
+    "nodemon": "^3.1.10",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-jwt": "^4.0.1",

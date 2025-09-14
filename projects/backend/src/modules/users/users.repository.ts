@@ -21,7 +21,7 @@ export class UsersRepository {
   constructor(private readonly pool: Pool) {
     this.db = drizzle(this.pool);
   }
-
+  
   async createUser(input: CreateUserDto) {
     const {
       firstName, lastName, telephoneNumber, bio, birthdate, sex,

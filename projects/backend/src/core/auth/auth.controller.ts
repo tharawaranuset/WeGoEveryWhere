@@ -9,6 +9,7 @@ import { RefreshJwtGuard } from './jwt/refresh-jwt/refresh-jwt.guard';
 import { ConsoleLogWriter } from 'drizzle-orm';
 import { ConfigService } from '@nestjs/config';
 import { UsersRepository } from '@backend/src/modules/users.repository';
+import { AuthUsersRepository } from '@backend/src/modules/auth-users.repository';
 import { RegisterDto } from '@backend/src/modules/dto/register.dto'
 
 @Controller('auth')
@@ -17,6 +18,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly usersRepository: UsersRepository,
+    private readonly authUsersRepository: AuthUsersRepository,
   ) {}
 
   // this Route sus
@@ -83,13 +85,28 @@ export class AuthController {
   @ApiBody({ type: RegisterDto })
   async register(@Body() body: RegisterDto, @Res({ passthrough: true }) res: Response) {
     try {
-      // 1) create user row
+      // 1) Check if email already exists
+      const existingUser = await this.authUsersRepository.findByEmail(body.email);
+      if (existingUser) {
+        return {
+          success: false,
+          error: 'Email already registered'
+        };
+      }
+
+      // 2) Hash the password
+      const passwordHash = await this.authService.hashPassword(body.password);
+
+      // 3) Create user in users table
       const user = await this.usersRepository.createUser(body);
 
-      // 2) FIXED: use user.userId instead of user.uid
+      // 4) Create auth record in auth_users table
+      await this.authUsersRepository.createAuthUser(user.userId, body.email, passwordHash);
+
+      // 5) Generate JWT token
       const accessToken = this.authService.signJwt(user.userId.toString());
 
-      // simple cookie (keep in sync with your config)
+      // 6) Set cookie
       res.cookie('jwt', accessToken, {
         httpOnly: true,
         secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
@@ -97,13 +114,14 @@ export class AuthController {
         maxAge: 1000 * 60 * 15,
       });
 
-      // 3) return the newly created user (no secrets)
+      // 7) Return success response
       return { 
         success: true,
         user: {
           userId: user.userId,
           firstName: user.firstName,
           lastName: user.lastName,
+          email: body.email,
         },
         accessToken 
       };

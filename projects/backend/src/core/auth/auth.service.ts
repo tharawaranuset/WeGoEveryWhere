@@ -23,10 +23,18 @@ export class AuthService {
     private refreshJwtConfiguration: ConfigType<typeof refreshJwtConfig>,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
+    
     // private readonly sessionService: SessionService,
     // @Inject(DATABASE_CONNECTION)
     // private readonly db: DrizzleDb,
-  ) {}
+  ) {
+    console.log('=== DATABASE CONNECTION DEBUG ===');
+    console.log('POSTGRES_USER:', process.env.POSTGRES_USER);
+    console.log('POSTGRES_PASSWORD:', process.env.POSTGRES_PASSWORD);
+    console.log('POSTGRES_DB:', process.env.POSTGRES_DB);
+    console.log('POSTGRES_HOST:', process.env.POSTGRES_HOST);
+    console.log('=================================');
+  }
 
   // Access token
   signJwt(userId: number | string, email?: string) {
@@ -85,7 +93,7 @@ export class AuthService {
         name: 'User',
         email: authUser.email,
         resetUrl,
-        expiresIn: '1 hour',
+        expiresIn: '1h',
       });
     } catch (err) {
       console.error('Failed to send password reset email:', err);

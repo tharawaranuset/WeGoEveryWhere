@@ -1,19 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
 import { authUsers } from '@backend/src/database/schema/authUsers.schema';
 import { eq } from 'drizzle-orm';
+import { db } from '@backend/src/database/connection';
 
 @Injectable()
 export class AuthUsersRepository {
-  private db;
-
-  constructor(private readonly pool: Pool) {
-    this.db = drizzle(this.pool);
-  }
-
   async createAuthUser(userId: number, email: string, passwordHash: string) {
-    const [row] = await this.db
+    const [row] = await db
       .insert(authUsers)
       .values({
         userId,
@@ -30,8 +23,15 @@ export class AuthUsersRepository {
   }
 
   async findByEmail(email: string) {
-    const [user] = await this.db
-      .select()
+    const [user] = await db
+      .select({
+        id: authUsers.id,
+        userId: authUsers.userId,
+        email: authUsers.email,
+        passwordHash: authUsers.passwordHash,
+        createdAt: authUsers.createdAt,
+        updatedAt: authUsers.updatedAt,
+      })
       .from(authUsers)
       .where(eq(authUsers.email, email))
       .limit(1);

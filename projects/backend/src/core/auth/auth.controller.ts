@@ -173,6 +173,10 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() body: RegisterDto, @Res({ passthrough: true }) res: Response) {
+    console.log('=== REGISTER ENDPOINT CALLED ===');
+    console.log('JWT_EXPIRATION_TIME:', process.env.JWT_EXPIRATION_TIME);
+    console.log('REFRESH_JWT_EXPIRATION_TIME:', process.env.REFRESH_JWT_EXPIRATION_TIME);
+    console.log('================================');
     try {
       // 1) Check if email already exists
       const existingUser = await this.authUsersRepository.findByEmail(body.email);

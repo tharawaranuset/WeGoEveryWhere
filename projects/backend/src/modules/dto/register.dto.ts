@@ -7,9 +7,9 @@ export class RegisterDto {
   @IsEmail()
   email: string;
 
+  //not much check because already check at frontend @register page
   @ApiProperty({ example: 'password123' })
   @IsString()
-  @MinLength(6)
   password: string;
 
   @ApiProperty({ example: 'John' })

@@ -1,10 +1,10 @@
-// src/app/(auth)/profile-setup/page.tsx
+// src/app/(auth)/profile-setup/page.tsx - COMPLETE VALIDATION
 "use client";
 
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Calendar, ChevronDown } from "lucide-react";
+import { ArrowLeft, Calendar } from "lucide-react";
 import { FormInput } from "@/components/form/input/FormInput";
 import PhotoPicker from "@/components/form/PhotoPicker";
 import FormSelect from "@/components/form/input/FormSelect";
@@ -25,7 +25,59 @@ export default function ProfileSetupPage() {
     if (typeof el.showPicker === "function") el.showPicker();
     else { el.focus(); el.click(); }
   };
-  const today = new Date().toISOString().slice(0, 10);
+
+  // Calculate max date for 20+ years old
+  const twentyYearsAgo = new Date();
+  twentyYearsAgo.setFullYear(twentyYearsAgo.getFullYear() - 20);
+  const maxDate = twentyYearsAgo.toISOString().slice(0, 10);
+
+  const validateAge = (birthdate: string) => {
+    const birthDate = new Date(birthdate);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      return age - 1 >= 20;
+    }
+    return age >= 20;
+  };
+
+  const validateField = (name: string, value: string) => {
+    switch (name) {
+      case 'firstName':
+        if (!value) return "First name is required";
+        if (value.length > 50) return "First name must be 50 characters or less";
+        return null;
+      
+      case 'lastName':
+        if (!value) return "Last name is required";
+        if (value.length > 50) return "Last name must be 50 characters or less";
+        return null;
+      
+      case 'telephoneNumber':
+        if (value && value.length > 20) return "Phone number must be 20 characters or less";
+        return null;
+      
+      case 'bio':
+        // No specific length limit for TEXT type, but reasonable validation
+        if (value && value.length > 1000) return "Bio must be 1000 characters or less";
+        return null;
+      
+      case 'birthdate':
+        if (!value) return "Birth date is required";
+        if (!validateAge(value)) return "You must be at least 20 years old to register";
+        return null;
+      
+      case 'sex':
+        if (!value) return "Please select your gender";
+        if (value.length > 10) return "Invalid gender selection";
+        return null;
+      
+      default:
+        return null;
+    }
+  };
 
   return (
     <main className="font-alt">
@@ -65,10 +117,17 @@ export default function ProfileSetupPage() {
 
             try {
               const formData = new FormData(e.currentTarget);
+              
               // Get registration data from previous step
               const registrationData = JSON.parse(sessionStorage.getItem('registrationData') || '{}');
               
-              // Validation
+              if (!registrationData.email || !registrationData.password) {
+                toast.error("Registration data missing. Please start from the beginning.");
+                router.push("/register");
+                return;
+              }
+
+              // Extract form data with validation
               const firstName = formData.get('firstName') as string;
               const lastName = formData.get('lastName') as string;
               const telephoneNumber = formData.get('telephoneNumber') as string;
@@ -76,8 +135,40 @@ export default function ProfileSetupPage() {
               const birthdate = formData.get('birthdate') as string;
               const sex = formData.get('sex') as string;
 
-              if (!firstName || !lastName || !telephoneNumber || !bio || !birthdate || !sex) {
-                toast.error("Please fill in all required fields");
+              // Validate each field with specific error messages
+              const firstNameError = validateField('firstName', firstName);
+              if (firstNameError) {
+                toast.error(firstNameError);
+                return;
+              }
+
+              const lastNameError = validateField('lastName', lastName);
+              if (lastNameError) {
+                toast.error(lastNameError);
+                return;
+              }
+
+              const phoneError = validateField('telephoneNumber', telephoneNumber);
+              if (phoneError) {
+                toast.error(phoneError);
+                return;
+              }
+
+              const bioError = validateField('bio', bio);
+              if (bioError) {
+                toast.error(bioError);
+                return;
+              }
+
+              const birthdateError = validateField('birthdate', birthdate);
+              if (birthdateError) {
+                toast.error(birthdateError);
+                return;
+              }
+
+              const sexError = validateField('sex', sex);
+              if (sexError) {
+                toast.error(sexError);
                 return;
               }
               
@@ -89,8 +180,8 @@ export default function ProfileSetupPage() {
                 // From profile setup page
                 firstName,
                 lastName,
-                telephoneNumber,
-                bio,
+                telephoneNumber: telephoneNumber || null, // Allow empty string to be null
+                bio: bio || null, // Allow empty string to be null
                 birthdate,
                 sex,
               };
@@ -103,26 +194,43 @@ export default function ProfileSetupPage() {
                 body: JSON.stringify(payload),
               });
 
-              console.log('Registration successful:', result);
+              console.log('Registration result:', result);
 
               if (result.success) {
-                toast.success('Registration successful!');
+                toast.success('Registration successful! Welcome to WeGoEveryWhere!');
                 sessionStorage.removeItem('registrationData');
                 router.push('/dashboard'); // Or wherever you want to redirect
               } else {
-                toast.error(result.error || 'Registration failed');
+                // Handle specific backend errors
+                if (result.error === 'Email already registered') {
+                  toast.error("This email is already registered. Please use a different email or try logging in.");
+                } else if (result.details && result.details.includes('age_check')) {
+                  toast.error("You must be at least 20 years old to register.");
+                } else if (result.details && result.details.includes('email')) {
+                  toast.error("Invalid email format or email already exists.");
+                } else {
+                  toast.error(result.error || 'Registration failed. Please check your information and try again.');
+                }
               }
 
-            } catch (error) {
+            } catch (error: any) {
               console.error('Registration error:', error);
-              toast.error('Registration failed. Please try again.');
+              
+              // Handle specific API errors
+              if (error.status === 400) {
+                toast.error("Invalid information provided. Please check all fields and try again.");
+              } else if (error.status === 409) {
+                toast.error("Email already registered. Please use a different email.");
+              } else {
+                toast.error('Registration failed. Please check your connection and try again.');
+              }
             } finally {
               setIsLoading(false);
             }
           }}
         >
-          <FormInput name="firstName" type="text" label="First name" />
-          <FormInput name="lastName"  type="text" label="Last name" />
+          <FormInput name="firstName" type="text" label="First name" placeholder="Enter your first name" />
+          <FormInput name="lastName"  type="text" label="Last name" placeholder="Enter your last name" />
 
           {/* Birth date + ปุ่มไอคอนเปิดปฏิทิน */}
           <div className="mb-0">
@@ -147,15 +255,16 @@ export default function ProfileSetupPage() {
                 <Calendar size={18} />
               </button>
             </div>
+            <p className="text-xs text-gray-600 mt-1">You must be at least 20 years old to register</p>
           </div>
 
           {/* Sex */}
           <FormSelect
               name="sex"
-              label="Sex"
+              label="Gender"
               defaultValue=""
               options={[
-                { label: "Select…", value: "", disabled: true },
+                { label: "Select your gender", value: "", disabled: true },
                 { label: "Female", value: "female" },
                 { label: "Male", value: "male" },
                 { label: "Other", value: "other" },
@@ -163,8 +272,8 @@ export default function ProfileSetupPage() {
               ]}
           />
 
-          <FormInput name="telephoneNumber" type="tel" label="Telephone" />
-          <FormInput name="bio"  type="text" label="Bio" />
+          <FormInput name="telephoneNumber" type="tel" label="Phone Number (Optional)" placeholder="Enter your phone number" />
+          <FormInput name="bio"  type="text" label="Bio (Optional)" placeholder="Tell us about yourself" />
 
           <button
             type="submit"

@@ -1,4 +1,5 @@
 .env
+.env.backend
 /db/init/backup.sql
 /db/init/schema.sql
 /db/init/seed.sql

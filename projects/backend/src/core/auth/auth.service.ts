@@ -1,8 +1,10 @@
+// src/core/auth/auth.service.ts
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from '@backend/src/configurations/configs/refresh-jwt.config';
 import { ConfigService } from '@nestjs/config';
 import type { ConfigType } from '@nestjs/config';
+import * as crypto from 'crypto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 // import { v4 as uuidv4 } from 'uuid';
@@ -25,21 +27,24 @@ export class AuthService {
     // private readonly db: DrizzleDb,
   ) {}
 
-  signJwt(id: any) {
-    const payload = { sub: id };
-    const accessToken = this.jwtService.sign(payload);
-    return accessToken;
+  // Access token
+  signJwt(userId: number | string, email?: string) {
+    const payload = { sub: userId, email, jti: crypto.randomUUID() };
+    return this.jwtService.sign(payload);
   }
 
-  signRefreshJwt(id: any) {
-    const payload = { sub: id };
-    const refreshToken = this.jwtService.sign(
-      payload,
-      this.refreshJwtConfiguration,
-    );
-    return refreshToken;
+  // Refresh token — return token string + tokenId for DB
+  signRefreshJwt(userId: number | string) {
+    const tokenId = crypto.randomUUID();
+    const payload = { sub: userId, tokenId };
+    const refreshToken = this.jwtService.sign(payload, this.refreshJwtConfiguration);
+    return { refreshToken, tokenId };
   }
 
+  // (optional helpers you can call from the controller)
+  verifyRefresh(refreshToken: string) {
+    return this.jwtService.verify(refreshToken, this.refreshJwtConfiguration) as { sub: any; tokenId: string; iat: number; exp: number };
+  }
   async forgotPassword(dto: ForgotPasswordDto) {
     const { v4: uuidv4 } = await import('uuid');
 

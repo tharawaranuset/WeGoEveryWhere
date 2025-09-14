@@ -1,5 +1,5 @@
 {
-  "id": "06cc4151-8200-4421-8dfc-da756ea08f8e",
+  "id": "887324b5-89ce-4282-a332-b74894eb0c2f",
   "prevId": "c6af3d8b-faf8-4e0e-804d-79084f132e89",
   "version": "7",
   "dialect": "postgresql",
@@ -70,18 +70,6 @@
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
-        },
-        "reset_token": {
-          "name": "reset_token",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "reset_token_expires_at": {
-          "name": "reset_token_expires_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -371,6 +359,13 @@
           "primaryKey": false,
           "notNull": false,
           "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
         },
         "user_id": {
           "name": "user_id",

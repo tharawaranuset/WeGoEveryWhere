@@ -1,5 +1,3 @@
-
-
 services:
   backend:
     build: ./projects/backend                 # สร้าง image จาก Dockerfile ใน folder backend
@@ -12,7 +10,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
       POSTGRES_DB: ${POSTGRES_DB}
     depends_on:
-      - db                           # รอ db เริ่มก่อน
+      - db                          # รอ db เริ่มก่อน
     volumes:
       - ./projects/backend:/app               # mount โค้ดจากเครื่องเพื่อ live reload
       - /app/node_modules            # แยก node_modules
@@ -38,7 +36,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"                   # map port database
+      - "${POSTGRES_PORT:-5432}:5432"                   # map port database
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d

@@ -9,7 +9,8 @@ import { JwtStrategy } from './jwt/access-jwt/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
 import refreshJwtConfig from '@backend/src/configurations/configs/refresh-jwt.config';
 import { RefreshJwtStrategy } from './jwt/refresh-jwt/refresh-jwt.strategy';
-import { UsersModule } from '@backend/src/modules/users.module';
+import { UsersModule } from '@backend/src/modules/users/users.module';
+import { RefreshTokensRepository } from '@backend/src/modules/refreshTokens.repository';
 import { EmailService } from '@backend/src/shared/services/email.service';
 
 @Module({
@@ -27,7 +28,9 @@ import { EmailService } from '@backend/src/shared/services/email.service';
     AuthService,
     JwtStrategy,
     RefreshJwtStrategy,
+    RefreshTokensRepository,
     EmailService,
   ],
+  exports: [AuthService , RefreshTokensRepository],
 })
 export class AuthModule {}

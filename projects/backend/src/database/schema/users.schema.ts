@@ -13,7 +13,8 @@ export const users = pgTable('users', {
   sex: varchar('sex', { length: 10 }),
   signupTime: time('signup_time').default(sql`CURRENT_TIME`),
   signupDate: date('signup_date').default(sql`CURRENT_DATE`),
-  // ✅ cookie policy fields
+  
+  // cookie policy fields
   cookiePolicyVersionAccepted: integer("cookie_policy_version_accepted"),
   cookiePolicyAcceptedAt: timestamp("cookie_policy_accepted_at"),
 }, (table) => [

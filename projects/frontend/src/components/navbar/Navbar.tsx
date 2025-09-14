@@ -1,13 +1,15 @@
+// components/navbar/Navbar.tsx
 "use client";
 import { Navigationlist } from "./Navigationlist";
 
-const Navbar = () => {
+export const Navbar = () => {
   return (
-    <>
-      <div className="bg-[var(--color-brand-navbar-idle)] py-0 rounded-t-2xl rounded-b-none">
-        <Navigationlist />
+    <footer className="absolute inset-x-0 bottom-0">
+      <div className="pb-[env(safe-area-inset-bottom)]">
+        <div className="mx-[10px] h-16 rounded-t-2xl bg-[var(--color-brand-navbar-idle)] shadow-lg">
+          <Navigationlist />
+        </div>
       </div>
-    </>
+    </footer>
   );
 };
-export default Navbar;

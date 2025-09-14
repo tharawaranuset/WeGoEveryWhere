@@ -3,10 +3,10 @@ import * as React from "react";
 import { Upload, X } from "lucide-react";
 
 type Props = {
-  name?: string;                      // ชื่อฟิลด์ในฟอร์ม (สำคัญ!)
+  name?: string; // ชื่อฟิลด์ในฟอร์ม (สำคัญ!)
   value?: string | null;
   onChange?: (file: File | null, previewUrl: string | null) => void;
-  size?: number;                      // px (สี่เหลี่ยมจัตุรัส)
+  size?: number; // px (สี่เหลี่ยมจัตุรัส)
   rounded?: "full" | "3xl" | "2xl" | "xl" | "lg" | "md" | "sm" | "none";
   accept?: string;
   caption?: string;
@@ -31,13 +31,21 @@ export default function PhotoPicker({
   const [localUrl, setLocalUrl] = React.useState<string | null>(null);
 
   const roundedClass =
-    rounded === "full" ? "rounded-full" :
-    rounded === "3xl"  ? "rounded-3xl" :
-    rounded === "2xl"  ? "rounded-2xl" :
-    rounded === "xl"   ? "rounded-xl"  :
-    rounded === "lg"   ? "rounded-lg"  :
-    rounded === "md"   ? "rounded-md"  :
-    rounded === "sm"   ? "rounded-sm"  : "rounded-none";
+    rounded === "full"
+      ? "rounded-full"
+      : rounded === "3xl"
+      ? "rounded-3xl"
+      : rounded === "2xl"
+      ? "rounded-2xl"
+      : rounded === "xl"
+      ? "rounded-xl"
+      : rounded === "lg"
+      ? "rounded-lg"
+      : rounded === "md"
+      ? "rounded-md"
+      : rounded === "sm"
+      ? "rounded-sm"
+      : "rounded-none";
 
   const openFile = () => !disabled && fileRef.current?.click();
 
@@ -45,14 +53,25 @@ export default function PhotoPicker({
     const f = e.target.files?.[0] ?? null;
     if (!f) return;
     const url = URL.createObjectURL(f);
-    setLocalUrl(prev => { if (prev) URL.revokeObjectURL(prev); return url; });
+    setLocalUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return url;
+    });
     onChange?.(f, url);
   };
 
-  React.useEffect(() => () => { if (localUrl) URL.revokeObjectURL(localUrl); }, [localUrl]);
+  React.useEffect(
+    () => () => {
+      if (localUrl) URL.revokeObjectURL(localUrl);
+    },
+    [localUrl]
+  );
 
   const clearPhoto = () => {
-    setLocalUrl(prev => { if (prev) URL.revokeObjectURL(prev); return null; });
+    setLocalUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
     if (fileRef.current) fileRef.current.value = "";
     onChange?.(null, null);
   };
@@ -75,7 +94,11 @@ export default function PhotoPicker({
           disabled={disabled}
         >
           {displayUrl ? (
-            <img src={displayUrl} alt="Preview" className="h-full w-full object-cover" />
+            <img
+              src={displayUrl}
+              alt="Preview"
+              className="h-full w-full object-cover"
+            />
           ) : (
             <Upload className="text-gray-700" />
           )}

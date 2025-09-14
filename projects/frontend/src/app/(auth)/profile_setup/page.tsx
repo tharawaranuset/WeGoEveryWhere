@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, ChevronDown } from "lucide-react";
 import { FormInput } from "@/components/form/input/FormInput";
 import PhotoPicker from "@/components/form/PhotoPicker";
 import FormSelect from "@/components/form/input/FormSelect";
+import { Calendar28 } from "@/components/form/input/DatePicker";
 
 
 type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
@@ -66,36 +67,19 @@ export default function ProfileSetupPage() {
             router.push("/profile-setup/next");  // ไปหน้าถัดไป
           }}
         >
-          <FormInput name="firstName" type="text" label="First name" required />
-          <FormInput name="lastName"  type="text" label="Last name"  required />
+          <FormInput name="firstName" type="text" label="First name" className="bg-white border border-black" />
+          <FormInput name="lastName"  type="text" label="Last name" className="bg-white border border-black"  />
 
           {/* Birth date + ปุ่มไอคอนเปิดปฏิทิน */}
-          <div className="mb-0">
-            <label htmlFor="birthDate" className="text-sm font-semibold">Birth date</label>
-            <div className="relative mt-1">
-              <FormInput
-                ref={dateRef as any}
-                id="birthDate"
-                name="birthDate"
-                type="date"
-                max={today}
-                required
-                className="pr-11 appearance-none
-                          [&::-webkit-calendar-picker-indicator]:hidden
-                          [&::-webkit-clear-button]:hidden
-                          [&::-webkit-inner-spin-button]:hidden
-                          [-moz-appearance:textfield]"
-              />
-              <button
-                type="button"
-                onClick={openDate}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-700 hover:text-gray-900"
-                aria-label="Open date picker"
-              >
-                <Calendar size={18} />
-              </button>
-            </div>
-          </div>
+          <Calendar28
+                  name="birthdate"
+                  label="Birth Date"
+                  placeholder="Month DD,YYYY"
+                  required
+                  className="bg-white border border-black w-full rounded-full
+                              h-10 px-4 text-[15px] leading-none"
+                  disableTyping
+          />
 
           {/* Sex */}
           <FormSelect
@@ -112,8 +96,8 @@ export default function ProfileSetupPage() {
               ]}
           />
 
-          <FormInput name="tel" type="tel" inputMode="tel" label="Telephone" required />
-          <FormInput name="bio"  type="text" label="Bio"  required />
+          <FormInput name="tel" type="tel" label="Telephone" className="bg-white border border-black" />
+          <FormInput name="bio"  type="text" label="Bio" className="bg-white border border-black" />
 
           <button
             type="submit"

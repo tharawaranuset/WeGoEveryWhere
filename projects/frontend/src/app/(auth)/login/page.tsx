@@ -26,11 +26,18 @@ export default function LoginPage() {
 
         {/* ฟอร์ม: ดันลงเล็กน้อย + ช่องไฟภายในกว้างขึ้น */}
         <form className="mt-4 sm:mt-6 space-y-4 sm:space-y-5">
-          <FormInput name="email" label="Email" type="email" placeholder="you@example.com" />
+          <FormInput 
+          name="email" 
+          label="Email" 
+          type="email" 
+          placeholder="you@example.com"
+          className="bg-white border border-black text-sm placeholder:text-gray-400 placeholder:opacity-100 "
+           />
 
           <PasswordInput
             name="password"
             label="Password"
+            placeholder="fill your password"
             autoComplete="current-password"
           />
 
@@ -68,7 +75,7 @@ export default function LoginPage() {
             hover:!brightness-100 active:!brightness-100 active:scale-90
               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]
             "
-            onclick={() => {}}
+            onClick={() => {}}
           />
 
           <GoogleButton onClick={() => {}} />

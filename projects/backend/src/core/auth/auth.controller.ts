@@ -10,7 +10,7 @@ import { JwtGuard } from './jwt/access-jwt/jwt.guard';
 import { RefreshJwtGuard } from './jwt/refresh-jwt/refresh-jwt.guard';
 import { GitHubAuthGuard } from './github/github-auth.guard';
 
-import { UsersRepository } from '@backend/src/modules/users.repository';
+import { UsersRepository } from '@backend/src/modules/users/users.repository';
 import { RegisterDto } from '@backend/src/modules/dto/register.dto';
 import { RefreshTokensRepository } from '@backend/src/modules/refreshTokens.repository';
 
@@ -27,59 +27,20 @@ export class AuthController {
     private readonly refreshTokensRepo: RefreshTokensRepository,
   ) {}
 
-  // ----------------------------------------------------------------
-  // Passwordless/dev bearer route (kept as in develop)
-  // Stores refresh token row and sets cookies.
-  // username MUST be a numeric userId for the FK (or adapt to lookup).
-  // ----------------------------------------------------------------
+  // this Route sus
   @Public()
   @Post('bearer')
   @ApiBody({
     schema: {
       type: 'object',
-      properties: { username: { type: 'string' } },
+      properties: {
+        username: { type: 'string' },
+      },
     },
   })
-  async apiBearerAuth(
-    @Body('username') username: string,
-    @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
-  ) {
-    const userId = Number(username);
-    if (!Number.isFinite(userId)) {
-      throw new BadRequestException('username must be a numeric user id for this route');
-    }
-
-    const accessToken = this.authService.signJwt(userId);
-    const { refreshToken } = this.authService.signRefreshJwt(userId);
-
-    console.log('Inserting refresh token for user:', userId);
-    // store hashed refresh token in DB
-    await this.refreshTokensRepo.create(
-      userId,
-      refreshToken,
-      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      req.ip,
-      (req.headers['user-agent'] as string) ?? undefined,
-    );
-    console.log('Inserted refresh token for user:', userId);
-
-    // set cookies
-    res.cookie('jwt', accessToken, {
-      httpOnly: true,
-      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 15,
-    });
-
-    res.cookie('refresh_jwt', refreshToken, {
-      httpOnly: true,
-      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
-
-    return { accessToken };
+  apiBearerAuth(@Body('username') username: string) {
+    const accessToken = this.authService.signJwt(username);
+    return { accessToken: accessToken };
   }
 
   // ----------------------------------------------------------------

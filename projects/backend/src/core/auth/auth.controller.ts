@@ -1,12 +1,25 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards, UnauthorizedException, BadRequestException,
+  ValidationPipe,
+} from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { ApiBody } from '@nestjs/swagger';
-
-import { Public } from '@backend/src/shared/decorators/public.decorator';
-import { ConfigService } from '@nestjs/config';
-
 import { AuthService } from './auth.service';
 import { JwtGuard } from './jwt/access-jwt/jwt.guard';
+import { Public } from '@backend/src/shared/decorators/public.decorator';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { RefreshJwtGuard } from './jwt/refresh-jwt/refresh-jwt.guard';
 import { GitHubAuthGuard } from './github/github-auth.guard';
 
@@ -16,7 +29,10 @@ import { RefreshTokensRepository } from '@backend/src/modules/refreshTokens.repo
 
 import { hash as argon2Hash, verify as argon2Verify } from '@node-rs/argon2';
 
-// ...existing code...
+// ...existing code...;
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
@@ -166,6 +182,35 @@ export class AuthController {
     });
 
     return { user, accessToken };
+  }
+
+  @Public()
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Request password reset' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset email sent if account exists',
+  })
+  @ApiResponse({ status: 429, description: 'Too many password reset attempts' })
+  @ApiBody({ type: ForgotPasswordDto })
+  async forgotPassword(
+    @Body(ValidationPipe) forgotPasswordDto: ForgotPasswordDto,
+  ) {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Public()
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Reset password with token' })
+  @ApiResponse({ status: 200, description: 'Password reset successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid or expired token' })
+  @ApiBody({ type: ResetPasswordDto })
+  async resetPassword(
+    @Body(ValidationPipe) resetPasswordDto: ResetPasswordDto,
+  ) {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 
 

@@ -35,13 +35,16 @@
     "drizzle-kit": "^0.31.4",
     "drizzle-orm": "^0.44.5",
     "nodemon": "^3.1.10",
+    "nodemailer": "^7.0.6",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-jwt": "^4.0.1",
     "pg": "^8.16.3",
     "postgres": "^3.4.7",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

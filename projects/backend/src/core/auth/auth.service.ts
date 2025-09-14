@@ -1,13 +1,13 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from '@backend/src/configurations/configs/refresh-jwt.config';
-import type { ConfigService, ConfigType } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
+import type { ConfigType } from '@nestjs/config';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { v4 as uuidv4 } from 'uuid';
-import { and, eq, isNotNull, or } from 'drizzle-orm';
+// import { v4 as uuidv4 } from 'uuid';
+import { eq } from 'drizzle-orm';
 import { EmailService } from '@backend/src/shared/services/email.service';
-import { users } from '@backend/src/database/schema/users.schema';
 import * as argon2 from 'argon2';
 import { authUsers } from '@backend/src/database/schema/authUsers.schema';
 import { db } from '@backend/src/database/connection';
@@ -41,6 +41,8 @@ export class AuthService {
   }
 
   async forgotPassword(dto: ForgotPasswordDto) {
+    const { v4: uuidv4 } = await import('uuid');
+
     const [authUser] = await db
       .select()
       .from(authUsers)
@@ -55,7 +57,7 @@ export class AuthService {
     }
 
     const resetToken = uuidv4();
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hr
 
     await db
       .update(authUsers)
@@ -71,12 +73,16 @@ export class AuthService {
     ).replace(/\/$/, '');
     const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
 
-    await this.emailService.sendPasswordResetEmail({
-      name: 'User',
-      email: authUser.email,
-      resetUrl,
-      expiresIn: '1 hour',
-    });
+    try {
+      await this.emailService.sendPasswordResetEmail({
+        name: 'User',
+        email: authUser.email,
+        resetUrl,
+        expiresIn: '1 hour',
+      });
+    } catch (err) {
+      console.error('Failed to send password reset email:', err);
+    }
 
     return {
       message:
@@ -95,7 +101,9 @@ export class AuthService {
       throw new BadRequestException('Invalid or expired reset token');
     }
 
-    if (new Date() > new Date(authUser.resetTokenExpiresAt)) {
+    const now = new Date();
+    const exp = new Date(authUser.resetTokenExpiresAt);
+    if (now > exp) {
       throw new BadRequestException('Reset token has expired');
     }
 

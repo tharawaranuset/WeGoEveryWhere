@@ -10,20 +10,24 @@ import { ConfigModule } from '@nestjs/config';
 import refreshJwtConfig from '@backend/src/configurations/configs/refresh-jwt.config';
 import { RefreshJwtStrategy } from './jwt/refresh-jwt/refresh-jwt.strategy';
 import { UsersModule } from '@backend/src/modules/users.module';
+import { EmailService } from '@backend/src/shared/services/email.service';
 
 @Module({
   imports: [
+    ConfigModule,
+    ConfigModule.forFeature(refreshJwtConfig),
     PassportModule.register({ session: false }),
     JwtModule.registerAsync(jwtConfig.asProvider()),
-    ConfigModule.forFeature(refreshJwtConfig),
     UsersModule,
   ],
+
   controllers: [AuthController],
   providers: [
     // GitHubAuthStrategy,
     AuthService,
     JwtStrategy,
     RefreshJwtStrategy,
+    EmailService,
   ],
 })
 export class AuthModule {}

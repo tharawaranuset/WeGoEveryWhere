@@ -104,9 +104,9 @@ export class EmailService {
 
     await this.sendEmail({
       to: data.email,
-      subject: 'Welcome to Rocket XP! 🚀',
+      subject: 'Welcome to WeGoEverywhere! 🚀',
       html,
-      text: `Welcome to Rocket XP, ${data.name}! Your account has been created successfully.`,
+      text: `Welcome to WeGoEverywhere, ${data.name}! Your account has been created successfully.`,
     });
   }
 
@@ -122,7 +122,7 @@ export class EmailService {
 
     await this.sendEmail({
       to: data.email,
-      subject: 'Reset Your Password - Rocket XP',
+      subject: 'Reset Your Password - WeGoEverywhere',
       html,
       text: `Hi ${data.name}, click the following link to reset your password: ${data.resetUrl}. This link expires in ${data.expiresIn}.`,
     });
@@ -140,7 +140,7 @@ export class EmailService {
 
     await this.sendEmail({
       to: data.email,
-      subject: 'Verify Your Email - Rocket XP',
+      subject: 'Verify Your Email - WeGoEverywhere',
       html,
       text: `Hi ${data.name}, please verify your email address by clicking: ${data.verificationUrl}. This link expires in ${data.expiresIn}.`,
     });
@@ -149,13 +149,13 @@ export class EmailService {
   private loadTemplate(templateName: string): string {
     try {
       const templatePath = path.join(
-        __dirname,
-        '..',
+        process.cwd(),
         'src',
         'common',
         'templates',
         `${templateName}.html`,
       );
+
       return fs.readFileSync(templatePath, 'utf8');
     } catch (error) {
       this.logger.error(
@@ -182,7 +182,7 @@ export class EmailService {
     switch (templateName) {
       case 'welcome':
         return `
-          <h1>Welcome to Rocket XP, {{name}}!</h1>
+          <h1>Welcome to WeGoEverywhere, {{name}}!</h1>
           <p>Your account has been created successfully.</p>
           <p>Email: {{email}}</p>
           <p><a href="{{loginUrl}}">Login to your account</a></p>
@@ -204,7 +204,7 @@ export class EmailService {
           <p>This link expires in {{expiresIn}}.</p>
         `;
       default:
-        return '<p>{{name}}, you have a new notification from Rocket XP.</p>';
+        return '<p>{{name}}, you have a new notification from WeGoEverywhere.</p>';
     }
   }
 

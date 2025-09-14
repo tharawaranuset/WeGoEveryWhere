@@ -42,25 +42,61 @@ export class EmailService {
     this.initializeTransporter();
   }
 
+  // private initializeTransporter() {
+  //   const emailConfig = this.configService.get<EmailConfig>('email');
+
+  //   if (!emailConfig) {
+  //     this.logger.error('Email configuration not found');
+  //     throw new Error('Email configuration not found');
+  //   }
+
+  //   this.transporter = nodemailer.createTransport({
+  //     host: emailConfig.smtp.host,
+  //     port: emailConfig.smtp.port,
+  //     secure: emailConfig.smtp.secure,
+  //     auth: {
+  //       user: emailConfig.smtp.auth.user,
+  //       pass: emailConfig.smtp.auth.pass,
+  //     },
+  //   });
+
+  //   this.logger.log('Email service initialized with Gmail SMTP');
+  // }
   private initializeTransporter() {
     const emailConfig = this.configService.get<EmailConfig>('email');
-
     if (!emailConfig) {
       this.logger.error('Email configuration not found');
       throw new Error('Email configuration not found');
     }
 
-    this.transporter = nodemailer.createTransport({
+    // ประกอบ options แบบยืดหยุ่น
+    const opts: nodemailer.TransportOptions = {
       host: emailConfig.smtp.host,
       port: emailConfig.smtp.port,
       secure: emailConfig.smtp.secure,
-      auth: {
+    };
+
+    // ใส่ auth เฉพาะเมื่อ config มีจริง
+    if (emailConfig.smtp.auth) {
+      opts.auth = {
         user: emailConfig.smtp.auth.user,
         pass: emailConfig.smtp.auth.pass,
-      },
-    });
+      };
+    }
 
-    this.logger.log('Email service initialized with Gmail SMTP');
+    // สำหรับ MailHog/Dev: ปิด TLS และไม่ verify CA (ค่าพวกนี้จะถูก set มาจาก email.config.ts)
+    if (emailConfig.smtp.hasOwnProperty('ignoreTLS')) {
+      (opts as any).ignoreTLS = (emailConfig.smtp as any).ignoreTLS;
+    }
+    if (emailConfig.smtp.tls) {
+      opts.tls = emailConfig.smtp.tls;
+    }
+
+    this.transporter = nodemailer.createTransport(opts);
+
+    this.logger.log(
+      `Email transporter ready host=${opts.host} port=${opts.port} secure=${opts.secure} auth=${!!opts.auth} ignoreTLS=${(opts as any).ignoreTLS === true}`,
+    );
   }
 
   async sendEmail(options: EmailOptions): Promise<void> {
@@ -151,7 +187,7 @@ export class EmailService {
       const templatePath = path.join(
         process.cwd(),
         'src',
-        'common',
+        'shared',
         'templates',
         `${templateName}.html`,
       );

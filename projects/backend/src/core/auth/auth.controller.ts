@@ -32,6 +32,7 @@ import { hash as argon2Hash, verify as argon2Verify } from '@node-rs/argon2';
 // ...existing code...;
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {

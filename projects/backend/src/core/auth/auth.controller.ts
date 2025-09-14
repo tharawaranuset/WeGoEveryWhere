@@ -1,15 +1,22 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
-import { GitHubAuthGuard } from './github/github-auth.guard';
-import type { Response } from 'express';
+import { Body, Controller, Get, Post, Req, Res, UseGuards, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import type { Request, Response } from 'express';
+import { ApiBody } from '@nestjs/swagger';
+
+import { Public } from '@backend/src/shared/decorators/public.decorator';
+import { ConfigService } from '@nestjs/config';
+
 import { AuthService } from './auth.service';
 import { JwtGuard } from './jwt/access-jwt/jwt.guard';
-import { Public } from '@backend/src/shared/decorators/public.decorator';
-import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { RefreshJwtGuard } from './jwt/refresh-jwt/refresh-jwt.guard';
-import { ConsoleLogWriter } from 'drizzle-orm';
-import { ConfigService } from '@nestjs/config';
-import { UsersRepository } from '@backend/src/modules/users.repository';
-import { RegisterDto } from '@backend/src/modules/dto/register.dto'
+import { GitHubAuthGuard } from './github/github-auth.guard';
+
+import { UsersRepository } from '@backend/src/modules/users/users.repository';
+import { RegisterDto } from '@backend/src/modules/dto/register.dto';
+import { RefreshTokensRepository } from '@backend/src/modules/refreshTokens.repository';
+
+import { hash as argon2Hash, verify as argon2Verify } from '@node-rs/argon2';
+
+// ...existing code...
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +24,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly usersRepository: UsersRepository,
+    private readonly refreshTokensRepo: RefreshTokensRepository,
   ) {}
 
   // this Route sus
@@ -35,60 +43,121 @@ export class AuthController {
     return { accessToken: accessToken };
   }
 
-  @Public()
-  @UseGuards(GitHubAuthGuard)
-  @Get('github')
-  async githubAuth() {
-    // Redirect to Github
-  }
-
+  // ----------------------------------------------------------------
+  // GitHub OAuth callback
+  // Fix: set refresh cookie to the REFRESH token (not access).
+  // Also store refresh token row in DB.
+  // ----------------------------------------------------------------
   @Public()
   @UseGuards(GitHubAuthGuard)
   @Get('callback')
-  githubCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
-    const accessToken = this.authService.signJwt(req.user.id);
-    const refreshToken = this.authService.signRefreshJwt(req.user.id);
-    res.cookie('jwt', accessToken, { 
+  async githubCallback(@Req() req: any, @Res({ passthrough: true }) res: Response) {
+    const accessToken = this.authService.signJwt(req.user.id, req.user.email);
+    const { refreshToken } = this.authService.signRefreshJwt(req.user.id);
+
+    // store hashed refresh token in DB
+    await this.refreshTokensRepo.create(
+      Number(req.user.id),
+      refreshToken,
+      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      req.ip,
+      (req.headers['user-agent'] as string) ?? undefined,
+    );
+
+    res.cookie('jwt', accessToken, {
       httpOnly: true,
       secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
       sameSite: 'strict',
       maxAge: 1000 * 60 * 15,
     });
-    res.cookie('refresh_jwt', accessToken, { 
+
+    res.cookie('refresh_jwt', refreshToken, {
       httpOnly: true,
       secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
       sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
+
     return 'Github Callback Successful';
   }
 
+  // ----------------------------------------------------------------
+  // Refresh: verify refresh JWT -> find matching row by user -> verify hash
+  // -> revoke that row -> create & store new refresh -> set cookies -> new access.
+  // ----------------------------------------------------------------
   @Public()
   @UseGuards(RefreshJwtGuard)
-  @Get('refresh-token')
-  refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
-    // TODO: revoke refresh token
-    const accessToken = this.authService.signJwt(req.user.sub);
-    res.cookie('jwt', accessToken, { 
+  @Post('refresh-token')
+  async refreshToken(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const rawRefresh =
+      (req.cookies?.['refresh_jwt'] as string) ||
+      (req.body as any)?.refreshToken ||
+      (req.headers['x-refresh-token'] as string);
+
+    if (!rawRefresh) throw new UnauthorizedException('Missing refresh token');
+
+    // decode & cryptographically verify with REFRESH_JWT_SECRET
+    const { sub: userId } = this.authService.verifyRefresh(rawRefresh);
+
+    // fetch all non-revoked tokens for this user and find the matching one
+    const rows = await this.refreshTokensRepo.findValidByUser(Number(userId));
+    let matchedId: number | null = null;
+
+    for (const row of rows) {
+      if (row.revoked || row.expiresAt < new Date()) continue;
+      const same = row.tokenHash ? await argon2Verify(row.tokenHash, rawRefresh) : false;
+      if (same) {
+        matchedId = row.id;
+        break;
+      }
+    }
+
+    if (matchedId == null) {
+      throw new UnauthorizedException('Refresh token invalid or revoked');
+    }
+
+    // revoke old row
+    await this.refreshTokensRepo.revokeById(matchedId);
+
+    // rotate: mint and store new refresh
+    const { refreshToken: newRefresh } = this.authService.signRefreshJwt(userId);
+    await this.refreshTokensRepo.create(
+      Number(userId),
+      newRefresh,
+      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      req.ip,
+      (req.headers['user-agent'] as string) ?? undefined,
+    );
+
+    // set new refresh cookie
+    res.cookie('refresh_jwt', newRefresh, {
+      httpOnly: true,
+      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
+    // issue new access token
+    const accessToken = this.authService.signJwt(userId);
+    res.cookie('jwt', accessToken, {
       httpOnly: true,
       secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
       sameSite: 'strict',
       maxAge: 1000 * 60 * 15,
     });
-    return 'Access token refreshed';
+
+    return { accessToken };
   }
 
+  // ----------------------------------------------------------------
+  // Register (unchanged except: consider also issuing refresh+store if you want)
+  // ----------------------------------------------------------------
   @Public()
   @Post('register')
-  @ApiBody({ type: RegisterDto })
   async register(@Body() body: RegisterDto, @Res({ passthrough: true }) res: Response) {
-    // 1) create user row
     const user = await this.usersRepository.createUser(body);
 
-    // 2) OPTIONAL: issue access token immediately (you already have signJwt)
     const accessToken = this.authService.signJwt(user.uid);
-
-    // simple cookie (keep in sync with your config)
     res.cookie('jwt', accessToken, {
       httpOnly: true,
       secure: true,
@@ -96,29 +165,53 @@ export class AuthController {
       maxAge: 1000 * 60 * 15,
     });
 
-    // 3) return the newly created user (no secrets)
     return { user, accessToken };
   }
 
-  //clear user cookie
-  @Public()
+
+  // ----------------------------------------------------------------
+  // Logout: verify refresh token -> revoke it -> clear cookies.
+  // (Access token remains short-lived; that’s fine.)
+  // ----------------------------------------------------------------
+  @UseGuards(JwtGuard)
   @Post('logout')
-  logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('jwt', {
-      httpOnly: true,
-      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
-      sameSite: 'strict',
-    });
-    res.clearCookie('refresh_jwt', {
-      httpOnly: true,
-      secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
-      sameSite: 'strict',
-    });
-    return { message: 'Logged out successfully' };
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const rawRefresh =
+      (req.cookies?.['refresh_jwt'] as string) ||
+      (req.body as any)?.refreshToken ||
+      (req.headers['x-refresh-token'] as string);
+
+    if (rawRefresh) {
+      try {
+        const { sub: userId } = this.authService.verifyRefresh(rawRefresh);
+
+        // find the matching row for this user and revoke it
+        const rows = await this.refreshTokensRepo.findValidByUser(Number(userId));
+        for (const row of rows) {
+          if (row.revoked || row.expiresAt < new Date()) continue;
+          const same = row.tokenHash ? await argon2Verify(row.tokenHash, rawRefresh) : false;
+          if (same) {
+            await this.refreshTokensRepo.revokeById(row.id);
+            break;
+          }
+        }
+      } catch {
+        // ignore invalid refresh; still clear cookies
+      }
+    }
+
+    res.clearCookie('jwt', { path: '/' });
+    res.clearCookie('refresh_jwt', { path: '/' });
+    return { message: 'Logged out' };
   }
 
+  // ----------------------------------------------------------------
+  // Logout everywhere: revoke all refresh tokens for current user
+  // ----------------------------------------------------------------
+  @UseGuards(JwtGuard)
+  @Post('logout-all')
+  async logoutAll(@Req() req: any) {
+    await this.refreshTokensRepo.revokeAllByUser(Number(req.user.sub));
+    return { message: 'Logged out on all devices' };
+  }
 }
-
-
-
-

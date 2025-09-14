@@ -16,11 +16,7 @@ import { RefreshTokensRepository } from '@backend/src/modules/refreshTokens.repo
 
 import { hash as argon2Hash, verify as argon2Verify } from '@node-rs/argon2';
 
-import { GitHubAuthGuard } from './github/github-auth.guard';
-import { UsersRepository } from '@backend/src/modules/users.repository';
-import { RegisterDto } from '@backend/src/modules/dto/register.dto';
-import { RefreshTokensRepository } from '@backend/src/modules/refreshTokens.repository';
-import { hash as argon2Hash, verify as argon2Verify } from '@node-rs/argon2';
+// ...existing code...
 
 @Controller('auth')
 export class AuthController {

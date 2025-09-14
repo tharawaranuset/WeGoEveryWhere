@@ -14,3 +14,5 @@ docker compose exec -T db psql -U admin -d WEGO_EVERYWHERE_DB < db/init/backup.s
 # check
 docker exec -it wegoeverywhere-db-1 psql -U admin -d WEGO_EVERYWHERE_DB
 \d
+
+

@@ -114,6 +114,8 @@ export default function RegisterPage() {
             autoComplete="new-password"
           />
 
+          
+
           {/* กล่อง policy เลื่อนในตัว */}
           <div className="mt-2">
             <div className="rounded-3xl bg-[#D7D0D0]/80 p-4 h-36 overflow-auto text-center text-sm font-semibold text-gray-800">

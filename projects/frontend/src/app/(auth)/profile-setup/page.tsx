@@ -65,7 +65,6 @@ export default function ProfileSetupPage() {
 
             try {
               const formData = new FormData(e.currentTarget);
-              
               // Get registration data from previous step
               const registrationData = JSON.parse(sessionStorage.getItem('registrationData') || '{}');
               

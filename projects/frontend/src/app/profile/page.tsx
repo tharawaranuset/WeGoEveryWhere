@@ -21,10 +21,11 @@ export default function ProfilePage() {
         if (!ok) return;
 
         try {
-            // จำลอง API call ใช้ setTimeout แทน
+            
             await AuthService.authControllerLogout();
 
             toast.success('Successfully Sign out')
+            window.location.href = '/login';
         } catch {
             toast.error("Unsuccessfully, try again.")
         }

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ConfirmProvider } from "@/components/popup/ConfirmProvider";
 import { Toaster } from "react-hot-toast";
 import Link from "next/link";
+import ToastMount from "@/components/popup/ToastMount";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -81,6 +82,7 @@ export default function RootLayout({
                 <Navbar />
               </footer> */}
                 <Toaster position="top-center" reverseOrder={false} />
+                <ToastMount />
               </div>
             </div>
           </div> 

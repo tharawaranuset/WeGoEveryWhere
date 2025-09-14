@@ -5,6 +5,8 @@ export type EventActionState = {
   ok: boolean;
   errors?: Record<string, string[]>;
   message?: string;
+  /** เผื่ออนาคตอยากให้ client redirect ต่อ (เช่น router.push(state.next)) */
+  next?: string;
 };
 
 /** ดึงค่า photo แบบ backward-compatible:
@@ -30,7 +32,20 @@ function extractPhoto(
   return null;
 }
 
-/** CREATE: ตรวจด้วย Zod แล้ว log (ไม่ redirect) */
+/** รวม error ของ Zod ให้อ่านง่ายสั้น ๆ (หยิบอย่างน้อย field แรก ๆ) */
+function compactZodErrors(
+  errors: Record<string, string[] | undefined>,
+  max = 3
+): string {
+  const parts: string[] = [];
+  for (const [field, arr] of Object.entries(errors)) {
+    if (arr && arr.length) parts.push(`${field}: ${arr[0]}`);
+    if (parts.length >= max) break;
+  }
+  return parts.join(" | ") || "Validation failed";
+}
+
+/** CREATE: ตรวจด้วย Zod → ไม่ redirect (คืนค่า state ให้ client เอาไปเด้ง toast เอง) */
 export const createEventWithZod = async (
   formData: FormData
 ): Promise<EventActionState> => {
@@ -42,7 +57,6 @@ export const createEventWithZod = async (
       details: formData.get("details"),
       capacity: formData.get("capacity"),
       status: formData.get("status"),
-      // ประกอบ photo จาก photoFile/photoExisting หรือ fallback เป็น field เดิม
       photo: extractPhoto(formData, "photo"),
     };
 
@@ -50,11 +64,14 @@ export const createEventWithZod = async (
     if (!parsed.success) {
       const fieldErrors = parsed.error.flatten().fieldErrors;
       console.error("ZOD VALIDATION FAILED (CREATE):", fieldErrors);
-      return { ok: false, errors: fieldErrors };
+      return {
+        ok: false,
+        errors: fieldErrors,
+        message: compactZodErrors(fieldErrors),
+      };
     }
 
     const { photo, ...rest } = parsed.data as Record<string, any>;
-
     const photoLog =
       photo instanceof File
         ? { name: photo.name, size: photo.size, type: photo.type }
@@ -65,7 +82,11 @@ export const createEventWithZod = async (
       photo: photoLog,
     });
 
-    return { ok: true, message: "createEvent (validated) logged" };
+    // เผื่ออนาคต client อยาก redirect ต่อ: รับ next จากฟอร์มแล้วส่งกลับไป
+    const nextVal = formData.get("next");
+    const next = typeof nextVal === "string" && nextVal ? nextVal : undefined;
+
+    return { ok: true, message: "Event created!", next };
   } catch (error) {
     console.error("createEventWithZod error:", error);
     return {
@@ -75,7 +96,7 @@ export const createEventWithZod = async (
   }
 };
 
-/** UPDATE: validate ด้วย schema เดิม, log-only */
+/** UPDATE: validate → ไม่ redirect (คืนค่า state ให้ client เด้ง toast เอง) */
 export const updateEventWithZod = async (
   id: string,
   formData: FormData
@@ -88,7 +109,6 @@ export const updateEventWithZod = async (
       details: formData.get("details"),
       capacity: formData.get("capacity"),
       status: formData.get("status"),
-      // ใช้ตัวช่วยเดียวกัน
       photo: extractPhoto(formData, "photo"),
     };
 
@@ -96,7 +116,11 @@ export const updateEventWithZod = async (
     if (!parsed.success) {
       const fieldErrors = parsed.error.flatten().fieldErrors;
       console.error("ZOD VALIDATION FAILED (UPDATE):", fieldErrors);
-      return { ok: false, errors: fieldErrors };
+      return {
+        ok: false,
+        errors: fieldErrors,
+        message: compactZodErrors(fieldErrors),
+      };
     }
 
     const { photo, ...rest } = parsed.data as Record<string, any>;
@@ -111,7 +135,10 @@ export const updateEventWithZod = async (
       photo: photoLog,
     });
 
-    return { ok: true, message: "updateEvent logged" };
+    const nextVal = formData.get("next");
+    const next = typeof nextVal === "string" && nextVal ? nextVal : undefined;
+
+    return { ok: true, message: "Event updated!", next };
   } catch (error) {
     console.error("updateEventWithZod error:", error);
     return {
@@ -121,37 +148,18 @@ export const updateEventWithZod = async (
   }
 };
 
-/** ลบอีเวนต์ (log-only) */
+/** DELETE: ลบอีเวนต์ → ไม่ redirect (คืนค่า state ให้ client เด้ง toast เอง) */
 export const deleteEventById = async (
   id: string
 ): Promise<EventActionState> => {
   try {
     console.log("DELETE EVENT (LOG ONLY):", { id });
-    return { ok: true, message: "deleteEvent logged" };
+    return { ok: true, message: "Event deleted!" };
   } catch (error) {
     console.error("deleteEventById error:", error);
     return {
       ok: false,
       message: error instanceof Error ? error.message : "Unknown error",
     };
-  }
-};
-
-/** เวอร์ชัน log-only ล้วน ๆ สำหรับแก้ไข (ไม่ validate) */
-export const updateEventLogOnly = async (
-  id: string,
-  formData: FormData
-): Promise<void> => {
-  try {
-    const entries = Array.from(formData.entries()).map(([k, v]) => [
-      k,
-      v instanceof File ? { name: v.name, size: v.size, type: v.type } : v,
-    ]);
-    console.log("UPDATE EVENT (LOG ONLY, NO VALIDATION):", {
-      id,
-      data: Object.fromEntries(entries),
-    });
-  } catch (error) {
-    console.error("updateEventLogOnly error:", error);
   }
 };

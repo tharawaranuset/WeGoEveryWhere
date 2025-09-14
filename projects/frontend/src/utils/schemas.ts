@@ -11,7 +11,9 @@ export const eventFormSchema = z.object({
     (v) => (v === "" || v == null ? undefined : Number(v)),
     z.number().int().min(0).optional()
   ),
-  status: z.enum(["open", "full", "closed"]).default("open"),
+  status: z
+    .enum(["unpublish", "publish", "open", "full", "closed"])
+    .default("open"),
   photo: z
     .any()
     .transform((v) => (v instanceof File && v.size > 0 ? v : null))

@@ -8,13 +8,15 @@ import { JwtGuard } from './core/auth/jwt/access-jwt/jwt.guard';
 import { DatabaseModule} from './database/database.module';
 import { EventsModule } from './modules/event/event.module'; // <-- 1. Import EventsModule
 import { RefreshTokensRepository } from './modules/refreshTokens.repository';
+import { ConsentModule } from './modules/consent/consent.module';
 
 @Module({
   imports: [
     AppConfigModule,
     AuthModule,
     EventsModule,
-    DatabaseModule
+    DatabaseModule,
+    ConsentModule
   ],
   controllers: [AppController],
   providers: [

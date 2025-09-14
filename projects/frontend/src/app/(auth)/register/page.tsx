@@ -61,7 +61,13 @@ export default function RegisterPage() {
         
         >
           {/* E-mail */}
-          <FormInput name="email" label="Email" type="email" placeholder="you@example.com" />
+          <FormInput 
+          name="email" 
+          label="Email" 
+          type="email" 
+          placeholder="you@example.com" 
+          className="bg-white border border-black text-sm placeholder:text-gray-400 placeholder:opacity-100 " 
+          />
 
           {/* Password */}
           <PasswordInput

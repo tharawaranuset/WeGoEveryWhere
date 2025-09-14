@@ -5,6 +5,8 @@ import { SubmitButton } from "@/components/form/Buttons";
 import { GoogleButton } from "@/components/button/GoogleButton";
 import { FormInput } from "@/components/form/input/FormInput";
 import PasswordInput from "@/components/form/input/PasswordInput";
+import Link from "next/link";
+
 
 export default function LoginPage() {
   return (
@@ -64,19 +66,13 @@ export default function LoginPage() {
 
         {/* ปุ่มด้านล่าง: ช่องไฟพอดีมือ */}
         <div className="space-y-3 sm:space-y-4">
-          <SubmitButton
-            type="button"
-            text="Create an account"
-            className="
-              w-full h-12 px-6
-              bg-[#FFDCD5] text-black font-bold
-              border border-black rounded-3xl
-              hover:!bg-[#FFDCD5] active:!bg-[#FFDCD5] focus:!bg-[#FFDCD5]
-            hover:!brightness-100 active:!brightness-100 active:scale-90
-              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]
-            "
-            onClick={() => {}}
-          />
+          <Link href="/register" className="block">
+            <SubmitButton
+              type="button"
+              text="Create an account"
+              className= "w-full h-12 px-6 bg-[#FFDCD5] text-black font-bold border border-black rounded-3xl hover:!bg-[#FFDCD5] active:!bg-[#FFDCD5] focus:!bg-[#FFDCD5] hover:!brightness-100 active:!brightness-100 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
+            />
+          </Link>
 
           <GoogleButton onClick={() => {}} />
         </div>

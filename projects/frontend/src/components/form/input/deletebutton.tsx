@@ -46,12 +46,12 @@ export default function DeleteButton({
         type="button"
         onClick={onClick}
         aria-label="Delete event"
-        className="h-11 w-11 rounded-full flex items-center justify-center 
+        className="h-11 w-15 rounded-full flex items-center justify-center 
                    bg-transparent border-0 p-0 hover:bg-transparent 
                    focus-visible:ring-2 focus-visible:ring-[var(--color-brand-redbutton)]/40"
         title="Delete event"
       >
-        <Trash2 className="h-7 w-7 text-[var(--color-brand-redbutton)]" />
+        <Trash2 className="h-9 w-10 text-[var(--color-brand-redbutton)]" />
       </button>
 
       {/* ฟอร์มสำหรับ server action ของการลบ */}

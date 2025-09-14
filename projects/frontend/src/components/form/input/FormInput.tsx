@@ -6,9 +6,12 @@ import { Label } from "@/components/ui/label";
 
 export type FormInputProps = {
   name: string;
-  type: string;
+  type: React.InputHTMLAttributes<HTMLInputElement>["type"];
   label?: string;
-  defaultValue?: string;
+  /** รองรับทั้ง defaultValue (uncontrolled) และ value (controlled) */
+  defaultValue?: string | number;
+  value?: string | number;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
   placeholder?: string;
   className?: string;
   readOnly?: boolean;
@@ -21,6 +24,8 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
       type,
       label,
       defaultValue,
+      value,
+      onChange,
       placeholder,
       className,
       readOnly = false,
@@ -43,15 +48,17 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
           name={name}
           type={type}
           placeholder={placeholder}
-          defaultValue={defaultValue}
+          // ถ้าให้ value มาก็เป็น controlled; ถ้าไม่ให้ ใช้ defaultValue (uncontrolled)
+          {...(value !== undefined ? { value } : { defaultValue })}
+          onChange={onChange}
           readOnly={readOnly}
           className={`
-              w-full rounded-full
-              h-10 px-4 text-[15px] leading-none
-              border border-black/30
-              focus-visible:ring-offset-0 focus-visible:ring-1
-              ${className ?? ""}
-            `}
+            w-full rounded-full
+            h-10 px-4 text-[15px] leading-none
+            border border-black/30
+            focus-visible:ring-offset-0 focus-visible:ring-1
+            ${className ?? ""}
+          `}
         />
       </div>
     );

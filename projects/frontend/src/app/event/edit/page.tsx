@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/navbar/Navbar";
-import EditEventFormClient from "@/components/EditEventFormClient";
+import EditEventFormClient from "@/components/client/EditEventFormClient";
 
 export default function EditEventPage() {
   const id = "evt_123";

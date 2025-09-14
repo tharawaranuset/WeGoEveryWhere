@@ -5,7 +5,6 @@ import Image from "next/image";
 import { ConfirmProvider } from "@/components/popup/ConfirmProvider";
 import { Toaster } from "react-hot-toast";
 import Link from "next/link";
-import ToastMount from "@/components/popup/ToastMount";
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",
@@ -25,7 +24,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <html lang="en">
       <head>
@@ -34,9 +32,9 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
       </head>
-        <body
-          className={`${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
-        >
+      <body
+        className={`${urbanist.variable} antialiased min-h-dvh bg-black text-white`}
+      >
         <ConfirmProvider>
           {/* Make Phone at the middle */}
           <div className="min-h-dvh flex items-center justify-center p-2 bg-black">
@@ -82,12 +80,11 @@ export default function RootLayout({
                 <Navbar />
               </footer> */}
                 <Toaster position="top-center" reverseOrder={false} />
-                <ToastMount />
               </div>
             </div>
-          </div> 
+          </div>
         </ConfirmProvider>
-        </body>
+      </body>
     </html>
   );
 }

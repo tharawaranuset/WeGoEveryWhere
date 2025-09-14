@@ -1,9 +1,8 @@
+// /components/form/EditEventFormClient.tsx
 "use client";
 
 import * as React from "react";
-import { useActionState, useEffect } from "react";
-import toast from "react-hot-toast";
-import { MapPin, ChevronDown } from "lucide-react";
+import { useActionState } from "react";
 
 import EventPhotoPicker from "@/components/form/EventPhotoPicker";
 import { FormInput } from "@/components/form/input/FormInput";
@@ -15,6 +14,9 @@ import {
   type EventActionState,
 } from "@/actions/actions";
 import DeleteButton from "@/components/form/input/deletebutton";
+import { useActionToasts } from "../form/useActionToasts";
+import { LocationInput } from "../form/input/LocationInput";
+import { StatusSelect } from "../form/input/StatusSelect";
 
 type Existing = {
   photoUrl: string;
@@ -33,20 +35,15 @@ export default function EditEventFormClient({
   id: string;
   existing: Existing;
 }) {
-  // ✅ wrapper ให้ type ตรงกับ useActionState
   const updateWrapper = async (
     _prev: EventActionState,
     formData: FormData
-  ): Promise<EventActionState> => {
-    return updateEventWithZod(id, formData);
-  };
+  ): Promise<EventActionState> => updateEventWithZod(id, formData);
 
   const deleteWrapper = async (
     _prev: EventActionState,
     _formData: FormData
-  ): Promise<EventActionState> => {
-    return deleteEventById(id);
-  };
+  ): Promise<EventActionState> => deleteEventById(id);
 
   const [updateState, updateFormAction] = useActionState<
     EventActionState,
@@ -57,19 +54,8 @@ export default function EditEventFormClient({
     FormData
   >(deleteWrapper, { ok: false });
 
-  // toast สำหรับ update
-  useEffect(() => {
-    if (!updateState?.message) return;
-    if (updateState.ok) toast.success(updateState.message);
-    else toast.error(updateState.message);
-  }, [updateState]);
-
-  // toast สำหรับ delete
-  useEffect(() => {
-    if (!deleteState?.message) return;
-    if (deleteState.ok) toast.success(deleteState.message);
-    else toast.error(deleteState.message);
-  }, [deleteState]);
+  useActionToasts(updateState);
+  useActionToasts(deleteState);
 
   return (
     <div className="relative rounded-[28px] border border-black/50 bg-[var(--color-brand-secondary)] shadow-[0_6px_0_#00000020] z-10">
@@ -110,16 +96,7 @@ export default function EditEventFormClient({
           disableTyping
         />
 
-        <div className="mb-3 relative">
-          <FormInput
-            name="location"
-            type="text"
-            label="Location"
-            defaultValue={existing.location}
-            className="h-10 !bg-[var(--color-brand-background)] rounded-full border-black/30 pr-10"
-          />
-          <MapPin className="pointer-events-none absolute right-3 bottom-[10px] h-4 w-4 -translate-y-0.5 text-neutral-600" />
-        </div>
+        <LocationInput defaultValue={existing.location} />
 
         <TextAreaInput
           name="details"
@@ -131,16 +108,18 @@ export default function EditEventFormClient({
 
       {/* FOOTER */}
       <div className="px-4 pb-6">
-        <div className="mt-2 mb-1 flex items-center gap-2">
+        {/* Optional line */}
+        <div className="flex items-center gap-2 pb-2">
           <span className="text-[13px] font-semibold text-black/80">
             Optional
           </span>
           <div className="h-px flex-1 bg-black/30" />
         </div>
 
-        <div className="grid grid-cols-3 gap-x-3">
+        {/* Capacity / Status */}
+        <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-[13px] font-semibold ">Capacity</label>
+            <label className="text-[13px] font-semibold">Capacity</label>
             <input
               form="updateForm"
               name="capacity"
@@ -150,36 +129,30 @@ export default function EditEventFormClient({
             />
           </div>
 
-          <div className="relative min-w-0">
-            <label className="text-[13px] font-semibold" htmlFor="status">
-              Status
-            </label>
-            <select
-              form="updateForm"
-              id="status"
-              name="status"
-              defaultValue={existing.status}
-              className="mt-1 block w-full h-11 leading-none text-[15px] rounded-full border border-black/30 px-4 pr-8 bg-[var(--color-brand-background)] outline-none focus-visible:ring-1 focus-visible:ring-offset-0 focus:border-neutral-400 appearance-none"
-            >
-              <option value="publish">Publish</option>
-              <option value="unpublish">Unpublish</option>
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-[42px] h-4 w-4 text-neutral-700" />
-          </div>
+          <StatusSelect
+            name="status"
+            label="Status"
+            options={[
+              { value: "publish", label: "Publish" },
+              { value: "unpublish", label: "Unpublish" },
+              // เติมเพิ่มได้ เช่น draft/archived/private/internal ...
+            ]}
+            defaultValue={existing.status}
+            formId="updateForm" // select อยู่ใน footer นอก <form> เลยผูกฟอร์มด้วย
+            placeholder="Select…"
+          />
+        </div>
 
-          <div className="flex items-end justify-end gap-2">
-            {/* SAVE button */}
-            <button
-              form="updateForm"
-              type="submit"
-              className="h-11 w-4 px-6 rounded-full border border-black/40 bg-[var(--color-brand-greenbutton)] hover:bg-[var(--color-brand-greenbutton)] text-black font-medium shadow-[0_2px_0_#00000020]"
-            >
-              <div className="translate-x-[-17px]">Save</div>
-            </button>
-
-            {/* DELETE button: ใช้ DeleteButton เดิม */}
-            <DeleteButton action={deleteFormAction} />
-          </div>
+        {/* Save ใหญ่เต็ม + Delete เล็กขวา */}
+        <div className="grid grid-cols-[1fr_auto] gap-3 mt-3 items-center">
+          <button
+            form="updateForm"
+            type="submit"
+            className="h-11 w-full rounded-full border border-black/40 bg-[var(--color-brand-greenbutton)] hover:bg-[var(--color-brand-greenbutton)] text-black font-medium shadow-[0_2px_0_#00000020]"
+          >
+            Save
+          </button>
+          <DeleteButton action={deleteFormAction} />
         </div>
       </div>
     </div>

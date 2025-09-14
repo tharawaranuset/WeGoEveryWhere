@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { FiBell } from "react-icons/fi";
+import { AuthService } from "@/lib/api";
 
 export default function ProfilePage() {
     const confirm = useConfirm();
@@ -20,10 +21,11 @@ export default function ProfilePage() {
         if (!ok) return;
 
         try {
-            // จำลอง API call ใช้ setTimeout แทน
-            await new Promise((resolve) => setTimeout(resolve, 1000)); 
+            
+            await AuthService.authControllerLogout();
 
             toast.success('Successfully Sign out')
+            window.location.href = '/login';
         } catch {
             toast.error("Unsuccessfully, try again.")
         }

@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/components/navbar/Navbar";
+import {Navbar} from "@/components/navbar/Navbar";
 import { ConfirmProvider, useConfirm } from "@/components/popup/ConfirmProvider";
 import { toastError, toastSuccess } from "@/lib/toast";
 import Image from "next/image";

@@ -11,8 +11,10 @@ export const Navigationlist = () => {
     <div className="font-alt flex justify-center items-stretch w-full">
       {navLinks.map(({ href, label, icon: Icon }) => {
         const isActive =
-          href === "/event" ? pathname.startsWith("/event") : pathname === href;
-
+          href === "/event"
+            ? pathname.startsWith("/event") &&
+              !pathname.startsWith("/event/create")
+            : pathname === href;
         return (
           <Link
             key={href}

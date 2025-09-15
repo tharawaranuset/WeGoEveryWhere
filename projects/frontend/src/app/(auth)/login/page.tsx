@@ -33,7 +33,7 @@ export default function LoginPage() {
           label="Email" 
           type="email" 
           placeholder="you@example.com"
-          className="bg-white border border-black text-sm placeholder:text-gray-400 placeholder:opacity-100 "
+          className="bg-white  text-sm placeholder:text-gray-400 placeholder:opacity-100 "
           required
            />
 

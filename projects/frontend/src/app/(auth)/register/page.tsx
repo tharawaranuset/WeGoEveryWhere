@@ -207,7 +207,8 @@ export default function RegisterPage() {
               value={password}
               onChange={handlePasswordChange}
               autoComplete="new-password"
-              className="mt-1 w-full rounded-2xl border border-gray-300 px-4 py-2.5 text-sm focus:border-[#EB6223] focus:outline-none focus:ring-2 focus:ring-[#EB6223]/20"
+              className="mt-1 w-full rounded-2xl bg-white border border-black 
+              px-4 py-2.5 text-sm focus:border-[#EB6223] focus:outline-none focus:ring-2 focus:ring-[#EB6223]/20"
               placeholder="Enter your password"
             />
           </div>
@@ -260,7 +261,7 @@ export default function RegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               autoComplete="new-password"
-              className="mt-1 w-full rounded-2xl border border-gray-300 px-4 py-2.5 text-sm focus:border-[#EB6223] focus:outline-none focus:ring-2 focus:ring-[#EB6223]/20"
+              className="mt-1 w-full rounded-2xl bg-white border border-black px-4 py-2.5 text-sm focus:border-[#EB6223] focus:outline-none focus:ring-2 focus:ring-[#EB6223]/20"
               placeholder="Confirm your password"
             />
             {confirmPassword && (

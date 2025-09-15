@@ -56,10 +56,8 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
           readOnly={readOnly}
           required = {required}
           className={`
-            w-full rounded-full
-            h-10 px-4 text-[15px] leading-none
-            border border-black/30
-            focus-visible:ring-offset-0 focus-visible:ring-1
+            mt-1 w-full rounded-2xl bg-white border border-black 
+            px-4 py-2.5 text-sm focus:border-[#EB6223] focus:outline-none focus:ring-2 focus:ring-[#EB6223]/20"
             ${className ?? ""}
           `}
         />

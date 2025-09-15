@@ -68,7 +68,7 @@ export default function LoginPage() {
             hover:!brightness-100 active:!brightness-100 active:scale-90
               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]
             "
-            onclick={() => {}}
+            onClick={() => {}}
           />
 
           <GoogleButton onClick={() => {}} />

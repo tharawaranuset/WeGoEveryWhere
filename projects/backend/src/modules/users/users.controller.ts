@@ -12,7 +12,6 @@ export class UserController{
     @GetUserId() id: number,
     @Body() updateUserDto: UpdateUserDto
     ) {
-        console.log("hello");
         return this.userService.update(id, updateUserDto);
     }
 

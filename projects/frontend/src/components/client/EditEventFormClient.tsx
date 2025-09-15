@@ -17,6 +17,7 @@ import DeleteButton from "@/components/form/input/deletebutton";
 import { useActionToasts } from "../form/useActionToasts";
 import { LocationInput } from "../form/input/LocationInput";
 import { StatusSelect } from "../form/input/StatusSelect";
+import { EventService, UpdateEventDto } from "@/lib/api";
 
 type Existing = {
   photoUrl: string;
@@ -28,6 +29,27 @@ type Existing = {
   status: "publish" | "unpublish";
 };
 
+
+function formDataToUpdateDto(form: FormData): UpdateEventDto {
+  return {
+    name: form.get("eventName")?.toString(),
+    cost: form.get("cost") ? Number(form.get("cost")) : undefined,
+    date: form.get("eventDate")?.toString(),
+    time: form.get("time")?.toString(),
+    place: form.get("location")?.toString(),
+    capacity: form.get("capacity")
+      ? Number(form.get("capacity"))
+      : undefined,
+    detail: form.get("details")?.toString(),
+    rating: form.get("rating")
+      ? Number(form.get("rating"))
+      : undefined,
+    userId: form.get("userId") ? Number(form.get("userId")) : undefined,
+    status: form.get("status")?.toString(),
+  };
+}
+
+
 export default function EditEventFormClient({
   id,
   existing,
@@ -38,7 +60,16 @@ export default function EditEventFormClient({
   const updateWrapper = async (
     _prev: EventActionState,
     formData: FormData
-  ): Promise<EventActionState> => updateEventWithZod(id, formData);
+  ): Promise<EventActionState> => {
+    const dto: UpdateEventDto = formDataToUpdateDto(formData);
+
+    try {
+      await EventService.eventControllerUpdate(Number(id) ?? 1, dto);
+      return { ok: true, message: "Updated successfully" };
+    } catch (e: any) {
+      return { ok: false, message: e.message ?? "Update failed" };
+    }
+  };
 
   const deleteWrapper = async (
     _prev: EventActionState,

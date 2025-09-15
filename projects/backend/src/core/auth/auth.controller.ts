@@ -34,6 +34,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ConfigService } from '@nestjs/config';
 import { AuthUsersRepository } from '@backend/src/modules/auth-users.repository';
+import { ONE_MINUTE, ONE_WEEK } from '@backend/src/consts/jwt-age';
 
 @Controller('auth')
 export class AuthController {
@@ -61,42 +62,32 @@ export class AuthController {
     return { accessToken: accessToken };
   }
 
-  // ----------------------------------------------------------------
-  // GitHub OAuth callback
-  // Fix: set refresh cookie to the REFRESH token (not access).
-  // Also store refresh token row in DB.
-  // ----------------------------------------------------------------
+  @Public()
+  @UseGuards(GitHubAuthGuard)
+  @Get('github')
+  async githubAuth() {
+    // Redirect to Github
+  }
+  
   @Public()
   @UseGuards(GitHubAuthGuard)
   @Get('callback')
-  async githubCallback(@Req() req: any, @Res({ passthrough: true }) res: Response) {
-    const accessToken = this.authService.signJwt(req.user.id, req.user.email);
-    const { refreshToken } = this.authService.signRefreshJwt(req.user.id);
-
-    // store hashed refresh token in DB
-    await this.refreshTokensRepo.create(
-      Number(req.user.id),
-      refreshToken,
-      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      req.ip,
-      (req.headers['user-agent'] as string) ?? undefined,
-    );
-
-    res.cookie('jwt', accessToken, {
+  githubCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
+    const accessToken = this.authService.signJwt(req.user.id);
+    const refreshToken = this.authService.signRefreshJwt(req.user.id);
+    res.cookie('jwt', accessToken, { 
       httpOnly: true,
       secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 15,
+      maxAge: 15 * ONE_MINUTE,
     });
-
-    res.cookie('refresh_jwt', refreshToken, {
+    res.cookie('refresh_jwt', refreshToken, { 
       httpOnly: true,
       secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge: ONE_WEEK,
     });
-
-    return 'Github Callback Successful';
+    return res.redirect('http://localhost:3000');
   }
 
   // ----------------------------------------------------------------

@@ -24,7 +24,7 @@ export type { ResetPasswordDto } from './models/ResetPasswordDto';
 export type { UpdateEventDto } from './models/UpdateEventDto';
 export type { UpdatePolicyDto } from './models/UpdatePolicyDto';
 export type { UpdatePolicyResponseDto } from './models/UpdatePolicyResponseDto';
-export type { UpdateUserDto } from './models/UpdateUserDto';
+export { UpdateUserDto } from './models/UpdateUserDto';
 
 export { AppService } from './services/AppService';
 export { AuthService } from './services/AuthService';

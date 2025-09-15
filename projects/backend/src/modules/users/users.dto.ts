@@ -1,48 +1,47 @@
-import {
-  IsOptional,
-  IsString,
-  IsNumber,
-  IsInt,
-  Min,
-  IsDateString,
-  IsIn,
-  MaxLength
-} from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString, MaxLength, IsDateString } from 'class-validator';
 
-export class UpdateUserDto{
-    @IsString()
-    @MaxLength(20)
-    @IsOptional()
-    telephoneNumber?: string;
+export class UpdateUserDto {
+  @ApiPropertyOptional({ maxLength: 20, example: '081-999-1234' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  telephoneNumber?: string;
 
-    @IsString()
-    @MaxLength(50)
-    @IsOptional()
-    firstName? : string;
+  @ApiPropertyOptional({ maxLength: 50, example: 'Gabriel' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  firstName?: string;
 
-    @IsString()
-    @MaxLength(50)
-    @IsOptional()
-    lastName? : string;
+  @ApiPropertyOptional({ maxLength: 50, example: 'Smith' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  lastName?: string;
 
-    @IsString()
-    @IsOptional()
-    bio? : string;
+  @ApiPropertyOptional({ example: 'I love cats' })
+  @IsOptional()
+  @IsString()
+  bio?: string;
 
-    @IsOptional()
-    @IsString()
-    birthdate?: string;
+  @ApiPropertyOptional({ example: '2000-01-01' })
+  @IsOptional()
+  @IsString()
+  birthdate?: string;
 
-    @IsString()
-    @MaxLength(10)
-    @IsOptional()
-    sex?: string;
+  @ApiPropertyOptional({ example: 'male', enum: ['female','male','other','prefer_not'] })
+  @IsOptional()
+  @IsString()
+  sex?: string;
 
-    @IsOptional()
-    @IsString()
-    signupTime?: string;
+  @ApiPropertyOptional({ example: '2025-09-15T08:00:00Z' })
+  @IsOptional()
+  @IsString()
+  signupTime?: string;
 
-    @IsOptional()
-    @IsDateString()
-    signupDate: string;
+  @ApiPropertyOptional({ example: '2025-09-15' })
+  @IsOptional()
+  @IsDateString()
+  signupDate?: string;
 }

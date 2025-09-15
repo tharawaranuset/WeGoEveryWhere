@@ -8,21 +8,16 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class UserService {
     /**
-     * @param id
      * @param requestBody
      * @returns any
      * @throws ApiError
      */
     public static userControllerUpdate(
-        id: number,
         requestBody: UpdateUserDto,
     ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/users/{id}',
-            path: {
-                'id': id,
-            },
+            url: '/users/edit',
             body: requestBody,
             mediaType: 'application/json',
         });

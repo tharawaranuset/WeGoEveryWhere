@@ -54,6 +54,7 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
           {...(value !== undefined ? { value } : { defaultValue })}
           onChange={onChange}
           readOnly={readOnly}
+          required = {required}
           className={`
             w-full rounded-full
             h-10 px-4 text-[15px] leading-none

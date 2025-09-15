@@ -13,6 +13,7 @@ import { EmailService } from '@backend/src/shared/services/email.service';
 import * as argon2 from 'argon2';
 import { authUsers } from '@backend/src/database/schema/authUsers.schema';
 import { db } from '@backend/src/database/connection';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -22,10 +23,12 @@ export class AuthService {
     private refreshJwtConfiguration: ConfigType<typeof refreshJwtConfig>,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
+    
     // private readonly sessionService: SessionService,
     // @Inject(DATABASE_CONNECTION)
     // private readonly db: DrizzleDb,
-  ) {}
+  ) {
+  }
 
   // Access token
   signJwt(userId: number | string, email?: string) {
@@ -45,6 +48,7 @@ export class AuthService {
   verifyRefresh(refreshToken: string) {
     return this.jwtService.verify(refreshToken, this.refreshJwtConfiguration) as { sub: any; tokenId: string; iat: number; exp: number };
   }
+
   async forgotPassword(dto: ForgotPasswordDto) {
     const { v4: uuidv4 } = await import('uuid');
 
@@ -83,7 +87,7 @@ export class AuthService {
         name: 'User',
         email: authUser.email,
         resetUrl,
-        expiresIn: '1 hour',
+        expiresIn: '1h',
       });
     } catch (err) {
       console.error('Failed to send password reset email:', err);
@@ -125,5 +129,14 @@ export class AuthService {
       .where(eq(authUsers.id, authUser.id));
 
     return { message: 'Password reset successfully' };
+  }
+
+  // ADD: Simple password hashing methods for registration (using their argon2)
+  async hashPassword(password: string): Promise<string> {
+    return await argon2.hash(password);
+  }
+
+  async comparePassword(password: string, hashedPassword: string): Promise<boolean> {
+    return await argon2.verify(hashedPassword, password);
   }
 }

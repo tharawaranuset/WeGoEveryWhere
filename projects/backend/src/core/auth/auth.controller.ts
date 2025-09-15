@@ -33,6 +33,7 @@ import { hash as argon2Hash, verify as argon2Verify } from '@node-rs/argon2';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ConfigService } from '@nestjs/config';
+import { AuthUsersRepository } from '@backend/src/modules/auth-users.repository';
 
 @Controller('auth')
 export class AuthController {
@@ -40,6 +41,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly usersRepository: UsersRepository,
+    private readonly authUsersRepository: AuthUsersRepository,
     private readonly refreshTokensRepo: RefreshTokensRepository,
   ) {}
 
@@ -166,22 +168,60 @@ export class AuthController {
   }
 
   // ----------------------------------------------------------------
-  // Register (unchanged except: consider also issuing refresh+store if you want)
+  // Register - FIXED: Complete registration with both tables and proper error handling
   // ----------------------------------------------------------------
   @Public()
   @Post('register')
   async register(@Body() body: RegisterDto, @Res({ passthrough: true }) res: Response) {
-    const user = await this.usersRepository.createUser(body);
+    try {
+      // 1) Check if email already exists
+      const existingUser = await this.authUsersRepository.findByEmail(body.email);
+      if (existingUser) {
+        return {
+          success: false,
+          error: 'Email already registered'
+        };
+      }
 
-    const accessToken = this.authService.signJwt(user.uid);
-    res.cookie('jwt', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      maxAge: 1000 * 60 * 15,
-    });
+      // 2) Hash the password
+      const passwordHash = await this.authService.hashPassword(body.password);
 
-    return { user, accessToken };
+      // 3) Create user in users table
+      const user = await this.usersRepository.createUser(body);
+
+      // 4) Create auth record in auth_users table
+      await this.authUsersRepository.createAuthUser(user.userId, body.email, passwordHash);
+
+      // 5) Generate JWT token
+      const accessToken = this.authService.signJwt(user.userId.toString(), body.email);
+
+      // 6) Set cookie
+      res.cookie('jwt', accessToken, {
+        httpOnly: true,
+        secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
+        sameSite: 'strict',
+        maxAge: 1000 * 60 * 15,
+      });
+
+      // 7) Return success response
+      return { 
+        success: true,
+        user: {
+          userId: user.userId,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: body.email,
+        },
+        accessToken 
+      };
+    } catch (error) {
+      console.error('Registration error:', error);
+      return {
+        success: false,
+        error: 'Registration failed',
+        details: error.message
+      };
+    }
   }
 
   @Public()
@@ -213,10 +253,9 @@ export class AuthController {
     return this.authService.resetPassword(resetPasswordDto);
   }
 
-
   // ----------------------------------------------------------------
   // Logout: verify refresh token -> revoke it -> clear cookies.
-  // (Access token remains short-lived; that’s fine.)
+  // (Access token remains short-lived; that's fine.)
   // ----------------------------------------------------------------
   @UseGuards(JwtGuard)
   @Post('logout')

@@ -12,6 +12,7 @@ import { RefreshJwtStrategy } from './jwt/refresh-jwt/refresh-jwt.strategy';
 import { UsersModule } from '@backend/src/modules/users/users.module';
 import { RefreshTokensRepository } from '@backend/src/modules/refreshTokens.repository';
 import { EmailService } from '@backend/src/shared/services/email.service';
+import { AuthUsersRepository } from '@backend/src/modules/auth-users.repository';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { EmailService } from '@backend/src/shared/services/email.service';
     RefreshJwtStrategy,
     RefreshTokensRepository,
     EmailService,
+    AuthUsersRepository,
   ],
   exports: [AuthService , RefreshTokensRepository],
 })

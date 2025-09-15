@@ -90,6 +90,23 @@ export class AuthController {
     return res.redirect('http://localhost:3000');
   }
 
+  @Public()
+  @UseGuards(RefreshJwtGuard)
+  @Get('refresh-jwt-token')
+  refreshJwtToken(@Req() req, @Res({ passthrough: true }) res: Response) {
+    // TODO: revoke refresh token
+    const refreshToken = this.authService.signJwt(req.user.sub);
+    console.log(req)
+    res.cookie('jwt', refreshToken, { 
+      httpOnly: true,
+      secure: false,
+      sameSite: 'none',
+      maxAge: 15 * ONE_MINUTE,
+    });
+    console.log('Access token refreshed');
+    return 'Access token refreshed';
+  }
+
   // ----------------------------------------------------------------
   // Refresh: verify refresh JWT -> find matching row by user -> verify hash
   // -> revoke that row -> create & store new refresh -> set cookies -> new access.

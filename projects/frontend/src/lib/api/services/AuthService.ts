@@ -30,10 +30,30 @@ export class AuthService {
      * @returns any
      * @throws ApiError
      */
+    public static authControllerGithubAuth(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/auth/github',
+        });
+    }
+    /**
+     * @returns any
+     * @throws ApiError
+     */
     public static authControllerGithubCallback(): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/auth/callback',
+        });
+    }
+    /**
+     * @returns any
+     * @throws ApiError
+     */
+    public static authControllerRefreshJwtToken(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/auth/refresh-jwt-token',
         });
     }
     /**

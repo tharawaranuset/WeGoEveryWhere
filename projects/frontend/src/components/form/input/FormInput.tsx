@@ -59,6 +59,7 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
             focus-visible:ring-offset-0 focus-visible:ring-1
             ${className ?? ""}
           `}
+          required
         />
       </div>
     );

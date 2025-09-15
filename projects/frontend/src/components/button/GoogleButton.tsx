@@ -2,6 +2,7 @@
 "use client";
 import * as React from "react";
 import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa"; // Fa = Font Awesome
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -9,11 +10,19 @@ type Props = {
   onClick?: () => void;
   text?: string;
 };
-export function GoogleButton({ className, onClick, text = "Continue with Google" }: Props) {
+export function GoogleButton({ className, onClick, text = "Continue with Github" }: Props) {
+  const handleClick = () => {
+    // เปิดแท็บใหม่ไป OAuth endpoint
+    window.open("http://localhost:3001/auth/github");
+
+    // เรียก callback ถ้ามี
+    if (onClick) onClick();
+  };
+  
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={handleClick}
       className={cn(
         "w-full py-3 flex items-center justify-center gap-2 rounded-3xl",
         "bg-white text-gray-700 font-bold border border-black",
@@ -23,7 +32,7 @@ export function GoogleButton({ className, onClick, text = "Continue with Google"
         className
       )}
     >
-      <FcGoogle size={22} />
+      <FaGithub size={22} />
       {text}
     </button>
   );

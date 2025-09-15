@@ -15,7 +15,7 @@ export type FormInputProps = {
   placeholder?: string;
   className?: string;
   readOnly?: boolean;
-  requried? : boolean;
+  required? : boolean;
 };
 
 export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
@@ -30,7 +30,7 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
       placeholder,
       className,
       readOnly = false,
-      requried = false,
+      required = false,
     },
     ref
   ) => {

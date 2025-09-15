@@ -67,8 +67,8 @@ export default function ProfileSetupPage() {
             router.push("/profile-setup/next");  // ไปหน้าถัดไป
           }}
         >
-          <FormInput name="firstName" type="text" label="First name" className="bg-white border border-black" requried/>
-          <FormInput name="lastName"  type="text" label="Last name" className="bg-white border border-black" requried />
+          <FormInput name="firstName" type="text" label="First name" className="bg-white border border-black" required/>
+          <FormInput name="lastName"  type="text" label="Last name" className="bg-white border border-black" required />
 
           {/* Birth date + ปุ่มไอคอนเปิดปฏิทิน */}
           <Calendar28
@@ -96,8 +96,8 @@ export default function ProfileSetupPage() {
               ]}
           />
 
-          <FormInput name="tel" type="tel" label="Telephone" className="bg-white border border-black" requried />
-          <FormInput name="bio"  type="text" label="Bio" className="bg-white border border-black" requried />
+          <FormInput name="tel" type="tel" label="Telephone" className="bg-white border border-black" required />
+          <FormInput name="bio"  type="text" label="Bio" className="bg-white border border-black" required />
 
           <button
             type="submit"

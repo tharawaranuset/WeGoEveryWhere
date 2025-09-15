@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { AuthService } from "./lib/api";
+import { AppService, AuthService } from "./lib/api";
 
 export function middleware(req: NextRequest) {
-  const refresh_jwt = req.cookies.get("refresh_jwt");
-
   // TODO
-  if(!req.cookies.get("jwt") && refresh_jwt){
-    AuthService.authControllerRefreshJwtToken();
-  }
   const access_token = req.cookies.get("jwt");
+  console.log(access_token);
+  if(access_token){
+    const payload = JSON.parse(atob(access_token!.value?.split('.')[1]));
+    console.log(payload);
+  }
+  
+  
   const { pathname } = req.nextUrl;
 
   // ยกเว้นไฟล์ระบบและ public assets
@@ -21,7 +23,7 @@ export function middleware(req: NextRequest) {
   //   return NextResponse.redirect(new URL("/", req.url));
   // }
   // ถ้าไม่ใช่ public asset และไม่ใช่ /login และไม่มี access_token → redirect
-  if (!isPublicAsset && pathname !== "/login" && !access_token) {
+  if (!isPublicAsset && (pathname !== "/login" && pathname !== "/register") && !access_token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 

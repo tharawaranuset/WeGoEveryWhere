@@ -11,18 +11,11 @@ type Props = {
   text?: string;
 };
 export function GoogleButton({ className, onClick, text = "Continue with Github" }: Props) {
-  const handleClick = () => {
-    // เปิดแท็บใหม่ไป OAuth endpoint
-    window.open("http://localhost:3001/auth/github");
-
-    // เรียก callback ถ้ามี
-    if (onClick) onClick();
-  };
   
   return (
     <button
       type="button"
-      onClick={handleClick}
+      onClick={onClick}
       className={cn(
         "w-full py-3 flex items-center justify-center gap-2 rounded-3xl",
         "bg-white text-gray-700 font-bold border border-black",

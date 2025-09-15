@@ -68,10 +68,10 @@ export default function LoginPage() {
             hover:!brightness-100 active:!brightness-100 active:scale-90
               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]
             "
-            onClick={() => {}}
+            onClick={() => {window.location.href = "/register";}}
           />
 
-          <GoogleButton onClick={() => {}} />
+          <GoogleButton onClick={() => {window.open("http://localhost:3001/auth/github");}} />
         </div>
 
         <a href="#" className="block mt-4 text-center text-sm text-gray-600 hover:underline">

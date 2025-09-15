@@ -87,7 +87,7 @@ export class AuthController {
       sameSite: 'strict',
       maxAge: ONE_WEEK,
     });
-    return res.redirect('http://localhost:3000');
+    return res.redirect('http://localhost:3000/profile-setup');
   }
 
   @Public()

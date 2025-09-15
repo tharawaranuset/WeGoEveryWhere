@@ -207,7 +207,7 @@ export class AuthController {
       res.cookie('jwt', accessToken, {
         httpOnly: true,
         secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
-        sameSite: 'strict',
+        sameSite: 'lax',
         maxAge: 1000 * 60 * 15,
       });
 

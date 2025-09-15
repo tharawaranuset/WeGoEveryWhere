@@ -71,7 +71,7 @@ export default function LoginPage() {
             onClick={() => {window.location.href = "/register";}}
           />
 
-          <GoogleButton onClick={() => {window.open("http://localhost:3001/auth/github");}} />
+          {/* <GoogleButton onClick={() => {window.open("http://localhost:3001/auth/github");}} /> */}
         </div>
 
         <a href="#" className="block mt-4 text-center text-sm text-gray-600 hover:underline">

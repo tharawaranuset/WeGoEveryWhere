@@ -30,24 +30,7 @@ type Existing = {
 };
 
 
-function formDataToUpdateDto(form: FormData): UpdateEventDto {
-  return {
-    name: form.get("eventName")?.toString(),
-    cost: form.get("cost") ? Number(form.get("cost")) : undefined,
-    date: form.get("eventDate")?.toString(),
-    time: form.get("time")?.toString(),
-    place: form.get("location")?.toString(),
-    capacity: form.get("capacity")
-      ? Number(form.get("capacity"))
-      : undefined,
-    detail: form.get("details")?.toString(),
-    rating: form.get("rating")
-      ? Number(form.get("rating"))
-      : undefined,
-    userId: form.get("userId") ? Number(form.get("userId")) : undefined,
-    status: form.get("status")?.toString(),
-  };
-}
+
 
 
 export default function EditEventFormClient({
@@ -57,19 +40,54 @@ export default function EditEventFormClient({
   id: string;
   existing: Existing;
 }) {
-  const updateWrapper = async (
-    _prev: EventActionState,
-    formData: FormData
-  ): Promise<EventActionState> => {
-    const dto: UpdateEventDto = formDataToUpdateDto(formData);
+  function formDataToUpdateDto(fd: FormData): UpdateEventDto {
+  const toNum = (v: FormDataEntryValue | null) =>
+    v == null || v === "" ? undefined : Number(v);
 
+  const dateVal = fd.get("eventDate") as string;
+  let isoDate: string | undefined = undefined;
+  if (dateVal) {
+    const d = new Date(dateVal);
+    if (!isNaN(d.getTime())) isoDate = d.toISOString().slice(0, 10);
+  }
+
+  return {
+    name: fd.get("eventName") as string || undefined,
+    cost: toNum(fd.get("cost")),
+    date: isoDate,
+    time: fd.get("time") as string || undefined,
+    place: fd.get("location") as string || undefined,
+    capacity: toNum(fd.get("capacity")),
+    detail: fd.get("details") as string || undefined,
+    rating: toNum(fd.get("rating")),
+    userId: 28, // ใส่ hard code หรือจาก session
+    status: fd.get("status") as string || undefined,
+  };
+}
+
+
+  const updateWrapper = async (
+    _prev: { ok: boolean; message?: string },
+    formData: FormData
+  ): Promise<{ ok: boolean; message?: string }> => {
     try {
-      await EventService.eventControllerUpdate(Number(id) ?? 1, dto);
-      return { ok: true, message: "Updated successfully" };
-    } catch (e: any) {
-      return { ok: false, message: e.message ?? "Update failed" };
+      // ✅ ตรวจ id และแปลงเป็น number
+      const numericId = typeof id === "number" ? id : parseInt(id, 10);
+      if (Number.isNaN(numericId)) {
+        console.log({ ok: false, message: "Invalid event id" })
+      }
+
+      const dto = formDataToUpdateDto(formData);
+      await EventService.eventControllerUpdate(17, dto);
+
+      return { ok: true, message: "Event updated successfully" };
+    } catch (err: any) {
+      console.error("Update error:", err);
+      return { ok: false, message: err?.message ?? "Update failed" };
     }
   };
+
+
 
   const deleteWrapper = async (
     _prev: EventActionState,

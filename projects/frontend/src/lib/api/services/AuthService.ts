@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ForgotPasswordDto } from '../models/ForgotPasswordDto';
+import type { LoginDto } from '../models/LoginDto';
 import type { RegisterDto } from '../models/RegisterDto';
 import type { ResetPasswordDto } from '../models/ResetPasswordDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -77,6 +78,21 @@ export class AuthService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/auth/register',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param requestBody
+     * @returns any
+     * @throws ApiError
+     */
+    public static authControllerLogin(
+        requestBody: LoginDto,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/auth/login',
             body: requestBody,
             mediaType: 'application/json',
         });

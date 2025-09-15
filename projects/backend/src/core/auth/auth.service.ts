@@ -137,6 +137,6 @@ export class AuthService {
   }
 
   async comparePassword(password: string, hashedPassword: string): Promise<boolean> {
-    return await argon2.verify(hashedPassword, password);
+    return await argon2.verify(hashedPassword, password.trim());
   }
 }

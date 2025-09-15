@@ -9,6 +9,7 @@ import {
   Res,
   UseGuards, UnauthorizedException, BadRequestException,
   ValidationPipe,
+  HttpException,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -35,6 +36,8 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ConfigService } from '@nestjs/config';
 import { AuthUsersRepository } from '@backend/src/modules/auth-users.repository';
 import { ONE_MINUTE, ONE_WEEK } from '@backend/src/consts/jwt-age';
+import LoginDto from './dto/login.dto';
+import { compareSync } from 'bcrypt';
 
 @Controller('auth')
 export class AuthController {
@@ -229,6 +232,64 @@ export class AuthController {
         error: 'Registration failed',
         details: error.message
       };
+    }
+  }
+
+  
+  @Public()
+  @Post('login')
+  async login(
+    @Body() body: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      // 1) หา user จาก email
+      const authUser = await this.authUsersRepository.findByEmail(body.email);
+      if (!authUser) {
+        throw new HttpException('Invalid email or password', HttpStatus.UNAUTHORIZED);
+      }
+
+      // 2) ตรวจสอบ password
+
+      const isValid = await this.authService.comparePassword(
+        body.password,
+        authUser.passwordHash,
+      );
+      if (!isValid) {
+        throw new HttpException('Invalid email or password', HttpStatus.UNAUTHORIZED);
+      }
+      // 3) ดึงข้อมูล user หลัก
+      const user = await this.usersRepository.findById(authUser.userId);
+      // 4) สร้าง JWT token
+      const accessToken = this.authService.signJwt(
+        user.userId.toString(),
+        user.email,
+      );
+
+      // 5) set cookie
+      res.cookie('jwt', accessToken, {
+        httpOnly: true,
+        secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
+        sameSite: 'lax',
+        maxAge: 1000 * 60 * 15, // 15 นาที
+      });
+
+      // 6) ส่ง response
+      return {
+        success: true,
+        user: {
+          userId: user.userId,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        },
+        accessToken,
+      };
+    } catch (err) {
+      // จะตกมาที่นี่ถ้า throw HttpException หรือ error อื่น
+      throw err instanceof HttpException
+        ? err
+        : new HttpException('Login failed', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

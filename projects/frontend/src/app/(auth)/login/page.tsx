@@ -6,6 +6,7 @@ import { GoogleButton } from "@/components/button/GoogleButton";
 import { FormInput } from "@/components/form/input/FormInput";
 import PasswordInput from "@/components/form/input/PasswordInput";
 import Link from "next/link";
+import { AuthService, LoginDto } from "@/lib/api";
 
 
 export default function LoginPage() {
@@ -27,7 +28,25 @@ export default function LoginPage() {
         </h2>
 
         {/* ฟอร์ม: ดันลงเล็กน้อย + ช่องไฟภายในกว้างขึ้น */}
-        <form className="mt-4 sm:mt-6 space-y-4 sm:space-y-5">
+        <form className="mt-4 sm:mt-6 space-y-4 sm:space-y-5"
+        onSubmit={async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email")?.toString() ?? "";
+    const password = formData.get("password")?.toString() ?? "";
+
+    const loginDto: LoginDto = { email, password };
+
+    try {
+      await AuthService.authControllerLogin(loginDto);
+      console.log("Login success");
+      // redirect ไปหน้า homepage
+      window.location.href = "http://localhost:3000/";
+    } catch (err) {
+      console.error("Login failed", err);
+    }
+  }}
+  >
           <FormInput 
           name="email" 
           label="Email" 
@@ -55,6 +74,7 @@ export default function LoginPage() {
             focus-visible:outline-none focus-visible:ring-2
             focus-visible:ring-[var(--color-brand-tertiary)]
             appearance-none [-webkit-tap-highlight-color:transparent]"
+            type="submit" 
           />
         </form>
 

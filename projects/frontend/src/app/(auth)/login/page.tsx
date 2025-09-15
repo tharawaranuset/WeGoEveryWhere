@@ -5,6 +5,8 @@ import { SubmitButton } from "@/components/form/Buttons";
 import { GoogleButton } from "@/components/button/GoogleButton";
 import { FormInput } from "@/components/form/input/FormInput";
 import PasswordInput from "@/components/form/input/PasswordInput";
+import Link from "next/link";
+
 
 export default function LoginPage() {
   return (
@@ -26,11 +28,19 @@ export default function LoginPage() {
 
         {/* ฟอร์ม: ดันลงเล็กน้อย + ช่องไฟภายในกว้างขึ้น */}
         <form className="mt-4 sm:mt-6 space-y-4 sm:space-y-5">
-          <FormInput name="email" label="Email" type="email" placeholder="you@example.com" />
+          <FormInput 
+          name="email" 
+          label="Email" 
+          type="email" 
+          placeholder="you@example.com"
+          className="bg-white  text-sm placeholder:text-gray-400 placeholder:opacity-100 "
+          required
+           />
 
           <PasswordInput
             name="password"
             label="Password"
+            placeholder="fill your password"
             autoComplete="current-password"
           />
 

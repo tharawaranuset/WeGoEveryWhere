@@ -197,9 +197,25 @@ export default function ProfileSetupPage() {
               console.log('Registration result:', result);
 
               if (result.success) {
+                try {
+                  const policyResult = await apiCall('/api/consent/current-policy');
+                    if (policyResult.version) {
+                      await apiCall('/api/consent/accept', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                          userId: result.user.userId,
+                          policyVersion: policyResult.version
+                        }),
+                      });
+                    }
+                  } catch (consentError) {
+                    console.error('Failed to accept consent:', consentError);
+                    // Don't fail registration for consent error - just log it
+                  }
                 toast.success('Registration successful! Welcome to WeGoEveryWhere!');
                 sessionStorage.removeItem('registrationData');
-                router.push('/dashboard'); // Or wherever you want to redirect
+                router.push('/events');
+
               } else {
                 // Handle specific backend errors
                 if (result.error === 'Email already registered') {

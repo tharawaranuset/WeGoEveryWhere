@@ -245,8 +245,8 @@ export default function ProfileSetupPage() {
             }
           }}
         >
-          <FormInput name="firstName" type="text" label="First name" placeholder="Enter your first name" />
-          <FormInput name="lastName"  type="text" label="Last name" placeholder="Enter your last name" />
+          <FormInput name="firstName" type="text" label="First name" placeholder="Enter your first name"  className="bg-white border border-black" required />
+          <FormInput name="lastName"  type="text" label="Last name" placeholder="Enter your last name" className="bg-white border border-black" required/>
 
           {/* Birth date + ปุ่มไอคอนเปิดปฏิทิน */}
           <div className="mb-0">
@@ -260,7 +260,8 @@ export default function ProfileSetupPage() {
                           [&::-webkit-calendar-picker-indicator]:hidden
                           [&::-webkit-clear-button]:hidden
                           [&::-webkit-inner-spin-button]:hidden
-                          [-moz-appearance:textfield]"
+                          [-moz-appearance:textfield]
+                          bg-white border border-black required"
               />
               <button
                 type="button"
@@ -288,8 +289,8 @@ export default function ProfileSetupPage() {
               ]}
           />
 
-          <FormInput name="telephoneNumber" type="tel" label="Phone Number (Optional)" placeholder="Enter your phone number" />
-          <FormInput name="bio"  type="text" label="Bio (Optional)" placeholder="Tell us about yourself" />
+          <FormInput name="telephoneNumber" type="tel" label="Phone Number (Optional)" placeholder="Enter your phone number" className="bg-white border border-black" required />
+          <FormInput name="bio"  type="text" label="Bio (Optional)" placeholder="Tell us about yourself" className="bg-white border border-black" required />
 
           <button
             type="submit"

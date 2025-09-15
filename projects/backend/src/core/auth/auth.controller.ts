@@ -52,12 +52,12 @@ export class AuthController {
     schema: {
       type: 'object',
       properties: {
-        username: { type: 'string' },
+        userId: { type: 'integer' },
       },
     },
   })
-  apiBearerAuth(@Body('username') username: string) {
-    const accessToken = this.authService.signJwt(username);
+  apiBearerAuth(@Body('userId') userId: number) {
+    const accessToken = this.authService.signJwt(userId);
     return { accessToken: accessToken };
   }
 
@@ -69,20 +69,22 @@ export class AuthController {
   @Public()
   @UseGuards(GitHubAuthGuard)
   @Get('callback')
-  async githubCallback(@Req() req: any, @Res({ passthrough: true }) res: Response) {
-    const accessToken = this.authService.signJwt(req.user.id, req.user.email);
-    const { refreshToken } = this.authService.signRefreshJwt(req.user.id);
-
-    // store hashed refresh token in DB
-    await this.refreshTokensRepo.create(
-      Number(req.user.id),
-      refreshToken,
-      new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      req.ip,
-      (req.headers['user-agent'] as string) ?? undefined,
-    );
-
-    res.cookie('jwt', accessToken, {
+  async githubCallback(@Req() req, @Res({ passthrough: true }) res: Response) {
+    
+    const appUser = await this.authService.upsertOAuthUser({
+      provider: 'github',
+      subject: req.user.subject ?? req.user.id,
+      email: req.user.email ?? null,
+      emailVerified: req.user.emailVerified ?? false,
+      firstName: req.user.firstName ?? null,
+      lastName: req.user.lastName ?? null,
+    });
+    
+    const userId = appUser.userId;
+    
+    const accessToken = this.authService.signJwt(userId);
+    const refreshToken = this.authService.signRefreshJwt(userId);
+    res.cookie('jwt', accessToken, { 
       httpOnly: true,
       secure: this.configService.get<boolean>('auth.jwt.cookies_secure'),
       sameSite: 'strict',
@@ -95,8 +97,7 @@ export class AuthController {
       sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-
-    return 'Github Callback Successful';
+    return {user: appUser, accessToken};
   }
 
   // ----------------------------------------------------------------

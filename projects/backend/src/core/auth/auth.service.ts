@@ -8,26 +8,46 @@ import * as crypto from 'crypto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 // import { v4 as uuidv4 } from 'uuid';
-import { eq } from 'drizzle-orm';
 import { EmailService } from '@backend/src/shared/services/email.service';
 import * as argon2 from 'argon2';
 import { authUsers } from '@backend/src/database/schema/authUsers.schema';
 import { db } from '@backend/src/database/connection';
 import * as bcrypt from 'bcrypt';
 
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { eq, and } from 'drizzle-orm';
+
+import { oauthIdentities } from '@backend/src/database/schema/oauthIdentities.schema';
+import { users } from '@backend/src/database/schema/users.schema';
+
+import { UsersRepository } from '@backend/src/modules/users/users.repository';
+
+type UpsertOAuthArgs = {
+  provider: 'github';
+  subject: string;
+  email?: string | null;
+  emailVerified?: boolean;
+  firstName?: string | null;
+  lastName?: string | null;
+};
+
 @Injectable()
 export class AuthService {
+  private db;
   constructor(
     private jwtService: JwtService,
     @Inject(refreshJwtConfig.KEY)
     private refreshJwtConfiguration: ConfigType<typeof refreshJwtConfig>,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
-    
     // private readonly sessionService: SessionService,
     // @Inject(DATABASE_CONNECTION)
-    // private readonly db: DrizzleDb,
+     //private readonly db: DrizzleDb,
+    private readonly usersRepo: UsersRepository,
+    private readonly pool: Pool,
   ) {
+    this.db = drizzle(this.pool,{schema: {oauthIdentities, users}});
   }
 
   // Access token
@@ -139,4 +159,43 @@ export class AuthService {
   async comparePassword(password: string, hashedPassword: string): Promise<boolean> {
     return await argon2.verify(hashedPassword, password);
   }
+
+  async upsertOAuthUser(args: UpsertOAuthArgs) {
+        const [identity] = await this.db
+            .select()
+            .from(oauthIdentities)
+            .where(
+                and(
+                eq(oauthIdentities.provider, args.provider),
+                eq(oauthIdentities.subject, args.subject),
+                ),
+            )
+            .limit(1);
+
+        if (identity) {
+            const user = await this.usersRepo.findById(identity.userId);
+            if (!user) throw new Error('Orphaned oauth identity: linked user not found');
+            return user;
+        }
+
+        return await this.db.transaction(async (tx) => {
+        // create a minimal, valid user row (only required columns)
+        const newUser = await this.usersRepo.createUserFromOAuthTx(tx, {
+            email: args.email ?? null,
+            firstName: args.firstName ?? null,
+            lastName: args.lastName ?? null,
+        });
+
+        await tx.insert(oauthIdentities).values({
+            userId: newUser.userId,
+            provider: args.provider,
+            subject: args.subject,
+            email: args.email ?? null,
+            emailVerified: null,     // keep null until  implement verification
+            createdAt: new Date(),   // required (schema has NOT NULL, no default)
+        });
+
+        return newUser;
+        });
+    }
 }

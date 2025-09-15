@@ -13,8 +13,9 @@ export const users = pgTable('users', {
   sex: varchar('sex', { length: 10 }),
   signupTime: time('signup_time').default(sql`CURRENT_TIME`),
   signupDate: date('signup_date').default(sql`CURRENT_DATE`),
-  // ✅ cookie policy fields
-  cookiePolicyVersionAccepted: varchar("cookie_policy_version_accepted", { length: 20 }),
+  
+  // cookie policy fields
+  cookiePolicyVersionAccepted: integer("cookie_policy_version_accepted"),
   cookiePolicyAcceptedAt: timestamp("cookie_policy_accepted_at"),
 }, (table) => [
   check("users_age_check", sql`${table.birthdate} <= CURRENT_DATE - INTERVAL '20 years'`)

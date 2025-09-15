@@ -1,7 +1,19 @@
-import { Inject, Injectable } from '@nestjs/common';
+// src/core/auth/auth.service.ts
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import refreshJwtConfig from '@backend/src/configurations/configs/refresh-jwt.config';
+import { ConfigService } from '@nestjs/config';
 import type { ConfigType } from '@nestjs/config';
+import * as crypto from 'crypto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+// import { v4 as uuidv4 } from 'uuid';
+import { eq } from 'drizzle-orm';
+import { EmailService } from '@backend/src/shared/services/email.service';
+import * as argon2 from 'argon2';
+import { authUsers } from '@backend/src/database/schema/authUsers.schema';
+import { db } from '@backend/src/database/connection';
+import * as bcrypt from 'bcrypt';
 
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
@@ -23,65 +35,126 @@ type UpsertOAuthArgs = {
 
 @Injectable()
 export class AuthService {
-    private db;
-
-    constructor(
-        private jwtService: JwtService,
-        @Inject(refreshJwtConfig.KEY) private refreshJwtConfiguration: ConfigType<typeof refreshJwtConfig>,
-        private readonly usersRepo: UsersRepository,
-        private readonly pool: Pool,
-    ) {
-        this.db = drizzle(this.pool,{schema: {oauth_identities, users}});
-    }
-
-    signJwt(userId: number) {
-        const payload = { sub: userId };
-        const accessToken = this.jwtService.sign(payload);
-        return accessToken;
-    }
-
-    signRefreshJwt(userId: number) {
-        const payload = { sub: userId  };
-        const refreshToken = this.jwtService.sign(payload, this.refreshJwtConfiguration);
-        return refreshToken;
-    }
+  constructor(
+    private jwtService: JwtService,
+    @Inject(refreshJwtConfig.KEY)
+    private refreshJwtConfiguration: ConfigType<typeof refreshJwtConfig>,
+    private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
     
-    async upsertOAuthUser(args: UpsertOAuthArgs) {
-        const [identity] = await this.db
-            .select()
-            .from(oauth_identities)
-            .where(
-                and(
-                eq(oauth_identities.provider, args.provider),
-                eq(oauth_identities.subject, args.subject),
-                ),
-            )
-            .limit(1);
+    // private readonly sessionService: SessionService,
+    // @Inject(DATABASE_CONNECTION)
+    // private readonly db: DrizzleDb,
+  ) {
+  }
 
-        if (identity) {
-            const user = await this.usersRepo.findById(identity.userId);
-            if (!user) throw new Error('Orphaned oauth identity: linked user not found');
-            return user;
-        }
+  // Access token
+  signJwt(userId: number | string, email?: string) {
+    const payload = { sub: userId, email, jti: crypto.randomUUID() };
+    return this.jwtService.sign(payload);
+  }
 
-        return await this.db.transaction(async (tx) => {
-        // create a minimal, valid user row (only required columns)
-        const newUser = await this.usersRepo.createUserFromOAuthTx(tx, {
-            email: args.email ?? null,
-            firstName: args.firstName ?? null,
-            lastName: args.lastName ?? null,
-        });
+  // Refresh token — return token string + tokenId for DB
+  signRefreshJwt(userId: number | string) {
+    const tokenId = crypto.randomUUID();
+    const payload = { sub: userId, tokenId };
+    const refreshToken = this.jwtService.sign(payload, this.refreshJwtConfiguration);
+    return { refreshToken, tokenId };
+  }
 
-        await tx.insert(oauth_identities).values({
-            userId: newUser.userId,
-            provider: args.provider,
-            subject: args.subject,
-            email: args.email ?? null,
-            emailVerified: args.emailVerified ? new Date() : null,
-            createdAt: new Date(),   // required (schema has NOT NULL, no default)
-        });
+  // (optional helpers you can call from the controller)
+  verifyRefresh(refreshToken: string) {
+    return this.jwtService.verify(refreshToken, this.refreshJwtConfiguration) as { sub: any; tokenId: string; iat: number; exp: number };
+  }
 
-        return newUser;
-        });
+  async forgotPassword(dto: ForgotPasswordDto) {
+    const { v4: uuidv4 } = await import('uuid');
+
+    const [authUser] = await db
+      .select()
+      .from(authUsers)
+      .where(eq(authUsers.email, dto.email))
+      .limit(1);
+
+    if (!authUser) {
+      return {
+        message:
+          'If an account with that email exists, a reset link has been sent',
+      };
     }
+
+    const resetToken = uuidv4();
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hr
+
+    await db
+      .update(authUsers)
+      .set({
+        resetToken,
+        resetTokenExpiresAt: expiresAt,
+        updatedAt: new Date(),
+      })
+      .where(eq(authUsers.id, authUser.id));
+
+    const baseUrl = (
+      this.configService.get('FRONTEND_URL') ?? 'http://localhost:3000'
+    ).replace(/\/$/, '');
+    const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
+
+    try {
+      await this.emailService.sendPasswordResetEmail({
+        name: 'User',
+        email: authUser.email,
+        resetUrl,
+        expiresIn: '1h',
+      });
+    } catch (err) {
+      console.error('Failed to send password reset email:', err);
+    }
+
+    return {
+      message:
+        'If an account with that email exists, a reset link has been sent',
+    };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const [authUser] = await db
+      .select()
+      .from(authUsers)
+      .where(eq(authUsers.resetToken, dto.token))
+      .limit(1);
+
+    if (!authUser || !authUser.resetTokenExpiresAt) {
+      throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    const now = new Date();
+    const exp = new Date(authUser.resetTokenExpiresAt);
+    if (now > exp) {
+      throw new BadRequestException('Reset token has expired');
+    }
+
+    const passwordHash = await argon2.hash(dto.password);
+
+    await db
+      .update(authUsers)
+      .set({
+        passwordHash,
+        resetToken: null,
+        resetTokenExpiresAt: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(authUsers.id, authUser.id));
+
+    return { message: 'Password reset successfully' };
+  }
+
+  // ADD: Simple password hashing methods for registration (using their argon2)
+  async hashPassword(password: string): Promise<string> {
+    return await argon2.hash(password);
+  }
+
+  async comparePassword(password: string, hashedPassword: string): Promise<boolean> {
+    return await argon2.verify(hashedPassword, password);
+  }
 }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
-// import { GitHubAuthStrategy } from './github/github-auth.strategy';
+import { GitHubAuthStrategy } from './github/github-auth.strategy';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
@@ -25,7 +25,7 @@ import { AuthUsersRepository } from '@backend/src/modules/auth-users.repository'
 
   controllers: [AuthController],
   providers: [
-    // GitHubAuthStrategy,
+    GitHubAuthStrategy,
     AuthService,
     JwtStrategy,
     RefreshJwtStrategy,

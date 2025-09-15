@@ -34,6 +34,7 @@ export default function LoginPage() {
           type="email" 
           placeholder="you@example.com"
           className="bg-white border border-black text-sm placeholder:text-gray-400 placeholder:opacity-100 "
+          requried
            />
 
           <PasswordInput

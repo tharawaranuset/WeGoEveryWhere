@@ -36,10 +36,14 @@ export class EventService {
     return updatedEvent;
   }
 
-  async create(createEventDto: CreateEventDto){
+  async create(createEventDto: CreateEventDto, user_id: number){
+    const eventData = {
+      ...createEventDto,
+      userId: user_id
+      };
     const[newEvent] = await this.db
       .insert(schema.event)
-      .values(createEventDto)
+      .values(eventData)
       .returning();
     if(!newEvent){
       throw new NotFoundException(`The event is not created successfully.`);

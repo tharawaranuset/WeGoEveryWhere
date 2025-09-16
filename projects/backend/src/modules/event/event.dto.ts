@@ -82,6 +82,4 @@ export class CreateEventDto {
   @IsNumber()
   rating?: number;
 
-  @IsInt()
-  userId!: number;
 }

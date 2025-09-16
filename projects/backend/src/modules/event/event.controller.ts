@@ -1,7 +1,8 @@
 // backend/src/events/events.controller.ts
-import { Controller, Get, Patch, Param, Body, ParseIntPipe , Post, Delete } from '@nestjs/common'; // <-- Add Patch, Param, Body, ParseIntPipe
+import { Controller, Get, Patch, Param, Body, ParseIntPipe , Post, Delete , Request , UseGuards } from '@nestjs/common'; // <-- Add Patch, Param, Body, ParseIntPipe
 import { EventService } from './event.service';
 import { UpdateEventDto , CreateEventDto } from './event.dto'; // <-- Import the DTO
+import { JwtGuard } from '../../core/auth/jwt/access-jwt/jwt.guard'; 
 
 @Controller('events')
 export class EventController {
@@ -14,6 +15,7 @@ export class EventController {
 
   // --- ADD THIS ENDPOINT ---
   @Patch(':id')
+  @UseGuards(JwtGuard)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateEventDto: UpdateEventDto,
@@ -22,13 +24,18 @@ export class EventController {
   }
 
   @Post()
+  @UseGuards(JwtGuard)
   create(
     @Body() CreateEventDto: CreateEventDto,
+    @Request() req,
   ){
-    return this.eventService.create(CreateEventDto);
+    const user_id = req.user.sub;
+    console.log(user_id);
+    return this.eventService.create(CreateEventDto,user_id);
   }
 
   @Delete(':id')
+  @UseGuards(JwtGuard)
   softDelete(@Param('id', ParseIntPipe) id: number) {
     const updateEventDto = { status: 'deleted' };
     return this.eventService.update(id, updateEventDto);

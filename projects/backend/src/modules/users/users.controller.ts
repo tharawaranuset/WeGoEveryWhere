@@ -19,4 +19,9 @@ export class UserController{
     Getall(){
         return this.userService.findAll();
     }
+
+    @Get('me')
+    GetMe(@GetUserId() id: number,){
+        return this.userService.findbyId(id);
+    }
 }

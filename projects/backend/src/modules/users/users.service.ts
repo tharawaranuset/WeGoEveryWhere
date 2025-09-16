@@ -30,4 +30,10 @@ export class UserService{
   }
   return updateuser;
   }
+
+  async findbyId(id : number){
+    return this.db.query.users.findFirst({
+      where: eq(schema.users.userId, id),
+    });
+  }
 }

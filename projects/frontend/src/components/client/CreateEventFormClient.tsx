@@ -17,6 +17,7 @@ import { LocationInput } from "../form/input/LocationInput";
 import { FormInput } from "../form/input/FormInput";
 import { StatusSelect } from "../form/input/StatusSelect";
 import { useActionToasts } from "../form/useActionToasts";
+import { CreateEventDto, EventService } from "@/lib/api";
 
 export default function CreateEventFormClient() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -25,13 +26,31 @@ export default function CreateEventFormClient() {
     _prev: EventStateWithFields<EventActionState>,
     formData: FormData
   ): Promise<EventStateWithFields<EventActionState>> => {
-    const res = await createEventWithZod(formData);
-    if (!res.ok && !(res as any).fields) {
-      return { ...(res as EventActionState), fields: toFields(formData) };
+    try {
+    const dto: CreateEventDto = {
+      name: formData.get("eventName") as string,
+      date: new Date(formData.get("eventDate") as string).toISOString(),
+      time: (formData.get("time") as string) ?? "00:00",
+      place: formData.get("location") as string,
+      capacity: Number(formData.get("capacity") || 0),
+      detail: formData.get("details") as string,
+      cost: formData.get("cost") ? Number(formData.get("cost")) : undefined,
+      rating: formData.get("rating") ? Number(formData.get("rating")) : undefined,
+      userId: 28,
+    };
+
+
+    const res = await EventService.eventControllerCreate(dto);
+    if (!res) {
+      return { ...(res as any), fields: toFields(formData) };
     }
-    // ถ้าสำเร็จ เคลียร์ฟอร์ม
-    if (res.ok) formRef.current?.reset();
-    return res as EventStateWithFields<EventActionState>;
+
+    formRef.current?.reset();
+    return { ok: true, fields: toFields(formData) };
+  } catch (err: any) {
+    console.error(err);
+    return { ok: false, errors: err?.fields ?? {}, fields: toFields(formData) };
+  }
   };
 
   const [state, formAction] = useActionState<

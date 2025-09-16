@@ -10,6 +10,7 @@ import PhotoPicker from "@/components/form/PhotoPicker";
 import FormSelect from "@/components/form/input/FormSelect";
 import { toast } from "react-hot-toast";
 import { apiCall } from "@/utils/api";
+import { AuthService, RegisterDto } from "@/lib/api";
 
 type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
 
@@ -119,6 +120,7 @@ export default function ProfileSetupPage() {
               const formData = new FormData(e.currentTarget);
               
               // Get registration data from previous step
+              // Fix this
               const registrationData = JSON.parse(sessionStorage.getItem('registrationData') || '{}');
               
               if (!registrationData.email || !registrationData.password) {
@@ -188,18 +190,42 @@ export default function ProfileSetupPage() {
 
               console.log('Sending registration data:', payload);
 
-              // Call registration API
-              const result = await apiCall('/auth/register', {
-                method: 'POST',
-                body: JSON.stringify(payload),
-              });
+              const requestBody: RegisterDto = {
+                email: payload.email,
+                password: payload.password,
+                firstName: payload.firstName,
+                lastName: payload.lastName,
+                telephoneNumber: payload.telephoneNumber ?? undefined,
+                bio: payload.bio ?? undefined,
+                birthdate: payload.birthdate,
+                sex: payload.sex,
+              };
 
+
+              // Call registration API
+              const result = await AuthService.authControllerRegister(requestBody);
+              
               console.log('Registration result:', result);
 
               if (result.success) {
+                try {
+                  const policyResult = await apiCall('/api/consent/current-policy');
+                    if (policyResult.version) {
+                      await apiCall('/api/consent/accept', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                          userId: result.user.userId,
+                          policyVersion: policyResult.version
+                        }),
+                      });
+                    }
+                  } catch (consentError) {
+                    console.error('Failed to accept consent:', consentError);
+                    // Don't fail registration for consent error - just log it
+                  }
                 toast.success('Registration successful! Welcome to WeGoEveryWhere!');
                 sessionStorage.removeItem('registrationData');
-                router.push('/dashboard'); // Or wherever you want to redirect
+                router.push('/'); // Or wherever you want to redirect
               } else {
                 // Handle specific backend errors
                 if (result.error === 'Email already registered') {
@@ -229,8 +255,8 @@ export default function ProfileSetupPage() {
             }
           }}
         >
-          <FormInput name="firstName" type="text" label="First name" placeholder="Enter your first name" />
-          <FormInput name="lastName"  type="text" label="Last name" placeholder="Enter your last name" />
+          <FormInput name="firstName" type="text" label="First name" placeholder="Enter your first name"  className="bg-white border border-black" required />
+          <FormInput name="lastName"  type="text" label="Last name" placeholder="Enter your last name" className="bg-white border border-black" required/>
 
           {/* Birth date + ปุ่มไอคอนเปิดปฏิทิน */}
           <div className="mb-0">
@@ -244,7 +270,8 @@ export default function ProfileSetupPage() {
                           [&::-webkit-calendar-picker-indicator]:hidden
                           [&::-webkit-clear-button]:hidden
                           [&::-webkit-inner-spin-button]:hidden
-                          [-moz-appearance:textfield]"
+                          [-moz-appearance:textfield]
+                          bg-white border border-black required"
               />
               <button
                 type="button"
@@ -272,8 +299,8 @@ export default function ProfileSetupPage() {
               ]}
           />
 
-          <FormInput name="telephoneNumber" type="tel" label="Phone Number (Optional)" placeholder="Enter your phone number" />
-          <FormInput name="bio"  type="text" label="Bio (Optional)" placeholder="Tell us about yourself" />
+          <FormInput name="telephoneNumber" type="tel" label="Phone Number (Optional)" placeholder="Enter your phone number" className="bg-white border border-black" required />
+          <FormInput name="bio"  type="text" label="Bio (Optional)" placeholder="Tell us about yourself" className="bg-white border border-black" required />
 
           <button
             type="submit"

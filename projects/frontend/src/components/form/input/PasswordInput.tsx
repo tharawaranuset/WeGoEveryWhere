@@ -40,7 +40,7 @@ export default function PasswordInput({
           autoComplete={autoComplete}
           required
           placeholder={placeholder}
-          className="w-full rounded-3xl border border-black bg-white px-4 py-2.5 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange"
+          className="w-full rounded-3xl border border-black bg-white px-4 py-2.5 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange placeholder:text-gray-400 placeholder:opacity-100"
         />
 
         {/* ปุ่มแสดงซ่อนรหัสผ่าน */}

@@ -9,6 +9,7 @@ import { EditInput } from "@/components/form/input/EditInput"; // ✅ ใช้ 
 import FormSelect from "@/components/form/input/FormSelect";
 import { Calendar } from "lucide-react";
 import { SubmitButton } from "@/components/form/Buttons";
+import { UpdateUserDto, UserService } from "@/lib/api";
 
 
 type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
@@ -30,24 +31,36 @@ export default function EditProfilePage() {
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (submitting) return;
-    setSubmitting(true);
-    try {
-      const fd = new FormData(e.currentTarget);
+  e.preventDefault();
+  if (submitting) return;
+  setSubmitting(true);
 
-      // ตัวอย่างต่อ API จริง:
-      // const res = await fetch("/api/profile", { method: "PATCH", body: fd });
-      // if (!res.ok) throw new Error("Bad response");
+  try {
+    const form = e.currentTarget;
+    const fd = new FormData(form);
 
-      await new Promise((r) => setTimeout(r, 500)); // mock
-      toast.success("Successfully Edited");
-    } catch {
-      toast.error("Unsuccessfully Edited, try again");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+    // แปลง FormData เป็น object สำหรับ API
+    const body: UpdateUserDto = {
+  firstName: fd.get("firstName") as string || undefined,
+  lastName: fd.get("lastName") as string || undefined,
+  birthdate: fd.get("birthDate") as string || undefined,   // ชื่อตรง
+  sex: fd.get("sex") as UpdateUserDto.sex || undefined,    // cast enum
+  telephoneNumber: fd.get("telephone") as string || undefined, // ชื่อตรง
+  bio: fd.get("bio") as string || undefined,
+};
+
+
+    // เรียก API จริง
+    await UserService.userControllerUpdate(body);
+
+    toast.success("Successfully Edited");
+  } catch (err) {
+    console.error(err);
+    toast.error("Unsuccessfully Edited, try again");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   return (
     <main className="min-h-screen py-1 font-alt bg-white">

@@ -2,6 +2,7 @@
 "use client";
 import * as React from "react";
 import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa"; // Fa = Font Awesome
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -9,7 +10,8 @@ type Props = {
   onClick?: () => void;
   text?: string;
 };
-export function GoogleButton({ className, onClick, text = "Continue with Google" }: Props) {
+export function GoogleButton({ className, onClick, text = "Continue with Github" }: Props) {
+  
   return (
     <button
       type="button"
@@ -23,7 +25,7 @@ export function GoogleButton({ className, onClick, text = "Continue with Google"
         className
       )}
     >
-      <FcGoogle size={22} />
+      <FaGithub size={22} />
       {text}
     </button>
   );

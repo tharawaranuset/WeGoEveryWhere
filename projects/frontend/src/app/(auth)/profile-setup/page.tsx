@@ -10,6 +10,7 @@ import PhotoPicker from "@/components/form/PhotoPicker";
 import FormSelect from "@/components/form/input/FormSelect";
 import { toast } from "react-hot-toast";
 import { apiCall } from "@/utils/api";
+import { AuthService, RegisterDto } from "@/lib/api";
 
 type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
 
@@ -119,6 +120,7 @@ export default function ProfileSetupPage() {
               const formData = new FormData(e.currentTarget);
               
               // Get registration data from previous step
+              // Fix this
               const registrationData = JSON.parse(sessionStorage.getItem('registrationData') || '{}');
               
               if (!registrationData.email || !registrationData.password) {
@@ -188,12 +190,21 @@ export default function ProfileSetupPage() {
 
               console.log('Sending registration data:', payload);
 
-              // Call registration API
-              const result = await apiCall('/auth/register', {
-                method: 'POST',
-                body: JSON.stringify(payload),
-              });
+              const requestBody: RegisterDto = {
+                email: payload.email,
+                password: payload.password,
+                firstName: payload.firstName,
+                lastName: payload.lastName,
+                telephoneNumber: payload.telephoneNumber ?? undefined,
+                bio: payload.bio ?? undefined,
+                birthdate: payload.birthdate,
+                sex: payload.sex,
+              };
 
+
+              // Call registration API
+              const result = await AuthService.authControllerRegister(requestBody);
+              
               console.log('Registration result:', result);
 
               if (result.success) {
@@ -214,8 +225,7 @@ export default function ProfileSetupPage() {
                   }
                 toast.success('Registration successful! Welcome to WeGoEveryWhere!');
                 sessionStorage.removeItem('registrationData');
-                router.push('/events');
-
+                router.push('/'); // Or wherever you want to redirect
               } else {
                 // Handle specific backend errors
                 if (result.error === 'Email already registered') {

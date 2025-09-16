@@ -6,6 +6,7 @@ import { GoogleButton } from "@/components/button/GoogleButton";
 import { FormInput } from "@/components/form/input/FormInput";
 import PasswordInput from "@/components/form/input/PasswordInput";
 import Link from "next/link";
+import { AuthService, LoginDto } from "@/lib/api";
 
 
 export default function LoginPage() {
@@ -27,7 +28,25 @@ export default function LoginPage() {
         </h2>
 
         {/* ฟอร์ม: ดันลงเล็กน้อย + ช่องไฟภายในกว้างขึ้น */}
-        <form className="mt-4 sm:mt-6 space-y-4 sm:space-y-5">
+        <form className="mt-4 sm:mt-6 space-y-4 sm:space-y-5"
+        onSubmit={async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email")?.toString() ?? "";
+    const password = formData.get("password")?.toString() ?? "";
+
+    const loginDto: LoginDto = { email, password };
+
+    try {
+      await AuthService.authControllerLogin(loginDto);
+      console.log("Login success");
+      // redirect ไปหน้า homepage
+      window.location.href = "http://localhost:3000/";
+    } catch (err) {
+      console.error("Login failed", err);
+    }
+  }}
+  >
           <FormInput 
           name="email" 
           label="Email" 
@@ -55,6 +74,7 @@ export default function LoginPage() {
             focus-visible:outline-none focus-visible:ring-2
             focus-visible:ring-[var(--color-brand-tertiary)]
             appearance-none [-webkit-tap-highlight-color:transparent]"
+            type="submit" 
           />
         </form>
 
@@ -67,15 +87,21 @@ export default function LoginPage() {
 
         {/* ปุ่มด้านล่าง: ช่องไฟพอดีมือ */}
         <div className="space-y-3 sm:space-y-4">
-          <Link href="/register" className="block">
-            <SubmitButton
-              type="button"
-              text="Create an account"
-              className= "w-full h-12 px-6 bg-[#FFDCD5] text-black font-bold border border-black rounded-3xl hover:!bg-[#FFDCD5] active:!bg-[#FFDCD5] focus:!bg-[#FFDCD5] hover:!brightness-100 active:!brightness-100 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]"
-            />
-          </Link>
+          <SubmitButton
+            type="button"
+            text="Create an account"
+            className="
+              w-full h-12 px-6
+              bg-[#FFDCD5] text-black font-bold
+              border border-black rounded-3xl
+              hover:!bg-[#FFDCD5] active:!bg-[#FFDCD5] focus:!bg-[#FFDCD5]
+            hover:!brightness-100 active:!brightness-100 active:scale-90
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]
+            "
+            onClick={() => {window.location.href = "/register";}}
+          />
 
-          <GoogleButton onClick={() => {}} />
+          {/* <GoogleButton onClick={() => {window.open("http://localhost:3001/auth/github");}} /> */}
         </div>
 
         <a href="#" className="block mt-4 text-center text-sm text-gray-600 hover:underline">

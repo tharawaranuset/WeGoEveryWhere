@@ -60,6 +60,7 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
             px-4 py-2.5 text-sm focus:border-[#EB6223] focus:outline-none focus:ring-2 focus:ring-[#EB6223]/20"
             ${className ?? ""}
           `}
+          required
         />
       </div>
     );

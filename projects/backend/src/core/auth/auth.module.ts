@@ -13,6 +13,7 @@ import { UsersModule } from '@backend/src/modules/users/users.module';
 import { RefreshTokensRepository } from '@backend/src/modules/refreshTokens.repository';
 import { EmailService } from '@backend/src/shared/services/email.service';
 import { AuthUsersRepository } from '@backend/src/modules/auth-users.repository';
+import { GitHubAuthStrategy } from './github/github-auth.strategy';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthUsersRepository } from '@backend/src/modules/auth-users.repository'
   providers: [
     // GitHubAuthStrategy,
     AuthService,
+    GitHubAuthStrategy,
     JwtStrategy,
     RefreshJwtStrategy,
     RefreshTokensRepository,

@@ -1,7 +1,7 @@
 // src/app/(whatever)/edit-profile/page.tsx
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState ,useEffect} from "react";
 import Image from "next/image";
 import { FiArrowLeft, FiCalendar, FiChevronDown } from "react-icons/fi";
 import toast from "react-hot-toast";
@@ -17,6 +17,28 @@ type HtmlDateInput = HTMLInputElement & { showPicker?: () => void };
 export default function EditProfilePage() {
   // const birthRef = useRef<HTMLInputElement>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    birthdate: "",
+    sex: "",
+    telephoneNumber: "",
+    bio: ""
+    });
+
+  useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const data = await UserService.userControllerGetMe();
+      setUserData(data);
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      toast.error("Failed to load profile data");
+    }
+  };
+  fetchUserData();
+}, []);
 
 
   const dateRef = useRef<HtmlDateInput | null>(null);
@@ -48,7 +70,6 @@ export default function EditProfilePage() {
   telephoneNumber: fd.get("telephone") as string || undefined, // ชื่อตรง
   bio: fd.get("bio") as string || undefined,
 };
-
 
     // เรียก API จริง
     await UserService.userControllerUpdate(body);
@@ -115,7 +136,7 @@ export default function EditProfilePage() {
               name="firstName"
               type="text"
               label="First name"
-              defaultValue="Gabriel"
+              defaultValue = {userData.firstName}
               required
             />
 
@@ -123,7 +144,7 @@ export default function EditProfilePage() {
               name="lastName"
               type="text"
               label="Last name"
-              defaultValue="Smith"
+              defaultValue={userData.lastName}
               required
             />
 
@@ -140,6 +161,7 @@ export default function EditProfilePage() {
                 containerClassName="mb-0" 
 
                 required
+                defaultValue={userData.birthdate}
                 className="pr-11 appearance-none
                           [&::-webkit-calendar-picker-indicator]:hidden
                           [&::-webkit-clear-button]:hidden
@@ -161,11 +183,14 @@ export default function EditProfilePage() {
               name="sex"
               label="Sex"
               required
-              defaultValue=""  // ให้ placeholder ถูกเลือกเริ่มต้น
               className = "bg-gray-200"
-              containerClassName="mb-2.5" 
+              containerClassName="mb-2.5"
+              value={userData.sex || ""}
+              onChange={(e) => {
+                setUserData({...userData, sex: e.target.value});
+              }}
               options={[
-                { label: "Select…", value: "", disabled: true },
+                { label: "Select", value: "" , disabled: true  },
                 { label: "Female", value: "female" },
                 { label: "Male", value: "male" },
                 { label: "Other", value: "other" },
@@ -178,8 +203,8 @@ export default function EditProfilePage() {
               type="tel"
               inputMode="tel"
               label="Telephone"
-              defaultValue="081-999-1234"
-              placeholder="081-999-1234"
+              defaultValue={userData.telephoneNumber}
+              placeholder="xxx-xxx-xxxx"
               required
             />
 
@@ -187,7 +212,7 @@ export default function EditProfilePage() {
               name="bio"
               type="bio"
               label="Bio"
-              defaultValue="we love cat"
+              defaultValue={userData.bio}
               placeholder="we love cat"
               required
             />

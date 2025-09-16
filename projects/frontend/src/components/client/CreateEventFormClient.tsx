@@ -36,7 +36,6 @@ export default function CreateEventFormClient() {
       detail: formData.get("details") as string,
       cost: formData.get("cost") ? Number(formData.get("cost")) : undefined,
       rating: formData.get("rating") ? Number(formData.get("rating")) : undefined,
-      userId: 28,
     };
 
 
